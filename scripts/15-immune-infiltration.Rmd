@@ -1,0 +1,103 @@
+---
+title: "Immune infiltration"
+author: "Chao-Jen Wong"
+date: "2022-12-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load-lib-datasets-15}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(DESeq2))
+suppressPackageStartupMessages(library(writexl))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(kableExtra))
+suppressPackageStartupMessages(library(purrr))
+library(latex2exp)
+pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
+load(file.path(pkg_dir, "data", "dds.rda"))
+load(file.path(pkg_dir, "data", "sanitized.dds.rda"))
+load(file.path(pkg_dir, "data", "bilat_MLpredict.rda"))
+
+anno_gencode35 <- as.data.frame(rowData(dds)) %>%
+  rownames_to_column(var="gene_id") %>% # BiLat study using Gencode 36
+  dplyr::mutate(ens_id=str_replace(gene_id, "\\..*", "")) %>%
+  dplyr::distinct(gene_name, .keep_all = TRUE)
+
+anno_ens88 <- as.data.frame(rowData(sanitized.dds)) %>%
+  rownames_to_column(var="ens88_id") %>% # longitudinal study ens v88
+  dplyr::mutate(ens_id=str_replace(gene_id, "\\..*", "")) %>%
+  dplyr::distinct(gene_name, .keep_all = TRUE) %>%
+  dplyr::select(ens88_id, ens_id)
+```
+
+# Roadmap
+The processes follow:
+
+- use 688 differential expression genes for the mild/moderate/high/ig-high classification
+- train a model distinguishing control vs. moderate+high+IG-High
+- apply the training model to the bilateral study: identify control-like vs. FSHD-featured
+
+## Immune markers
+```{r load-immune-markers, message=FALSE}
+immune_cell <- 
+  readr::read_delim(file.path(pkg_dir, "extdata",
+                       "immune_cell_markers",
+                       "nanoStringImmuneCellMarkers.txt")) %>%
+  dplyr::rename(gene_name = gene) %>%
+  left_join(anno_gencode35, by="gene_name") %>%
+  dplyr::filter(!is.na(gene_id)) # TARP/TCRG has no corresponding id
+```
+
+Viz immue cell gene expression by immune cell type and group by categories classified by ML random forest:
+```{r immune-markers-TPM-by-class}
+# bilat: average log10TPM by immune cell type
+immune_tpm <- immune_cell %>% group_by(cellType) %>%
+  dplyr::group_modify( ~{
+    sub <- dds[.x$gene_id]
+    colMeans(log10(assays(sub)[["TPM"]]+1)) %>% t(.) %>%
+      as.data.frame()
+  }) %>%
+  gather(key=sample_name, value=log10TPM, -cellType) %>%
+  dplyr::mutate(sample_id = str_replace(sample_name, "_.*", ""))  %>%
+  left_join(bilat_MLpredict, by="sample_id") %>%
+  dplyr::select(cellType, sample_id, log10TPM, class)
+
+# control from longitudinal
+cntr_immune_tpm <- immune_cell %>% 
+  dplyr::left_join(anno_ens88, by="ens_id") %>%
+  drop_na(ens88_id) %>%
+  group_by(cellType) %>%
+  dplyr::group_modify( ~{
+    sub <- sanitized.dds[.x$ens88_id,
+                         sanitized.dds$pheno_type=="Control"]
+    colMeans(log10(assays(sub)[["TPM"]]+1)) %>% t(.) %>%
+    as.data.frame() 
+  }) %>%
+  gather(key=sample_id, value=log10TPM, -cellType) %>%
+  add_column(class="Historical control")
+
+```
+
+```{r viz-tpm-by-celltype-class, fig.width=7, fig.height=7}
+immune_tpm %>% bind_rows(cntr_immune_tpm) %>%
+  dplyr::mutate(class = factor(class, levels=c("Historical control",
+                                               "Control-like",
+                                               "Moderate+",
+                                               "Muscle-Low"))) %>%
+ggplot(aes(x=class, y=log10TPM)) +
+  geom_boxplot(width=0.5, aes(color=class)) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank(), 
+        legend.justification=c(1,0), legend.position=c(1,0)) +
+  scale_color_brewer(palette="Set2") +
+  facet_wrap(~cellType, scale="free_y") +
+  #scale_color_manual(values=color_manual$color) +
+  labs(y=latex2exp::TeX("$\\log_{10}(TPM +1)$"), x="FSHD classes", title="Immune cell infiltrate expression")
+ggsave(file=file.path(pkg_dir, "figures", 
+                      "immune-celltype-TPM.pdf"), 
+       width=7, height=7)  
+```

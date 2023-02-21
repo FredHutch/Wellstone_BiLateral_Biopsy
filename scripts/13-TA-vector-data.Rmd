@@ -1,0 +1,240 @@
+---
+title: "TA MRI end-to-end slices"
+author: "Chao-Jen Wong"
+date: "2022-12-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r lib-parameters, message=FALSE}
+suppressPackageStartupMessages(library(tidyverse))
+library(readxl)
+library(viridis)
+pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
+load(file.path(pkg_dir, "data", "comprehensive_df.rda"))
+
+library(wesanderson)
+pal <- wes_palette("Darjeeling1", n=5)
+stir_pal <- c("STIR-" = pal[5], "STIR+"= pal[1])
+cntr_pal <- pal[2]
+```
+
+## Vector data
+```{r tidy-read-csv}
+tb <- readxl::read_xlsx(file.path(pkg_dir, "extdata",
+                   "_sent_vector_data_across_muscle_4Nov22 (1).xlsx"),
+                   col_names=FALSE) %>%
+  dplyr::rename(institude=`...1`, id=`...2`, Subject=`...3`) %>%
+  dplyr::mutate(location=if_else(grepl("LEFT", `...5`), "L", "R")) %>%
+  dplyr::mutate(Subject=case_when(
+    institude == 1 ~ str_replace(Subject, "URMC", "01"),
+    institude == 13 ~ str_replace(Subject, "KU", "13"),
+    institude == 32 ~ str_replace(Subject, "UW", "32")
+  )) %>%
+  dplyr::mutate(Subject=str_replace(Subject, "_", "-")) %>%
+  dplyr::mutate(
+    axis = if_else(grepl("LOC %", `...5`), "LOC", "CSA"),
+    sample_id = paste0(Subject, location)) %>%
+  dplyr::select(-`...4`) %>%
+  dplyr::mutate(sample_id = factor(sample_id), 
+                Subject = factor(Subject)) 
+```
+
+## smoothing and interpolation
+```{r spline-interpolation}
+# use splinefun
+sp <- tb %>% group_by(sample_id) %>%
+  group_modify(~ {
+    data <- .x %>% 
+      dplyr::select(-institude, -id, -`location`, -`...5`,
+                    -axis, -Subject) %>%
+    t() %>% tibble::as_tibble() %>% 
+    drop_na(V1, V2) 
+    sp <- spline(x=data$V1, y=data$V2, n=101,
+                 xmin=0, xmax=100)
+    data.frame(sp_x=sp$x, sp_y=sp$y)
+  })
+
+data <- sp %>% 
+  #dplyr::filter(!sample_id %in% c("13-0009R", "13-0007R")) %>%
+  left_join(comprehensive_df, by="sample_id") %>%
+  dplyr::mutate(fat_status=if_else(Fat_Infilt_Percent < 0.15, 
+                "fat < 0.15", "fat >= 0.15")) 
+```
+
+```{r loc-vs-csa-all}
+fat_pal <- wes_palette("Zissou1", 100, type = "continuous")
+ggplot(data, aes(x=sp_x, y=sp_y, group=sample_id)) +
+  geom_line(aes(color=Fat_Infilt_Percent), alpha=0.5) +
+  theme_minimal() +
+  scale_colour_gradientn(colours = fat_pal) +
+  #  scale_colour_gradient2(midpoint = 0.2, low = "#264D59", 
+  #                        high = "#D46C4E", mid="#F9E07F", na.value = NA)+
+  labs(x="LOC %", y="CSA %")
+ggsave(file.path(pkg_dir, "figures",
+                 "CSA-vs-loc-TA-all-together.pdf"))
+```
+Plot for each sample:
+```{r loc-vs-csa-by-STIR-status-by-subject, fig.width=8, fig.height=8}
+ggplot(data, aes(x=sp_x, y=sp_y, group=sample_id)) +
+  geom_line(aes(color=Fat_Infilt_Percent, linetype=STIR_status)) +
+  theme_minimal() +
+  scale_colour_gradientn(colours = fat_pal) +
+  #scale_colour_gradient(low = "green", high = "blue", na.value = NA)+
+  facet_wrap(~Subject, scales="free_y") +
+  theme(legend.position = c(0.85, 0.05), 
+        legend.box = "horizontal") +
+  labs(x="LOC %", y="CSA %")
+ggsave(file.path(pkg_dir, "figures",
+                 "CSA-vs-loc-TA-by-subject.pdf"), 
+       width=10, height=10)
+```
+
+
+__Interesting STIR- samples__: 01-0030R, 01-0020L and 13-0008R/L are STIR- whose fat infiltration percentages are greater than 0.15; 01-0020L does not demonstrate fat in the middle of th muscle, no DUX4 target expression; 01-0030L (fat infilt=0.1) has fat in the middle of the muscle but with apparent DUX4 target expression (1.25 log TPM); 13-0008R/L are of complete fatty replacement.  
+
+Figure below presents colored by `Fat_Infilt_Percent`:
+```{r line-coloyr-by-fat-infilt-percent}
+# seperate STIR-/STIR+
+ggplot(data, aes(x=sp_x, y=sp_y, group=sample_id)) +
+  geom_line(aes(color=Fat_Infilt_Percent), 
+            alpha=0.3) +
+  theme_bw() +
+  scale_colour_gradientn(colours = fat_pal) +
+  #scale_color_manual(values=stir_pal) +
+  #scale_colour_gradient(low = "green", high = "blue", 
+  #                        na.value = NA)+
+  facet_wrap(~STIR_status) +
+  theme(legend.position = "bottom") +
+  labs(x="LOC %", y="CSA %")
+ggsave(file.path(pkg_dir, "figures", "CSA-vs-loc-by-STIRd.pdf"), width=6, height=4)
+```
+```{r rsa-vs-loc-black-and-white}
+ggplot(data, aes(x=sp_x, y=sp_y, group=sample_id)) +
+  geom_line(color="grey50", alpha=0.3) +
+  theme_bw() +
+  facet_wrap(~STIR_status) +
+  theme(legend.position = "bottom") +
+  labs(x="Location (%): distal to proximal", y="Fat infiltration percent (%)")
+ggsave(file=file.path(pkg_dir, "manuscript", "figures", "RSA-vs-loc.pdf"),
+       width = 5, height = 2.5)
+```
+## STIR- only and average RSA% vs. LOC%
+STIR- presents the mildly affected muscle and the dismal/primal regions display more fat infiltration than the middle
+```{r stir_neg_and_avg_rsa}
+# restrict to STIR- and remove 13-0008R/L
+stir_neg <- data %>% 
+  dplyr::filter(STIR_status == "STIR-", Subject != "13-0008")
+avg_stir_neg <- data %>% 
+  dplyr::filter(STIR_status == "STIR-", Subject != "13-0008") %>%
+  dplyr::select(sample_id, sp_x, sp_y) %>%
+  tidyr::spread(sp_x, sp_y) %>% ungroup() %>%
+  dplyr::select(-sample_id) %>% colMeans(.)
+
+ggplot(stir_neg, aes(x=sp_x, y=sp_y)) +
+  geom_line(aes(x=sp_x, y=sp_y, group=sample_id), alpha=0.3) +
+  stat_summary(fun.y=mean, geom="line", color="green", linetype="dashed", 
+               linewidth=1.5) +
+  theme(panel.grid.minor = element_blank()) +
+  labs(y="RSA %", x="LOC %: proximal to distal TA") +
+  theme_minimal()
+ggsave(file=file.path(pkg_dir, "figures", "test.pdf"), width=4, height=3)
+
+```
+
+```{r try2}
+
+ggplot(stir_neg, aes(x=sp_x, y=sp_y, group=sample_id)) +
+  geom_line(aes(linetype=location), color="gray50", show.legend=FALSE) +
+  theme_minimal() +
+  #scale_colour_gradientn(colours = fat_pal) +
+  #scale_colour_gradient(low = "green", high = "blue", na.value = NA)+
+  facet_wrap(~Subject, scales="free_y") +
+  theme(legend.position = c(0.85, 0.05), 
+        panel.grid.minor = element_blank()) +
+  labs(x="LOC %: proximal to distal TA", y="CSA %")
+ggsave(file=file.path(pkg_dir, "figures", "test2.pdf"))
+```
+
+### DUX4 signature and CSA vs. LOC%
+```{r line-coloyr-by-DUX4-M6}
+data %>% drop_na(`DUX4-M6-logSum`) %>%
+ggplot(aes(x=sp_x, y=sp_y, group=sample_id)) +
+  geom_line(aes(color=`DUX4-M6`), 
+            alpha=0.3) +
+  theme_bw() +
+    scale_colour_gradient2(midpoint=0.5, low = "green",
+                           mid="orange",high = "blue", 
+                          na.value = NA)+
+  facet_wrap(~STIR_status) +
+  theme(legend.position = "bottom") +
+  labs(x="LOC %", y="CSA %")
+ggsave(file.path(pkg_dir, "figures", "CSA-vs-loc-by-DUX4.pdf"))
+```
+```{r stir-negative-vs-DUX4}
+data %>% dplyr::filter(!sample_id %in% c("13-0007R", "13-0009R")) %>%
+  drop_na(`DUX4-M6-logSum`) %>%
+  dplyr::filter(STIR_status == "STIR-") %>%
+  dplyr::mutate(DUX4_range = case_when(
+    `DUX4-M6-logSum` < 0.1 ~ "low (< 0.1)",
+    `DUX4-M6-logSum` > 0.1 & `DUX4-M6-logSum` < 1 ~ "median",
+    `DUX4-M6-logSum` > 1 ~ "high (> 1)"
+  )) %>%
+  dplyr::mutate(DUX4_range = factor(DUX4_range,
+                                    levels=c("low (< 0.1)", 
+                                             "median", 
+                                             "high (> 1)"))) %>%
+  ggplot(aes(x=sp_x, y=sp_y, group=sample_id)) +
+    geom_line(aes(color=`DUX4-M6-logSum`), alpha=0.5) +
+    theme_minimal() +
+    facet_wrap(~DUX4_range, nrow=3) +
+  scale_colour_gradient2(midpoint=0.5, low = "green",
+                           mid="orange",high = "blue", 
+                          na.value = NA) +
+  labs(x="LOC %", y="CSA %")
+
+ggsave(file.path(pkg_dir, "figures", 
+                 "CSA-vs-loc-STIR-negative-DUX4.pdf"),
+       higth=8, width=6 )
+```
+Observe 13-0004R, 13-0011R and 13-0011L: STIR+ and  `Fat_Infilt_Percent` < 0.2, 
+
+```{r STIR+-lowDUX4}
+samples <- comprehensive_df %>%
+  dplyr::filter(!sample_id %in% c("13-0009R", "13-0007R") )%>%
+  drop_na(`DUX4-M6-logSum`) %>%
+  dplyr::filter(STIR_status=="STIR+", `DUX4-M6-logSum` < 1, 
+                Fat_Infilt_Percent < 0.2) %>% pull(sample_id)
+comprehensive_df %>% dplyr::filter(sample_id %in% samples) %>%
+  dplyr::select(sample_id, Fat_Infilt_Percent, STIR_status, `DUX4-M6-logSum`, `DUX4-M6`) %>% knitr::kable()
+
+data %>% dplyr::filter(sample_id %in% samples) %>%
+  ggplot(aes(x=sp_x, y=sp_y, group=sample_id)) +
+  geom_line(aes(linetype=fat_status, color=`DUX4-M6-logSum`), 
+            alpha=0.3, size=2) +
+  theme_bw() +
+  scale_colour_gradient(low = "green", high = "red", 
+                        na.value = NA)+
+  labs(x="LOC %", y="CSA %")
+ggsave(file.path(pkg_dir, "figures", "CSA-vs-loc-STIR+-lowfat.pdf"))
+```
+
+
+## Association with DUX4
+The location of fat infiltration is not correlated with DUX4 signature.
+
+STIR+ and `Fat_Infilt_Percent` < 0.2:
+```{r STIR+-Fat-less-than-02}
+data %>%
+  dplyr::filter(STIR_status=="STIR+", 
+                Fat_Infilt_Percent < 0.2) %>% 
+  ggplot(aes(x=sp_x, y=sp_y, group=sample_id)) +
+    geom_line(aes(linetype=fat_status, color=`DUX4-M6-logSum`), 
+              alpha=0.3, size=2) +
+    scale_colour_gradient(low = "green", high = "red", 
+                        na.value = NA)+
+    theme_bw() 
+```

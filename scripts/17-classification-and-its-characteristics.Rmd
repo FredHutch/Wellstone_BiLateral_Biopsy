@@ -1,0 +1,124 @@
+---
+title: "RNA-seq Bilat classification and their characteristics"
+author: "Chao-Jen Wong"
+date: "2023-01-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r load-libs-dataset}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(DESeq2))
+suppressPackageStartupMessages(library(writexl))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(kableExtra))
+
+# load data sets
+pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
+draft_fig_dir <- file.path(pkg_dir, "manuscript", "figures")
+load(file.path(pkg_dir, "data", "comprehensive_df.rda"))
+load(file.path(pkg_dir, "data", "dds.rda"))
+load(file.path(pkg_dir, "data", "sanitized.dds.rda"))
+load(file.path(pkg_dir, "data", "bilat_MLpredict.rda"))
+```
+We perform classification on the bilateral biopsies (control-like and moderate+) using the training model built upon the five basket genes and the longitudinal biopsies comparing control vs. moderate+.
+- how about build the training model on control vs. mild+moderate with five basket genes; get the performance (I assume it will be about 70% accuracy or less); apply the training model on the bilat. (why, the performance is not so great already)
+
+## Objectives
+- clinical scores, STIR status and basket scores in longitudinal classes and bilat classes (control-like and moderate+ groups)
+- for the control-like and moderate+ group, are they 
+
+## DESeq2: Bilat  vs. Controls and basekt genes
+Tasks: 
+
+- control-like vs historical controls
+- moderate+ vs. historical controls
+- all bilat vs. historical controls
+
+Steps:
+
+1. subset the longitudinal dataset to get control and remove the Enseml version numbers
+2. combine the control and bilat samples
+4. PCA, colors by controls, control-like and moderate+
+3. perform DESeq2
+
+### Extract Controls and remove Ensembl version from the range data
+```{r extract-controls}
+cntrs <- sanitized.dds[, sanitized.dds$pheno_type == "Control"]
+rownames(cntrs) <- str_replace(rownames(cntrs), "\\..*", "")
+# tidy up: assays
+assays(cntrs) <- assays(cntrs)[c("counts", "TPM", "RPKM")]
+# tidy up: rowData (gene_name, gene_type) and colData (sample_name, sample_id,
+# pheno_type and class)
+cntrs$class <- "Control"
+rowData(cntrs) <- rowData(cntrs)[, c("gene_name", "gene_type")]
+colData(cntrs) <- colData(cntrs)[, c("sample_name", "sample_id", "lib_size",
+                                     "pheno_type", "class")]
+```
+
+### Tidy up Bilat
+```{r tidy-up-bilat}
+# tidy-up bilat: remove Ensembl version, add bilat_MLpredict (class)
+new_dds <- dds
+rownames(new_dds) <- str_replace(rownames(new_dds), "\\..*", "")
+
+col_data <- as.data.frame(colData(new_dds)) %>%
+  dplyr::select(-class) %>%
+  dplyr::mutate(sample_id = str_replace(sample_name, "[b]*_.*", "")) %>%
+  dplyr::left_join(bilat_MLpredict, by="sample_id") %>% 
+  dplyr::select(sample_name, sample_id, pheno_type, class, lib_size)
+rownames(col_data) <- col_data$sample_name
+colData(new_dds) <- as(col_data, "DataFrame")
+```
+
+### Merge Bilat and historical controls
+```{r combine-bilat-controls}
+# merge bilat and controls
+inner_rows <- intersect(rownames(cntrs), rownames(new_dds))
+cntrs <- cntrs[inner_rows]
+new_dds <- new_dds[inner_rows]
+# tidy up ranges
+rowRanges(cntrs) <- rowRanges(new_dds)
+bilat_cntrs <- cbind(cntrs, new_dds)
+bilat_cntrs$pheno_type <- factor(bilat_cntrs$pheno_type, levels=c("Control", "FSHD"))
+design(bilat_cntrs) <- ~pheno_type
+bilat_cntrs <- estimateSizeFactors(bilat_cntrs)
+```
+
+### Quality control
+
+## Logistic regression on Moderate+ occurrence
+Predictor: fat infiltration, regional or whole muscle fat 
+
+
+We shoudl use log10(TPM+1) to do the whole genes instead of rlog.
+
+```{r bilat-cntrs-PCA}
+sub <- bilat_cntrs[rowSums(counts(bilat_cntrs)) >= 30]
+rlog <- rlog(sub)
+data <- DESeq2::plotPCA(rlog[unique(baskets_genes$ens_id)], 
+                        intgroup=c("sample_id", "pheno_type", "class"),
+                        returnData=TRUE)
+
+percentVar <- round(100 * attr(data, "percentVar"))
+library(ggrepel)
+ggplot(data, aes(PC1, PC2, color=class)) +
+  geom_point(size=1) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) +
+  labs(title="PCA: BiLat + Control") +
+  geom_text_repel(aes(label=sample_id), size=1.8, show.legend=FALSE) +
+  theme_minimal() +
+  guides(fill=guide_legend(ncol=2)) +
+  theme(#legend.position="bottom",
+        legend.title = element_blank(),
+        legend.position = c(0.9, 0.9),
+        legend.box.background = element_rect(colour = "black"),
+        axis.title = element_text(size = 10),
+        plot.title = element_text(hjust = 0.5, size=10))
+```
+## the two familty could be potential markers
+1. Leukocyte immunoglobulin-like receptor B family of 5 members; three are differentially expressed
+2. MS4A family of 18 members; four are differentially expressed
