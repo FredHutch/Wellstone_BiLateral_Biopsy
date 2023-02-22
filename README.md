@@ -3,6 +3,7 @@
 This repository is created to support the computational transparency and reproducibility of our published paper,_Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression_. It includes proprocessed RNA-seq data, metadata, clinical scores, analysis results and a gitbook with details of our anlaysis and reproducible R code that generates figures and tables on the fly. 
 
 ## Structure
+```
 \data: clinial data, preprocessed RNA-seq datasets from the longigutinal and bilateral stuides and their metadata
 
     |- sanitized.dds.rda
@@ -15,4 +16,4 @@ This repository is created to support the computational transparency and reprodu
 \scripts: un-orgnaized R code of our initial data exploration and analysis
 \extdata: supplemental tables 
 
-
+```
