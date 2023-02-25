@@ -6,16 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 5 MRI characteristics and DUX4 molecular signatures | Wellstone bilateral tibialis anterior muscle biopsy study</title>
 <meta name="author" content="Chao-Jen Wong">
-<meta name="description" content="In this chapter, we Address the association of MRI characteristics to DUX4 signatures Consider two approaches to determine the DUX4 signature occurrences: (1) threshold of DUX4 score–accumulated...">
+<meta name="description" content="In this chapter, we Address the association of MRI characteristics to DUX4 signatures Consider two approaches to determine the DUX4 signature occurrences: (1) threshold of DUX4...">
 <meta name="generator" content="bookdown 0.32 with bs4_book()">
 <meta property="og:title" content="Chapter 5 MRI characteristics and DUX4 molecular signatures | Wellstone bilateral tibialis anterior muscle biopsy study">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/MRI-vs-DUX4-score.html">
 <meta property="og:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
-<meta property="og:description" content="In this chapter, we Address the association of MRI characteristics to DUX4 signatures Consider two approaches to determine the DUX4 signature occurrences: (1) threshold of DUX4 score–accumulated...">
+<meta property="og:description" content="In this chapter, we Address the association of MRI characteristics to DUX4 signatures Consider two approaches to determine the DUX4 signature occurrences: (1) threshold of DUX4...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 5 MRI characteristics and DUX4 molecular signatures | Wellstone bilateral tibialis anterior muscle biopsy study">
-<meta name="twitter:description" content="In this chapter, we Address the association of MRI characteristics to DUX4 signatures Consider two approaches to determine the DUX4 signature occurrences: (1) threshold of DUX4 score–accumulated...">
+<meta name="twitter:description" content="In this chapter, we Address the association of MRI characteristics to DUX4 signatures Consider two approaches to determine the DUX4 signature occurrences: (1) threshold of DUX4...">
 <meta name="twitter:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
@@ -73,14 +73,48 @@
 <ol style="list-style-type: decimal">
 <li>Address the association of MRI characteristics to DUX4 signatures<br>
 </li>
-<li>Consider two approaches to determine the DUX4 signature occurrences: (1) threshold of DUX4 score–accumulated <span class="math inline">\(\log_{10}(TPM+1)\)</span> over six robust DUX4 genes, and (2) prediction by the training model built upon the longitudinal study and random forest<br>
+<li>Consider two approaches to determine the DUX4 signature occurrences: (1) threshold of DUX4 score—<span class="math inline">\(\sum_{i=1}^6 \log_{10}(TPM_i+1)\)</span>—over six robust DUX4 genes, and (2) classification (DUX4+/- and Control-like/Moderate+) by the training model built upon the longitudinal study and random forest<br>
 </li>
-<li>Apply logistics regression using a linear combination of STIR status and fat infiltration percent and outcome of DUX4 expression occurrence. Output the logistics regression as a function.</li>
+<li>Apply logistics regression using a linear combination of two predictors, STIR status and fat infiltration percent, and outcome of DUX4 expression occurrence. Output the logistics regression as a function.</li>
 </ol>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># load libraries</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mikelove/DESeq2">DESeq2</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/writexl/">writexl</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/">knitr</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/">kableExtra</a></span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># load data sets</span></span>
+<span><span class="va">pkg_dir</span> <span class="op">&lt;-</span> <span class="st">"/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"</span></span>
+<span><span class="va">draft_fig_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"manuscript"</span>, <span class="st">"figures"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"comprehensive_df.rda"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"dds.rda"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"all_baskets.rda"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># exclude 13-0007R and 13-0009R</span></span>
+<span><span class="va">dds</span><span class="op">$</span><span class="va">sample_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">dds</span><span class="op">$</span><span class="va">sample_name</span>, <span class="st">"[b]*_.*"</span>, <span class="st">""</span><span class="op">)</span></span>
+<span><span class="va">dds</span> <span class="op">&lt;-</span> <span class="va">dds</span><span class="op">[</span>, <span class="op">!</span><span class="va">dds</span><span class="op">$</span><span class="va">sample_id</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"13-0007R"</span>, <span class="st">"13-0009R"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co"># tidy annotation </span></span>
+<span><span class="va">anno_gencode35</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">dds</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"gene_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co">#BiLat study using Gencode 35</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ens_id<span class="op">=</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">gene_id</span>, <span class="st">"\\..*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># color palate</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/karthik/wesanderson">wesanderson</a></span><span class="op">)</span></span>
+<span><span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/wesanderson/man/wes_palette.html">wes_palette</a></span><span class="op">(</span><span class="st">"Darjeeling1"</span>, n<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">stir_pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"STIR-"</span> <span class="op">=</span> <span class="va">pal</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span>, <span class="st">"STIR+"</span><span class="op">=</span> <span class="va">pal</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">cntr_pal</span> <span class="op">&lt;-</span> <span class="va">pal</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span></code></pre></div>
 <div id="stir-status-and-dux4-signatures" class="section level2" number="5.1">
 <h2>
 <span class="header-section-number">5.1</span> STIR status and DUX4 signatures<a class="anchor" aria-label="anchor" href="#stir-status-and-dux4-signatures"><i class="fas fa-link"></i></a>
 </h2>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>    </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">sample_id</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"13-0007R"</span>, <span class="st">"13-0009R"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">STIR_status</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>m<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/mean.html">mean</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum`</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption<span class="op">=</span><span class="st">"Mean values of DUX4 scores (based on DUX4-M6 basket) in STIR+ and STIR- biopsies."</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
 <span id="tab:dux4-score-summary">Table 5.1: </span>Mean values of DUX4 scores (based on DUX4-M6 basket) in STIR+ and STIR- biopsies.
@@ -113,12 +147,19 @@ STIR-
 </tbody>
 </table></div>
 <p>The mean difference of DUX4 scores in STIR+ and STIR- groups is significantly greater than 0 with Wilcox <span class="math inline">\(p\)</span>-value <span class="math inline">\(7e-10\)</span>.</p>
-<pre><code>#&gt; 
-#&gt;  Wilcoxon rank sum exact test
-#&gt; 
-#&gt; data:  dux4_list[[1]] and dux4_list[[2]]
-#&gt; W = 815, p-value = 7.315e-10
-#&gt; alternative hypothesis: true location shift is not equal to 0</code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dux4_list</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>    </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">sample_id</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"13-0007R"</span>, <span class="st">"13-0009R"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">STIR_status</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_map.html">group_map</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">.x</span>, <span class="va">`DUX4-M6-logSum`</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/wilcox.test.html">wilcox.test</a></span><span class="op">(</span><span class="va">dux4_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">dux4_list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Wilcoxon rank sum exact test</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; data:  dux4_list[[1]] and dux4_list[[2]]</span></span>
+<span><span class="co">#&gt; W = 815, p-value = 7.315e-10</span></span>
+<span><span class="co">#&gt; alternative hypothesis: true location shift is not equal to 0</span></span></code></pre></div>
 </div>
 <div id="logistics-prediction-of-dux4-signature-occurrence" class="section level2" number="5.2">
 <h2>
@@ -129,6 +170,29 @@ STIR-
 <span class="header-section-number">5.2.1</span> Scheme 1: use random forest traning model based on DUX4 M6 basket<a class="anchor" aria-label="anchor" href="#scheme-1-use-random-forest-traning-model-based-on-dux4-m6-basket"><i class="fas fa-link"></i></a>
 </h3>
 <p>The first scheme used the random forest training model built on the longitudinal model with six DUX4 basket genes. We applied the ML model on the bilateral samples to classify DUX4+ and DUX4- groups. Here we got 60% of STIR- samples as DUX4+.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># MH_fit$M6 is built on comparing controls and Moderate+IG-high+High </span></span>
+<span><span class="va">id</span> <span class="op">&lt;-</span> <span class="va">all_baskets</span><span class="op">[[</span><span class="st">"DUX4-M6"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">gencode_v35</span></span>
+<span><span class="va">df_logTPM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">dds</span><span class="op">[</span><span class="va">id</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/t.html">t</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_column.html">add_column</a></span><span class="op">(</span>pheno_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="st">"FSHD"</span>,</span>
+<span>                                             levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Control"</span>,</span>
+<span>                                                      <span class="st">"FSHD"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename_with</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">.x</span>, <span class="st">"\\..*"</span>, <span class="st">""</span><span class="op">)</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"ENSG"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">MH_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/get.html">get</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"MH_fit.rda"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">M6</span></span>
+<span></span>
+<span><span class="va">predict_M6</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">MH_fit</span><span class="op">$</span><span class="va">rf</span>, newdata<span class="op">=</span><span class="va">df_logTPM</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>rfM6_fit <span class="op">=</span> <span class="st">"."</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_column.html">add_column</a></span><span class="op">(</span>sample_id <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">df_logTPM</span><span class="op">)</span>,</span>
+<span>                                     <span class="st">"_.*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">predict_M6</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">comprehensive_df</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">STIR_status</span><span class="op">)</span></span>
+<span><span class="co"># how many STIR- and STIR+ on Control (DUX4-) and FSHD (DUX4+)</span></span>
+<span><span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">STIR_status</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>`DUX4-` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">rfM6_fit</span><span class="op">==</span><span class="st">"Control"</span><span class="op">)</span>,</span>
+<span>            `DUX4+` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">rfM6_fit</span> <span class="op">==</span> <span class="st">"FSHD"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption<span class="op">=</span><span class="st">"STIR+ and - distribution on the DUX4+/- group."</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
 <span id="tab:use-rf-model">Table 5.2: </span>STIR+ and - distribution on the DUX4+/- group.
@@ -169,41 +233,78 @@ STIR-
 </tr>
 </tbody>
 </table></div>
-<pre><code>#&gt; # A tibble: 2 × 4
-#&gt;   rfM6_fit average_DUX4_score min_DUX4_score max_DUX4_score
-#&gt;   &lt;fct&gt;                 &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
-#&gt; 1 Control              0.0417         0.0260         0.0668
-#&gt; 2 FSHD                 1.74           0.0856         6.05</code></pre>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">rfM6_fit</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>average_DUX4_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/mean.html">mean</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum`</span><span class="op">)</span>,</span>
+<span>            min_DUX4_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum`</span><span class="op">)</span>,</span>
+<span>            max_DUX4_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum`</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
+<span><span class="co">#&gt;   rfM6_fit average_DUX4_score min_DUX4_score max_DUX4_score</span></span>
+<span><span class="co">#&gt;   &lt;fct&gt;                 &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 Control              0.0417         0.0260         0.0668</span></span>
+<span><span class="co">#&gt; 2 FSHD                 1.74           0.0856         6.05</span></span></code></pre></div>
 <p>The general linear model depicted that STIR status was key to the association to DUX4 signatures whereas fat infiltration or fraction presented less solid evident of direct association (p-value=0.3).</p>
 <p>The code chunk below applies the logistic regression using a fat infiltration percent and STIR status as predictors and outcome of DUX4 signature occurrence predicted by random forest:</p>
-<pre><code>#&gt; 
-#&gt; Call:
-#&gt; glm(formula = rfM6_fit ~ Fat_Infilt_Percent + STIR_status, family = "binomial", 
-#&gt;     data = data)
-#&gt; 
-#&gt; Deviance Residuals: 
-#&gt;      Min        1Q    Median        3Q       Max  
-#&gt; -2.18405   0.04185   0.51973   0.81414   0.96049  
-#&gt; 
-#&gt; Coefficients:
-#&gt;                    Estimate Std. Error z value Pr(&gt;|z|)
-#&gt; (Intercept)          0.1377     0.7357   0.187    0.852
-#&gt; Fat_Infilt_Percent   8.3965     7.5969   1.105    0.269
-#&gt; STIR_statusSTIR+     0.7714     1.2636   0.610    0.542
-#&gt; 
-#&gt; (Dispersion parameter for binomial family taken to be 1)
-#&gt; 
-#&gt;     Null deviance: 59.598  on 58  degrees of freedom
-#&gt; Residual deviance: 51.047  on 56  degrees of freedom
-#&gt; AIC: 57.047
-#&gt; 
-#&gt; Number of Fisher Scoring iterations: 7</code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># include random forest fitting model (M6) and threshold</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">predict_M6</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">comprehensive_df</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">STIR_status</span><span class="op">)</span></span>
+<span><span class="va">fat_stir_logit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">rfM6_fit</span> <span class="op">~</span> <span class="va">Fat_Infilt_Percent</span> <span class="op">+</span> <span class="va">STIR_status</span>, </span>
+<span>                      data <span class="op">=</span> <span class="va">data</span>, family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fat_stir_logit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; glm(formula = rfM6_fit ~ Fat_Infilt_Percent + STIR_status, family = "binomial", </span></span>
+<span><span class="co">#&gt;     data = data)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Deviance Residuals: </span></span>
+<span><span class="co">#&gt;      Min        1Q    Median        3Q       Max  </span></span>
+<span><span class="co">#&gt; -2.18405   0.04185   0.51973   0.81414   0.96049  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;                    Estimate Std. Error z value Pr(&gt;|z|)</span></span>
+<span><span class="co">#&gt; (Intercept)          0.1377     0.7357   0.187    0.852</span></span>
+<span><span class="co">#&gt; Fat_Infilt_Percent   8.3965     7.5969   1.105    0.269</span></span>
+<span><span class="co">#&gt; STIR_statusSTIR+     0.7714     1.2636   0.610    0.542</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     Null deviance: 59.598  on 58  degrees of freedom</span></span>
+<span><span class="co">#&gt; Residual deviance: 51.047  on 56  degrees of freedom</span></span>
+<span><span class="co">#&gt; AIC: 57.047</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Number of Fisher Scoring iterations: 7</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_scheme1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Fat_Infilt_Percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.8</span>, by<span class="op">=</span><span class="fl">0.01</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, </span>
+<span>                 STIR_status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"STIR-"</span>, <span class="st">"STIR+"</span><span class="op">)</span>, </span>
+<span>                                  each<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.8</span>, by<span class="op">=</span><span class="fl">0.01</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="va">df_scheme1</span><span class="op">$</span><span class="va">prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fat_stir_logit</span>, newdata <span class="op">=</span> <span class="va">df_scheme1</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df_scheme1</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">Fat_Infilt_Percent</span>, y<span class="op">=</span><span class="va">prob</span>, group<span class="op">=</span><span class="va">STIR_status</span>,</span>
+<span>               color<span class="op">=</span><span class="va">STIR_status</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">stir_pal</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span>, axis.title.y<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">10</span><span class="op">)</span>,</span>
+<span>        plot.title<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">12</span>, hjust<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>        plot.subtitle<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">10</span>, hjust<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"Logistic prediction for DUX4+ occurrance"</span>,</span>
+<span>       subtitle <span class="op">=</span> <span class="st">"DUX4+/- classified by ML model"</span>, </span>
+<span>        y<span class="op">=</span><span class="st">"probility of DUX4 signature occurence"</span>,</span>
+<span>        x<span class="op">=</span><span class="st">"whole muscle fat percent"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.8</span>, by<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:stir-fat-logit-prediction-rfFit"></span>
 <img src="04-MRI-vs-DUX4-basket_files/figure-html/stir-fat-logit-prediction-rfFit-1.png" alt="Prediction of DUX4 + ocurrence modeled by linear combination of STIR_status and FAT_Infilt_Percent. The red linepresents STIR+ and blue STIR-." width="672"><p class="caption">
 Figure 5.1: Prediction of DUX4 + ocurrence modeled by linear combination of STIR_status and FAT_Infilt_Percent. The red linepresents STIR+ and blue STIR-.
 </p>
 </div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>, <span class="st">"lagistics-prediction-scheme-rfbased.pdf"</span><span class="op">)</span>,</span>
+<span>       width<span class="op">=</span><span class="fl">3</span>, height<span class="op">=</span><span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="scheme-2-binary-outcome-using-dux4-score-0.5" class="section level3" number="5.2.2">
 <h3>
@@ -211,6 +312,21 @@ Figure 5.1: Prediction of DUX4 + ocurrence modeled by linear combination of STIR
 </h3>
 <p>We use the DUX4 score defined by the accumulated log(TPM+1) over the six genes of the DUX4 basket. Then use whole muscle fat percent and STIR status as predictor to infer the occurrence of DUX4 score &gt; 0.5. The reason we chose 0.5 threshold was because TPM=0.2 is a conventional threshold to call whether a gene is expressed and sum of six genes with expressed level is approximately 0.5: <span class="math inline">\(\sum_1^6 log_{10}(0.2 + 1) \approx 0.5\)</span>.</p>
 <p><strong>NOTE:</strong> Predictions for 13-0007R and 13-0009R are excluded.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># include random forest fitting model (M6) and threshold</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">STIR_status</span>, <span class="va">`DUX4-M6-logSum`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">`DUX4-M6-logSum`</span>, <span class="va">Fat_Infilt_Percent</span>, <span class="va">STIR_status</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">sample_id</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"13-0007R"</span>, <span class="st">"13-0009R"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>`DUX4-M6-logSum-positive`<span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum`</span> <span class="op">&lt;</span> <span class="fl">0.5</span>, </span>
+<span>                                                   <span class="st">"Control-like"</span>, <span class="st">"DUX4+"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>`DUX4-M6-logSum-positive`<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum-positive`</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## how many STIR- are control-like (DUX4 score &lt; 0.5) and </span></span>
+<span><span class="co">##how many STIR+ are DUX4+ (DUX4 &gt;= 0.5)</span></span>
+<span><span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">STIR_status</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>`DUX4 &lt; 0.5`<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum-positive`</span> <span class="op">==</span> <span class="st">"Control-like"</span><span class="op">)</span>,</span>
+<span>            `DUX4 &gt; 0.5`<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum-positive`</span> <span class="op">==</span> <span class="st">"DUX4+"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Number of STIR- and STIR+ in the DUX4 &lt; 0.5 and DUX4 &gt;=0.5 group."</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>
 (#tab:scheme2_based_on_DUX4_score)Number of STIR- and STIR+ in the DUX4 &lt; 0.5 and DUX4 &gt;=0.5 group.
@@ -252,43 +368,108 @@ STIR-
 </tbody>
 </table></div>
 <p>In this case, the general linear model depicted that STIR status was key to the association to DUX4 signatures whereas fat infiltration or fraction presented less solid evident of direct association (p-value=0.3). Summary of the logistic regression statistics:</p>
-<pre><code>#&gt; 
-#&gt; Call:
-#&gt; glm(formula = `DUX4-M6-logSum-positive` ~ Fat_Infilt_Percent + 
-#&gt;     STIR_status, family = "binomial", data = data)
-#&gt; 
-#&gt; Deviance Residuals: 
-#&gt;     Min       1Q   Median       3Q      Max  
-#&gt; -2.1838  -0.7054  -0.5871   0.3009   1.8516  
-#&gt; 
-#&gt; Coefficients:
-#&gt;                    Estimate Std. Error z value Pr(&gt;|z|)  
-#&gt; (Intercept)         -1.9431     0.7751  -2.507   0.0122 *
-#&gt; Fat_Infilt_Percent   7.8039     7.2899   1.071   0.2844  
-#&gt; STIR_statusSTIR+     2.9489     1.2501   2.359   0.0183 *
-#&gt; ---
-#&gt; Signif. codes:  
-#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-#&gt; 
-#&gt; (Dispersion parameter for binomial family taken to be 1)
-#&gt; 
-#&gt;     Null deviance: 85.886  on 61  degrees of freedom
-#&gt; Residual deviance: 48.859  on 59  degrees of freedom
-#&gt; AIC: 54.859
-#&gt; 
-#&gt; Number of Fisher Scoring iterations: 7</code></pre>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## logistic prediction</span></span>
+<span><span class="va">fat_stir_logit_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum-positive`</span> <span class="op">~</span> <span class="va">Fat_Infilt_Percent</span> <span class="op">+</span> <span class="va">STIR_status</span>,</span>
+<span>                        data <span class="op">=</span> <span class="va">data</span>, family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fat_stir_logit_2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; glm(formula = `DUX4-M6-logSum-positive` ~ Fat_Infilt_Percent + </span></span>
+<span><span class="co">#&gt;     STIR_status, family = "binomial", data = data)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Deviance Residuals: </span></span>
+<span><span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span></span>
+<span><span class="co">#&gt; -2.1838  -0.7054  -0.5871   0.3009   1.8516  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;                    Estimate Std. Error z value Pr(&gt;|z|)  </span></span>
+<span><span class="co">#&gt; (Intercept)         -1.9431     0.7751  -2.507   0.0122 *</span></span>
+<span><span class="co">#&gt; Fat_Infilt_Percent   7.8039     7.2899   1.071   0.2844  </span></span>
+<span><span class="co">#&gt; STIR_statusSTIR+     2.9489     1.2501   2.359   0.0183 *</span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  </span></span>
+<span><span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     Null deviance: 85.886  on 61  degrees of freedom</span></span>
+<span><span class="co">#&gt; Residual deviance: 48.859  on 59  degrees of freedom</span></span>
+<span><span class="co">#&gt; AIC: 54.859</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Number of Fisher Scoring iterations: 7</span></span>
+<span><span class="va">df_scheme2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Fat_Infilt_Percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.8</span>, by<span class="op">=</span><span class="fl">0.01</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, </span>
+<span>                 STIR_status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"STIR-"</span>, <span class="st">"STIR+"</span><span class="op">)</span>, </span>
+<span>                                  each<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.8</span>, by<span class="op">=</span><span class="fl">0.01</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_scheme2</span><span class="op">$</span><span class="va">prob</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fat_stir_logit_2</span>, newdata <span class="op">=</span> <span class="va">df_scheme2</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fat_logit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum-positive`</span> <span class="op">~</span> <span class="va">Fat_Infilt_Percent</span>,</span>
+<span>                        data <span class="op">=</span> <span class="va">data</span>, family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span>
+<span><span class="va">df_fat_logit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Fat_Infilt_Percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.8</span>, by<span class="op">=</span><span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">df_fat_logit</span><span class="op">$</span><span class="va">prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fat_logit</span>, newdata <span class="op">=</span> <span class="va">df_fat_logit</span>, type<span class="op">=</span><span class="st">"response"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># add a logistic model without STIT</span></span>
+<span><span class="co"># viz</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df_scheme2</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">Fat_Infilt_Percent</span>, y<span class="op">=</span><span class="va">prob</span>, group<span class="op">=</span><span class="va">STIR_status</span>,</span>
+<span>                       color<span class="op">=</span><span class="va">STIR_status</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">df_fat_logit</span>, </span>
+<span>            <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">Fat_Infilt_Percent</span>, y<span class="op">=</span><span class="va">prob</span><span class="op">)</span>, color<span class="op">=</span><span class="st">"gray75"</span>, </span>
+<span>            linetype<span class="op">=</span><span class="st">"dashed"</span>, inherit.aes<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">stir_pal</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span>, </span>
+<span>        axis.title.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">9</span><span class="op">)</span>,</span>
+<span>        axis.title.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">9</span><span class="op">)</span>,</span>
+<span>        plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">9</span>, color<span class="op">=</span><span class="st">"grey20"</span>, hjust<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>        plot.title<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust<span class="op">=</span><span class="fl">0.5</span>, size<span class="op">=</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"Logistic regression"</span>, </span>
+<span>       subtitle<span class="op">=</span><span class="st">"Occurrence of DUX4 score &gt; 0.5"</span>,</span>
+<span>        y<span class="op">=</span><span class="st">"probility"</span>,</span>
+<span>        x<span class="op">=</span><span class="st">"whole muscle fat percent"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.8</span>, by<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.13</span>, y <span class="op">=</span> <span class="fl">0.80</span>, xend <span class="op">=</span> <span class="fl">0.11</span>, yend <span class="op">=</span> <span class="fl">0.84</span><span class="op">)</span>,</span>
+<span>               color<span class="op">=</span><span class="va">stir_pal</span><span class="op">[</span><span class="st">"STIR+"</span><span class="op">]</span>,</span>
+<span>               arrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/arrow.html">arrow</a></span><span class="op">(</span>length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x<span class="op">=</span><span class="fl">0.14</span>, y<span class="op">=</span><span class="fl">0.80</span>, hjust<span class="op">=</span><span class="fl">0</span>, vjust<span class="op">=</span><span class="fl">1</span>, label<span class="op">=</span><span class="st">"STIR+"</span>, size<span class="op">=</span><span class="fl">2.5</span>, </span>
+<span>           color<span class="op">=</span><span class="va">stir_pal</span><span class="op">[</span><span class="st">"STIR+"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.23</span>, y <span class="op">=</span> <span class="fl">0.35</span>, xend <span class="op">=</span> <span class="fl">0.21</span>, yend <span class="op">=</span> <span class="fl">0.39</span><span class="op">)</span>,</span>
+<span>               color<span class="op">=</span><span class="va">stir_pal</span><span class="op">[</span><span class="st">"STIR-"</span><span class="op">]</span>,</span>
+<span>               arrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/arrow.html">arrow</a></span><span class="op">(</span>length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, x<span class="op">=</span><span class="fl">0.24</span>, y<span class="op">=</span><span class="fl">0.35</span>, hjust<span class="op">=</span><span class="fl">0</span>, vjust<span class="op">=</span><span class="fl">1</span>, label<span class="op">=</span><span class="st">"STIR-"</span>, size<span class="op">=</span><span class="fl">2.5</span>, </span>
+<span>           color<span class="op">=</span><span class="va">stir_pal</span><span class="op">[</span><span class="st">"STIR-"</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:viz-scheme2"></span>
 <img src="04-MRI-vs-DUX4-basket_files/figure-html/viz-scheme2-1.png" alt="Logistic prediction model for occurrence of DUX4 score &gt;=0.5. Grey dashed line presents the prediction using soley the fat percent as predictor." width="672"><p class="caption">
 Figure 5.2: Logistic prediction model for occurrence of DUX4 score &gt;=0.5. Grey dashed line presents the prediction using soley the fat percent as predictor.
 </p>
 </div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>, <span class="st">"lagistic-prediction-outcome-by-logSum-DUX4-0.5.pdf"</span><span class="op">)</span>,</span>
+<span>       width<span class="op">=</span><span class="fl">3</span>, height<span class="op">=</span><span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="use-logistic-regression-to-predict-the-moderate-occurrence" class="section level3" number="5.2.3">
 <h3>
 <span class="header-section-number">5.2.3</span> Use logistic regression to predict the Moderate+ occurrence<a class="anchor" aria-label="anchor" href="#use-logistic-regression-to-predict-the-moderate-occurrence"><i class="fas fa-link"></i></a>
 </h3>
 <p>The outcome of Moderate+ occurrence is predicted by the random forest built upon 30 basket genes distinguishing control and moderate+IG-high+high FSHDs.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># use logistics to predict the Moderate+ occurrence (outcome model built upon)</span></span>
+<span><span class="co"># six basket;</span></span>
+<span><span class="co"># take away: fat infiltration percent is critical in determining the probability of the outcome, whereas STIR_status is not </span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"bilat_MLpredict.rda"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">bilat_MLpredict</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">comprehensive_df</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="co">#dplyr::filter(!class=="Muscle-Low") %&gt;%</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">STIR_status</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">STIR_status</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>`cntr-like`<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">class</span><span class="op">==</span><span class="st">"Control-like"</span><span class="op">)</span>,</span>
+<span>             `moderate+`<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">class</span><span class="op">==</span><span class="st">"Moderate+"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <thead><tr>
 <th style="text-align:left;">
@@ -326,41 +507,89 @@ STIR-
 </tr>
 </tbody>
 </table></div>
-<pre><code>#&gt; # A tibble: 3 × 4
-#&gt;   class        avg_DUX4_score min_DUX4_score max_DUX4_score
-#&gt;   &lt;fct&gt;                 &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
-#&gt; 1 Control-like          0.163         0.0260          0.709
-#&gt; 2 Moderate+             1.78          0.0266          6.05 
-#&gt; 3 Muscle-Low            0.438         0.365           0.510</code></pre>
-<pre><code>#&gt; 
-#&gt; Call:
-#&gt; glm(formula = randomForest.fit ~ Fat_Infilt_Percent + STIR_status, 
-#&gt;     family = "binomial", data = data)
-#&gt; 
-#&gt; Deviance Residuals: 
-#&gt;     Min       1Q   Median       3Q      Max  
-#&gt; -1.8231  -1.2550   0.4110   0.9434   1.1812  
-#&gt; 
-#&gt; Coefficients:
-#&gt;                    Estimate Std. Error z value Pr(&gt;|z|)
-#&gt; (Intercept)         -0.3331     0.6417  -0.519    0.604
-#&gt; Fat_Infilt_Percent   9.6883     6.4148   1.510    0.131
-#&gt; STIR_statusSTIR+     0.1928     1.0038   0.192    0.848
-#&gt; 
-#&gt; (Dispersion parameter for binomial family taken to be 1)
-#&gt; 
-#&gt;     Null deviance: 72.836  on 61  degrees of freedom
-#&gt; Residual deviance: 61.901  on 59  degrees of freedom
-#&gt;   (2 observations deleted due to missingness)
-#&gt; AIC: 67.901
-#&gt; 
-#&gt; Number of Fisher Scoring iterations: 7</code></pre>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>avg_DUX4_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/mean.html">mean</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum`</span><span class="op">)</span>,</span>
+<span>            min_DUX4_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum`</span><span class="op">)</span>,</span>
+<span>            max_DUX4_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">`DUX4-M6-logSum`</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 3 × 4</span></span>
+<span><span class="co">#&gt;   class        avg_DUX4_score min_DUX4_score max_DUX4_score</span></span>
+<span><span class="co">#&gt;   &lt;fct&gt;                 &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 Control-like          0.163         0.0260          0.709</span></span>
+<span><span class="co">#&gt; 2 Moderate+             1.78          0.0266          6.05 </span></span>
+<span><span class="co">#&gt; 3 Muscle-Low            0.438         0.365           0.510</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fat_stir_logit_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">randomForest.fit</span> <span class="op">~</span> <span class="va">Fat_Infilt_Percent</span> <span class="op">+</span> <span class="va">STIR_status</span>,</span>
+<span>                        data <span class="op">=</span> <span class="va">data</span>, family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fat_stir_logit_3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; glm(formula = randomForest.fit ~ Fat_Infilt_Percent + STIR_status, </span></span>
+<span><span class="co">#&gt;     family = "binomial", data = data)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Deviance Residuals: </span></span>
+<span><span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span></span>
+<span><span class="co">#&gt; -1.8231  -1.2550   0.4110   0.9434   1.1812  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;                    Estimate Std. Error z value Pr(&gt;|z|)</span></span>
+<span><span class="co">#&gt; (Intercept)         -0.3331     0.6417  -0.519    0.604</span></span>
+<span><span class="co">#&gt; Fat_Infilt_Percent   9.6883     6.4148   1.510    0.131</span></span>
+<span><span class="co">#&gt; STIR_statusSTIR+     0.1928     1.0038   0.192    0.848</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     Null deviance: 72.836  on 61  degrees of freedom</span></span>
+<span><span class="co">#&gt; Residual deviance: 61.901  on 59  degrees of freedom</span></span>
+<span><span class="co">#&gt;   (2 observations deleted due to missingness)</span></span>
+<span><span class="co">#&gt; AIC: 67.901</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Number of Fisher Scoring iterations: 7</span></span>
+<span></span>
+<span><span class="va">df_scheme3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Fat_Infilt_Percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.8</span>, by<span class="op">=</span><span class="fl">0.01</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, </span>
+<span>                 STIR_status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"STIR-"</span>, <span class="st">"STIR+"</span><span class="op">)</span>, </span>
+<span>                                   each<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.8</span>, by<span class="op">=</span><span class="fl">0.01</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="va">df_scheme3</span><span class="op">$</span><span class="va">prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">fat_stir_logit_3</span>, newdata <span class="op">=</span> <span class="va">df_scheme3</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df_scheme3</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">Fat_Infilt_Percent</span>, y<span class="op">=</span><span class="va">prob</span>, group<span class="op">=</span><span class="va">STIR_status</span>,</span>
+<span>                       color<span class="op">=</span><span class="va">STIR_status</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">stir_pal</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span>, </span>
+<span>        plot.title<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"Logistic prediction III on Moderate+ occurrence"</span>, </span>
+<span>        y<span class="op">=</span><span class="st">"Probility of Moderate+ occurrence"</span>,</span>
+<span>        x<span class="op">=</span><span class="st">"fat infiltration percent"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:plot-logistics-scheme3"></span>
 <img src="04-MRI-vs-DUX4-basket_files/figure-html/plot-logistics-scheme3-1.png" alt="Logistic prediction for occurrance of Moderate+." width="672"><p class="caption">
 Figure 5.3: Logistic prediction for occurrance of Moderate+.
 </p>
 </div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df_scheme1</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">df_scheme2</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Fat_Infilt_Percent"</span>, <span class="st">"STIR_status"</span><span class="op">)</span>,</span>
+<span>            suffix<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">".scheme1"</span>, <span class="st">".scheme2"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">df_scheme3</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Fat_Infilt_Percent"</span>, <span class="st">"STIR_status"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>`rfFit Moderare+`<span class="op">=</span><span class="va">prob</span>, `rfFit DUX4+`<span class="op">=</span><span class="va">prob.scheme1</span>,</span>
+<span>                `threshold DUX4+`<span class="op">=</span><span class="va">prob.scheme2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">scheme</span>, value<span class="op">=</span><span class="va">prob</span>, <span class="op">-</span><span class="va">Fat_Infilt_Percent</span>, <span class="op">-</span><span class="va">STIR_status</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="co">#dplyr::mutate(group=paste0(STIR_status, scheme)) %&gt;%</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">Fat_Infilt_Percent</span>, y<span class="op">=</span><span class="va">prob</span>, group<span class="op">=</span><span class="va">scheme</span>,</span>
+<span>                       color<span class="op">=</span><span class="va">scheme</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co">#scale_color_manual(values = stir_pal) +</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">STIR_status</span>,  nrow<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span><span class="co">#legend.position = "bottom", </span></span>
+<span>        plot.title<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"Logistic predictions using three shemes"</span>, </span>
+<span>        y<span class="op">=</span><span class="st">"Probility of DUX4+ or Moderate+ occurrence"</span>,</span>
+<span>        x<span class="op">=</span><span class="st">"fat infiltration percent"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, by<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:viz-all-logit-schemes"></span>
 <img src="04-MRI-vs-DUX4-basket_files/figure-html/viz-all-logit-schemes-1.png" alt="Logistic repression for three different classification shemes" width="576"><p class="caption">
