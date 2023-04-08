@@ -119,9 +119,10 @@ write_xlsx(x=list(`lymphocyte-and-T-call-activation` = lymphocyte_act,
            "differentailly-expressed-High-vs-controls-lymphyocyte-complement.xlsx" ))
 
 #
-# B cell markers
+# Estipona 2020 B cell markers
 #
-# note: no HLA-DPA and HLA-DQB
+
+# note: the table has no HLA-DPA and HLA-DQB
 MHC_II <- tibble(`Gene` = paste0(c("HLA-DM", "HLA-DO", "HLA-DP", "HLA-DQ", "HLA-DR"), 
                                        c("A", "B")),
                      `Marker Type` = "MHCII",

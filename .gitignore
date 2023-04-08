@@ -8,5 +8,6 @@ stats
 presentations
 wellstone-application
 extdata
-gitbook_old
 docs/*.md
+scripts/16-make-supple-table-1.R
+scripts/misc_plays_PLIER_package.R

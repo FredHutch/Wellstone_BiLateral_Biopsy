@@ -1,3 +1,12 @@
+# this script combine all the clinical data, histology data, and RNA-related scores 
+# into one data frame.
+#
+# comprehensive covariates data frame (not include BSS yet) to include:
+# 1. muscle strength 
+# 2. basket score (logTPM: logSum over basket genes)
+# 3. blood, fat, muscle content
+# 4. complement scoring (using the final scoring)
+# 5. RNA integrity number (RIN)
 
 suppressPackageStartupMessages(library(DESeq2))
 suppressPackageStartupMessages(library(tidyverse))
@@ -44,7 +53,7 @@ muscle_strength <- get(load(file.path(pkg_dir, "data", "muscle_strength.rda"))) 
 #
 blood_fat_muscle_content <- blood_fat_muscle_content %>%
   dplyr::select(-RNA_sample_id) %>%
-  rename(sample_id = sample_name)
+  dplyr::rename(sample_id = sample_name)
 
 # baskets score; not going to include
 all_baskets_TPM <- map_dfr(names(all_baskets), function(name) {
@@ -85,6 +94,13 @@ complement_scoring <- readxl::read_xlsx(file.path(pkg_dir, "extdata",
   dplyr::mutate(sample_id = paste0(`Record ID`, Location)) %>%
   dplyr::select(sample_id, `Complement Scoring`)    
 
+#
+# RIN
+#
+rin <- readxl::read_xlsx(path=file.path(pkg_dir, "manuscript", 
+                                        "comprehensive_df-RINN.xlsx")) %>%
+  dplyr::select(sample_id, RINN) %>%
+  dplyr::rename(RIN=RINN)
 
 #
 # comprehensive covariates data frame (not include BSS yet) to include:
@@ -92,17 +108,12 @@ complement_scoring <- readxl::read_xlsx(file.path(pkg_dir, "extdata",
 # 2. basket score (logTPM: logSum over basket genes)
 # 3. blood, fat, muscle content
 # 4. complement scoring (using the final scoring)
-#
-
-#spread_baskets <- all_baskets_TPM %>%
-#  spread(key=basket, value=TPM)
+# 5. RNA integrity number (RIN)
 
 comprehensive_df <- mri %>% 
   dplyr::full_join(css, by="Subject") %>%
   dplyr::full_join(muscle_strength %>% dplyr::select(-location, -Subject), by="sample_id") %>%
-  #dplyr::full_join(spread_baskets, by="sample_id") %>%
-  #dplyr::mutate(`DUX4+ (M6)` = if_else(`DUX4-M6` > 0.3, "DUX4+", "DUX4-")) %>%
-  #dplyr::mutate(`DUX4+ (M6)` = factor(`DUX4+ (M6)`, levels=c("DUX4-", "DUX4+"))) %>%
+  dplyr::full_join(rin, by="sample_id") %>%
   dplyr::full_join(all_baskets_logTPM, by="sample_id") %>%
   dplyr::full_join(blood_fat_muscle_content, by="sample_id") %>%
   dplyr::full_join(complement_scoring, by="sample_id") %>%
@@ -122,7 +133,9 @@ comprehensive_df <- comprehensive_df %>%
 save(comprehensive_df, file = file.path(pkg_dir, "data", "comprehensive_df.rda"))
 writexl::write_xlsx(comprehensive_df, path=file.path(pkg_dir, "stats", "comprehensive_metadata.xlsx"))
 
-
+#
+# Need to include RIN number
+# 
 
 #
 # control baskets

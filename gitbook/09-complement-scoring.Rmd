@@ -1,0 +1,154 @@
+# Complement scoring {#complement-scoring}
+
+```{r setup-9, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE)
+```
+
+The complement scoring was obtained from the file `/extdata-github/FINAL.Revised.BilatStudy.Path.MACstaining data.FINAL.xlsx`. The scoring system quantified the MAC staining into four levels:
+
+1. No MAC staining of capillaries
+2. Slight MAC staining
+3. Moderate MAC staining
+4. Prominent MAC staining 
+
+However, no bilateral sample was classified as level 4.
+
+```{r load-datasets, message=FALSE}
+library(tidyverse)
+library(corrr)
+pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
+load(file.path(pkg_dir, "data", "comprehensive_df.rda"))
+```
+
+## Complement scoring (MCA score) and basket scores
+First, we investigated the relationship between the complement scoring and the basket scores.
+
+### Correlation with basekt scores
+
+The complement scoring has moderate correlation with basket scores. The code chunk below calculates the Spearman correlation coefficients.
+
+```{r get-complement-and-basket-score, message=FALSE}
+# get complement scoring and basekt scores from  `comprehensive_df`
+df <- comprehensive_df %>% 
+  drop_na(`Complement Scoring`, `IG-logSum`) %>%
+  dplyr::select(`Complement Scoring`, `DUX4-M6-logSum`,
+                `IG-logSum`, `Complement-logSum`,
+                `Inflamm-logSum`, `ECM-logSum`) 
+  
+  #dplyr::mutate(`Complement Scoring` = factor(`Complement Scoring`)) 
+```
+```{r complement-correlation-with-basket-score, message=FALSE}
+df %>%
+  corrr::correlate(., method="spearman") %>%
+  dplyr::select(term, `Complement Scoring`) %>%
+  dplyr::filter(term != "Complement Scoring") %>%
+  dplyr::rename(basket = term) %>%
+  dplyr::mutate(basket = str_replace(basket, "-logSum", "")) 
+```
+### Visualize the relationship 
+```{r tidy-up-df}
+# tidy up the data.frame for visualization
+tidy_df <- df %>%
+  dplyr::mutate(`Complement Scoring` = factor(`Complement Scoring`)) %>%
+  tidyr::gather(key=`basket`, value=`basket score`, 
+                -`Complement Scoring`) %>%
+  dplyr::mutate(basket = str_replace(basket, "-logSum", "")) %>%
+  dplyr::mutate(`Complement Scoring` = factor(`Complement Scoring`),
+                basket = factor(basket, 
+                                levels=c("DUX4-M6", "ECM", "Inflamm",
+                                         "Complement", "IG"))) 
+```
+
+Display dotplot with color:
+```{r dotplot-with-color, message=FALSE}
+ggplot(tidy_df, aes(x=`Complement Scoring`, y=`basket score`)) +
+    geom_dotplot(aes(fill=`Complement Scoring`,
+                     color=`Complement Scoring`), 
+                 binaxis='y', stackdir='center',
+                 show.legend = FALSE,
+                 stackratio=1.5, dotsize=1.5) +
+    stat_summary(fun.data=mean_sdl, fun.args = list(mult=1), 
+                 geom="pointrange", color="red", fill="red", shape=23,
+                 size=0.5, alpha=0.5) +
+    facet_wrap(~basket, scales="free_y") +
+    scale_fill_brewer(palette="Blues") +
+    scale_color_brewer(palette="Blues") +
+    theme_classic() + labs(x="complement scoring")
+```
+
+Make dotplot with grey scale for manuscript:
+```{r dotplot-with-grey-scale, eval=FALSE, echo=FALSE}
+ggplot(tidy_df, aes(x=`Complement Scoring`, y=`basket score`)) +
+    geom_dotplot(aes(fill=`Complement Scoring`,
+                     color=`Complement Scoring`), 
+                 binaxis='y', stackdir='center',
+                 show.legend = FALSE,
+                 stackratio=1.5, dotsize=1.5) +
+    stat_summary(fun.data=mean_sdl, fun.args = list(mult=1), 
+                 geom="pointrange", color="grey15", fill="grey15", shape=23,
+                 size=0.5) +
+    facet_wrap(~basket, scales="free_y") +
+    scale_fill_manual(values=c("#cccccc", "#969696", "#636363", "#252525")) +
+    scale_color_manual(values=c("#cccccc", "#969696", "#636363", "#252525")) +
+    theme_classic() + labs(x="complement scoring")
+# color for 4 levels: values=c("#cccccc", "#969696", "#636363", "#252525")
+ggsave(file.path(pkg_dir, "manuscript", "figures",
+                 "ComplementScoring-vs-basket-scores.pdf"))
+
+```
+ANOVA p-values for the null hypothesis that there is no difference between the main values of basket score in three levels of complement scoring.
+
+```{r anova-complement-scoring-vs-basket-scores}
+tm <- tidy_df %>% group_by(basket) %>% 
+  dplyr::do(aov = summary(aov(`basket score` ~ `Complement Scoring`, 
+                             data = .)))
+names(tm$aov) <- levels(tidy_df$basket)
+tm$aov
+```
+
+
+## Complement Scoring vs. STIR status
+The average complement scoring for STIR- and STIR+ samples are 1.38 (+/-0.63SD) and 2.08 (+/-0.929SD), respectively.
+
+```{r complement-scoring-vs-STIR, fig.align='center'}
+comprehensive_df %>% 
+  drop_na(`Complement Scoring`, `STIR_status`) %>%
+  group_by(STIR_status) %>%
+  summarize(mean=mean(`Complement Scoring`),
+            sd = sd(`Complement Scoring`)) %>%
+  ggplot(aes(x=STIR_status, y=`mean`)) + 
+  geom_bar(stat="identity",fill="skyblue", alpha=0.7, 
+           position=position_dodge()) +
+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=0.4,
+                 position=position_dodge(.9), 
+                colour="orange", alpha=0.9, linewidth=1.5) +
+  theme_minimal() +
+  theme(panel.grid.major = element_blank()) +
+  labs(y="Complement Scoring", x="")
+ggsave(file.path(pkg_dir, "manuscript", "figures",
+                 "ComplementScoring-vs-STIR-status.pdf"),
+       width=2, height=3)  
+```
+
+## Complement scoring vs. class
+The average complement scoring for Control-like, Moderate+, and Muscle-Low samples are 1.15 (+- 0.376SD), 1.8 (+/- 0.894SD), and 1, respectively.
+
+```{r complement-scoring-vs-class, fig.align='center'}
+comprehensive_df %>% 
+  drop_na(`Complement Scoring`, `class`) %>%
+  dplyr::select(`Complement Scoring`, `class`) %>%
+  group_by(class) %>%
+  summarize(mean=mean(`Complement Scoring`),
+            sd = sd(`Complement Scoring`)) %>%
+  ggplot(aes(x=class, y=`mean`)) + 
+  geom_bar(stat="identity",fill="skyblue", alpha=0.7, 
+           position=position_dodge()) +
+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=0.4,
+                 position=position_dodge(.9), 
+                colour="orange", alpha=0.9, linewidth=1.5) +
+  theme_minimal() +
+  theme(panel.grid.major = element_blank()) +
+  labs(y="Complement Scoring", x="")
+ggsave(file.path(pkg_dir, "figures", "ComplementScoring-vs-FSHD-class.pdf"),
+       width=3, height=3)
+```

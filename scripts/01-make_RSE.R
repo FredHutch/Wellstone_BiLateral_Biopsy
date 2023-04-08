@@ -86,6 +86,15 @@ dds <- DESeqDataSet(rse, design = ~ location)
 dds <- DESeq2::estimateSizeFactors(dds)
 save(dds, file=file.path(pkg_dir, "data", "dds.rda"))
 
+# tidy up dds to correct the colnames and sync with sample_id: bilat_dds
+bilat_dds <- dds
+bilat_dds <- bilat_dds[rowSums(counts(dds)) >= 30 ]
+bilat_dds <- DESeq2::estimateSizeFactors(bilat_dds)
+bilat_dds$sizeFactors
+colnames(bilat_dds) <- bilat_dds$sample_id <- str_replace(bilat_dds$sample_name, "[b]*_.*", "")
+save(bilat_dds, file=file.path(pkg_dir, "data", "bilat_dds.rda"))
+
+
 sub <- dds[rowSums(counts(dds)) >= 30]
 rlog <- rlog(sub)
 save(rlog, file=file.path(pkg_dir, "data", "rlog.rda"))

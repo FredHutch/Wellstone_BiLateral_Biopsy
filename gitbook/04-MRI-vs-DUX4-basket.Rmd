@@ -1,0 +1,288 @@
+# MRI characteristics and DUX4 molecular signatures {#MRI-vs-DUX4-score}
+```{r setup-4, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+```
+In this chapter, we
+
+1. Address the association of MRI characteristics to DUX4 signatures  
+2. Consider two approaches to determine the DUX4 signature occurrences: (1) threshold of DUX4 score—$\sum_{i=1}^6 \log_{10}(TPM_i+1)$—over six robust DUX4 genes, and (2)  classification (DUX4+/- and Control-like/Moderate+) by the training model built upon the longitudinal study and random forest  
+3. Apply logistics regression using a linear combination of two predictors, STIR status and fat infiltration percent, and outcome of DUX4 expression occurrence. Output the logistics regression as a function. 
+
+```{r load-lib-and-datasets-4, message=FALSE}
+# load libraries
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(DESeq2))
+suppressPackageStartupMessages(library(writexl))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(kableExtra))
+
+# load data sets
+pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
+draft_fig_dir <- file.path(pkg_dir, "manuscript", "figures")
+load(file.path(pkg_dir, "data", "comprehensive_df.rda"))
+load(file.path(pkg_dir, "data", "dds.rda"))
+load(file.path(pkg_dir, "data", "all_baskets.rda"))
+
+# exclude 13-0007R and 13-0009R
+dds$sample_id <- str_replace(dds$sample_name, "[b]*_.*", "")
+dds <- dds[, !dds$sample_id %in% c("13-0007R", "13-0009R")]
+# tidy annotation 
+anno_gencode35 <- as.data.frame(rowData(dds)) %>%
+  rownames_to_column(var="gene_id") %>% #BiLat study using Gencode 35
+  dplyr::mutate(ens_id=str_replace(gene_id, "\\..*", ""))
+
+# color palate
+library(wesanderson)
+pal <- wes_palette("Darjeeling1", n=5)
+stir_pal <- c("STIR-" = pal[5], "STIR+"= pal[1])
+cntr_pal <- pal[2]
+```
+
+## STIR status and DUX4 signatures
+
+```{r dux4-score-summary}
+comprehensive_df %>% drop_na(`DUX4-M6-logSum`) %>%    
+  dplyr::filter(!sample_id %in% c("13-0007R", "13-0009R")) %>%
+  group_by(STIR_status) %>%
+  summarise(`DUX4 score (mean of log sum)` = mean(`DUX4-M6-logSum`)) %>%
+  kbl(caption="Mean values of DUX4 scores (based on DUX4-M6 basket) in STIR+ and STIR- biopsies.") %>%
+  kable_styling()
+```
+The mean difference of DUX4 scores in STIR+ and STIR- groups is significantly greater than 0 with Wilcox $p$-value $7e-10$. 
+
+```{r DUX4-score-STIR-status}
+dux4_list <- comprehensive_df %>% drop_na(`DUX4-M6-logSum`) %>%    
+  dplyr::filter(!sample_id %in% c("13-0007R", "13-0009R")) %>%
+  group_by(STIR_status) %>%
+  group_map(~ pull(.x, `DUX4-M6-logSum`))
+
+wilcox.test(dux4_list[[1]], dux4_list[[2]])
+```
+
+## Logistics prediction of DUX4 signature occurrence
+
+### Scheme 1: use random forest traning model based on DUX4 M6 basket
+The first scheme used the random forest training model built on the longitudinal model with six DUX4 basket genes. We applied the ML model on the bilateral samples to classify DUX4+ and DUX4- groups. Here we got 60% of STIR- samples as DUX4+. 
+
+```{r use-rf-model, message=FALSE}
+# MH_fit$M6 is built on comparing controls and Moderate+IG-high+High 
+id <- all_baskets[["DUX4-M6"]]$gencode_v35
+df_logTPM <- log10(assays(dds[id])[["TPM"]] + 1) %>% t(.) %>%
+      as.data.frame() %>%
+      tibble::add_column(pheno_type = factor("FSHD",
+                                             levels=c("Control",
+                                                      "FSHD"))) %>%
+      rename_with(~ str_replace(.x, "\\..*", ""), starts_with("ENSG"))
+MH_fit <- get(load(file.path(pkg_dir, "data", "MH_fit.rda")))$M6
+
+predict_M6 <- predict(MH_fit$rf, newdata=df_logTPM) %>%
+  as.data.frame() %>% dplyr::rename(rfM6_fit = ".") %>%
+  tibble::add_column(sample_id = str_replace(rownames(df_logTPM),
+                                     "_.*", ""))
+data <- predict_M6 %>%
+  left_join(comprehensive_df, by="sample_id") %>%
+  drop_na(STIR_status)
+# how many STIR- and STIR+ on Control (DUX4-) and FSHD (DUX4+)
+data %>% group_by(STIR_status) %>%
+  summarise(`DUX4-` = sum(rfM6_fit=="Control"),
+            `DUX4+` = sum(rfM6_fit == "FSHD")) %>%
+  knitr::kable(caption="STIR+ and - distribution on the DUX4+/- group.")
+
+data %>% group_by(rfM6_fit) %>%
+  summarize(average_DUX4_score = mean(`DUX4-M6-logSum`),
+            min_DUX4_score = min(`DUX4-M6-logSum`),
+            max_DUX4_score = max(`DUX4-M6-logSum`))
+```
+
+
+The general linear model depicted that STIR status was key to the association to DUX4 signatures whereas fat infiltration or fraction presented less solid evident of direct association (p-value=0.3).
+
+The code chunk below applies the logistic regression using a fat infiltration percent and STIR status as predictors and outcome of DUX4 signature occurrence predicted by random forest:
+```{r logitstics-attempt-1}
+# include random forest fitting model (M6) and threshold
+data <- predict_M6 %>%
+  left_join(comprehensive_df, by="sample_id") %>%
+  drop_na(STIR_status)
+fat_stir_logit <- glm(rfM6_fit ~ Fat_Infilt_Percent + STIR_status, 
+                      data = data, family = "binomial")
+summary(fat_stir_logit)
+```
+
+```{r stir-fat-logit-prediction-rfFit, fig.align="center", fig.cap="Prediction of DUX4 + ocurrence modeled by linear combination of STIR_status and FAT_Infilt_Percent. The red linepresents STIR+ and blue STIR-."}
+df_scheme1 <- data.frame(Fat_Infilt_Percent = rep(seq(0, 0.8, by=0.01), 2), 
+                 STIR_status = rep(c("STIR-", "STIR+"), 
+                                  each=length(seq(0, 0.8, by=0.01)))) 
+df_scheme1$prob <- predict(fat_stir_logit, newdata = df_scheme1, type = "response")
+
+ggplot(df_scheme1, aes(x=Fat_Infilt_Percent, y=prob, group=STIR_status,
+               color=STIR_status)) +
+  geom_line() +
+  scale_color_manual(values = stir_pal) +
+  theme_minimal() +
+  theme(legend.position = "none", axis.title.y=element_text(size=10),
+        plot.title=element_text(size=12, hjust=0.5),
+        plot.subtitle=element_text(size=10, hjust=0.5)) +
+  labs(title="Logistic prediction for DUX4+ occurrance",
+       subtitle = "DUX4+/- classified by ML model", 
+        y="probility of DUX4 signature occurence",
+        x="whole muscle fat percent") +
+  scale_x_continuous(breaks=seq(0, 0.8, by=0.2)) +
+  scale_y_continuous(breaks=seq(0, 1, by=0.1))
+ggsave(file.path(draft_fig_dir, "lagistics-prediction-scheme-rfbased.pdf"),
+       width=3, height=2.5)
+
+
+```
+ 
+### Scheme 2: Binary outcome using DUX4 score > 0.5
+We use the DUX4 score defined by the accumulated log(TPM+1) over the six genes of the DUX4 basket. Then use whole muscle fat percent and STIR status as predictor to infer the occurrence of DUX4 score > 0.5. The reason we chose 0.5 threshold was because TPM=0.2 is a conventional threshold to call whether a gene is expressed and sum of six genes with expressed level is approximately 0.5: $\sum_1^6 log_{10}(0.2 + 1) \approx 0.5$.
+
+__NOTE:__ Predictions for 13-0007R and 13-0009R are excluded.
+
+
+```{r scheme2_based_on_DUX4_score}
+# include random forest fitting model (M6) and threshold
+data <- comprehensive_df %>% drop_na(STIR_status, `DUX4-M6-logSum`) %>%
+  dplyr::select(sample_id, `DUX4-M6-logSum`, Fat_Infilt_Percent, STIR_status) %>%
+  dplyr::filter(!sample_id %in% c("13-0007R", "13-0009R")) %>%
+  dplyr::mutate(`DUX4-M6-logSum-positive`= if_else(`DUX4-M6-logSum` < 0.5, 
+                                                   "Control-like", "DUX4+")) %>%
+  dplyr::mutate(`DUX4-M6-logSum-positive`=factor(`DUX4-M6-logSum-positive`))
+
+## how many STIR- are control-like (DUX4 score < 0.5) and 
+##how many STIR+ are DUX4+ (DUX4 >= 0.5)
+data %>% group_by(STIR_status) %>%
+  summarise(`DUX4 < 0.5`=sum(`DUX4-M6-logSum-positive` == "Control-like"),
+            `DUX4 > 0.5`= sum(`DUX4-M6-logSum-positive` == "DUX4+")) %>%
+  kbl(caption = "Number of STIR- and STIR+ in the DUX4 < 0.5 and DUX4 >=0.5 group.") %>%
+  kable_styling()
+
+```
+
+In this case, the general linear model depicted that STIR status was key to the association to DUX4 signatures whereas fat infiltration or fraction presented less solid evident of direct association (p-value=0.3). Summary of the logistic regression statistics:
+```{r scheme2-logitstics-binary-on-dux4score}
+## logistic prediction
+fat_stir_logit_2 <- glm(`DUX4-M6-logSum-positive` ~ Fat_Infilt_Percent + STIR_status,
+                        data = data, family = "binomial")
+summary(fat_stir_logit_2)
+df_scheme2 <- data.frame(Fat_Infilt_Percent = rep(seq(0, 0.8, by=0.01), 2), 
+                 STIR_status = rep(c("STIR-", "STIR+"), 
+                                  each=length(seq(0, 0.8, by=0.01))))
+df_scheme2$prob = predict(fat_stir_logit_2, newdata = df_scheme2, type = "response")
+```
+
+```{r logistics-fat-predictor-only}
+fat_logit <- glm(`DUX4-M6-logSum-positive` ~ Fat_Infilt_Percent,
+                 data = data, family = "binomial")
+df_fat_logit <- data.frame(Fat_Infilt_Percent = seq(0, 0.8, by=0.01))
+df_fat_logit$prob <- predict(fat_logit, newdata = df_fat_logit, type="response")
+```
+
+```{r viz-scheme2, fig.cap="A logistic prediction model was used to forecast the likelihood of a DUX4 score greater than or equal to 0.5. The grey dashed line represents the forecast made solely on the basis of fat percentage as the predictor.", fig.align='center'}
+# add a logistic model without STIT
+# viz
+ggplot(df_scheme2, aes(x=Fat_Infilt_Percent, y=prob, group=STIR_status,
+                       color=STIR_status)) +
+  geom_line() +
+  geom_line(data=df_fat_logit, 
+            aes(x=Fat_Infilt_Percent, y=prob), color="gray75", 
+            linetype="dashed", inherit.aes=FALSE) +
+  scale_color_manual(values = stir_pal) +
+  theme_minimal() +
+  theme(legend.position = "none", 
+        axis.title.x = element_text(size=9),
+        axis.title.y = element_text(size=9),
+        plot.subtitle = element_text(size=9, color="grey20", hjust=0.5),
+        plot.title=element_text(hjust=0.5, size=10)) +
+  labs(title="Logistic regression", 
+       subtitle="Occurrence of DUX4 score > 0.5",
+        y="probility",
+        x="whole muscle fat percent") +
+  scale_x_continuous(breaks=seq(0, 0.8, by=0.2)) +
+  scale_y_continuous(breaks=seq(0, 1, by=0.2)) +
+  geom_segment(aes(x = 0.13, y = 0.80, xend = 0.11, yend = 0.84),
+               color=stir_pal["STIR+"],
+               arrow = arrow(length = unit(0.1, "cm"))) +
+  annotate("text", x=0.14, y=0.80, hjust=0, vjust=1, label="STIR+", size=2.5, 
+           color=stir_pal["STIR+"]) +
+  geom_segment(aes(x = 0.23, y = 0.35, xend = 0.21, yend = 0.39),
+               color=stir_pal["STIR-"],
+               arrow = arrow(length = unit(0.1, "cm"))) +
+  annotate("text", x=0.24, y=0.35, hjust=0, vjust=1, label="STIR-", size=2.5, 
+           color=stir_pal["STIR-"])
+ggsave(file.path(draft_fig_dir, "lagistic-prediction-outcome-by-logSum-DUX4-0.5.pdf"),
+       width=3, height=2.5)
+```
+
+### Use logistic regression to predict the Moderate+ occurrence
+Here, we made the logistics prediction of Moderate+ occurrence based on a random forest model constructed from 30 basket genes that distinguish between control and moderate+IG-high+high FSHD cases. Although the STIR status has a slight impact on the prediction, it is not significant.
+
+```{r logistics-moderate-plus-occurrence}
+# use logistics to predict the Moderate+ occurrence (outcome model built upon)
+# six basket;
+# take away: fat infiltration percent is critical in determining the probability of the outcome, whereas STIR_status is not 
+
+comprehensive_df %>% group_by(STIR_status) %>%
+   summarise(`Control-like`=sum(class=="Control-like", na.rm=TRUE),
+             `Moderate+`=sum(class=="Moderate+", na.rm=TRUE),
+             `Muscle-Low` = sum(class=="Muscle-Low", na.rm=TRUE)) %>%
+  kbl() %>%
+  kable_styling()
+```
+
+```{r plot-logistics-scheme3, fig.align='center', fig.cap="Logistic prediction for occurrance of Moderate+. using whole muscle fat percent and STIR status.", fig.align='center'}
+# randomForest.Fit is ML traning model based on six basket genes and 
+# the longitudinal samples
+load(file.path(pkg_dir, "data", "bilat_MLpredict.rda"))
+data <- comprehensive_df %>%
+  left_join(dplyr::select(bilat_MLpredict, -class), by="sample_id") %>%
+  drop_na(randomForest.fit)
+
+fat_stir_logit_3 <- glm(randomForest.fit ~ Fat_Infilt_Percent + STIR_status,
+                        data = data, family = "binomial")
+summary(fat_stir_logit_3)
+
+df_scheme3 <- data.frame(Fat_Infilt_Percent = rep(seq(0, 0.8, by=0.01), 2), 
+                 STIR_status = rep(c("STIR-", "STIR+"), 
+                                   each=length(seq(0, 0.8, by=0.01)))) 
+df_scheme3$prob <- predict(fat_stir_logit_3, newdata = df_scheme3, type = "response")
+
+ggplot(df_scheme3, aes(x=Fat_Infilt_Percent, y=prob, group=STIR_status,
+                       color=STIR_status)) +
+  geom_line() +
+  scale_color_manual(values = stir_pal) +
+  theme_minimal() +
+  theme(legend.position = "none", 
+        plot.title=element_text(hjust=0.5)) +
+  labs(title="Logistic prediction III on Moderate+ occurrence", 
+        y="Probility of Moderate+ occurrence",
+        x="fat infiltration percent") +
+  scale_x_continuous(breaks=seq(0, 1, by=0.2))
+
+```
+
+```{r viz-all-logit-schemes, fig.width=6, fig.height=3, fig.cap="Logistic repression for three different classification shemes", fig.align='center'}
+df_scheme1 %>% 
+  left_join(df_scheme2, by=c("Fat_Infilt_Percent", "STIR_status"),
+            suffix=c(".scheme1", ".scheme2")) %>%
+  left_join(df_scheme3, by=c("Fat_Infilt_Percent", "STIR_status")) %>%
+  dplyr::rename(`rfFit Moderare+`=prob, `rfFit DUX4+`=prob.scheme1,
+                `threshold DUX4+`=prob.scheme2) %>%
+  gather(key=scheme, value=prob, -Fat_Infilt_Percent, -STIR_status) %>%
+  #dplyr::mutate(group=paste0(STIR_status, scheme)) %>%
+  ggplot(aes(x=Fat_Infilt_Percent, y=prob, group=scheme,
+                       color=scheme)) +
+  geom_line() +
+  #scale_color_manual(values = stir_pal) +
+  facet_wrap(~ STIR_status,  nrow=1) +
+  theme_minimal() +
+  theme(#legend.position = "bottom", 
+        plot.title=element_text(hjust=0.5)) +
+  labs(title="Logistic predictions using three shemes", 
+        y="Probility of DUX4+ or Moderate+ occurrence",
+        x="fat infiltration percent") +
+  scale_x_continuous(breaks=seq(0, 1, by=0.2))
+```
+
+
+
