@@ -4,18 +4,18 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 1 About | Wellstone bilateral tibialis anterior muscle biopsy study</title>
+<title>Chapter 1 About | Wellstone bilateral tibialis anterior FSHD biopsied muscle study</title>
 <meta name="author" content="Chao-Jen Wong">
-<meta name="description" content="This is a book written to support computational transparency and reproducibility for our publication, Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression.">
+<meta name="description" content="This book is written to support computational transparency and reproducibility for our publication titled “Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression”.">
 <meta name="generator" content="bookdown 0.32 with bs4_book()">
-<meta property="og:title" content="Chapter 1 About | Wellstone bilateral tibialis anterior muscle biopsy study">
+<meta property="og:title" content="Chapter 1 About | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy">
 <meta property="og:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
-<meta property="og:description" content="This is a book written to support computational transparency and reproducibility for our publication, Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression.">
+<meta property="og:description" content="This book is written to support computational transparency and reproducibility for our publication titled “Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression”.">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chapter 1 About | Wellstone bilateral tibialis anterior muscle biopsy study">
-<meta name="twitter:description" content="This is a book written to support computational transparency and reproducibility for our publication, Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression.">
+<meta name="twitter:title" content="Chapter 1 About | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
+<meta name="twitter:description" content="This book is written to support computational transparency and reproducibility for our publication titled “Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression”.">
 <meta name="twitter:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
@@ -38,7 +38,7 @@
 
     <div class="d-flex align-items-start justify-content-between">
       <h1>
-        <a href="index.html" title="">Wellstone bilateral tibialis anterior muscle biopsy study</a>
+        <a href="index.html" title="">Wellstone bilateral tibialis anterior FSHD biopsied muscle study</a>
       </h1>
       <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
     </div>
@@ -61,6 +61,8 @@
 <li><a class="" href="immune-cell-infiltrates.html"><span class="header-section-number">9</span> Immune cell infiltrates signature</a></li>
 <li><a class="" href="complement-scoring.html"><span class="header-section-number">10</span> Complement scoring</a></li>
 <li><a class="" href="references.html">References</a></li>
+<li class="book-part">Appendix</li>
+<li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build TxDB package from GTF</a></li>
 </ul>
 
         <div class="book-extra">
@@ -72,136 +74,57 @@
 <h1>
 <span class="header-section-number">1</span> About<a class="anchor" aria-label="anchor" href="#about"><i class="fas fa-link"></i></a>
 </h1>
-<p>This gitbook is written to support our publication’s computational transparency and reproducibility, <em>Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression</em>.</p>
-<p>The data analyses for the study included RNA-seq hypothesis-based and classification-based differential analysis, machine learning, linear regression, correlation analysis, and logistics regression. In this book, we included adequate details about how and why we choose our approaches and present readable, reproducible code that generates the results on the fly.</p>
-<p>The following sections discuss the software we used for the data analysis, what material we included in the <a href="https://github.com/FredHutch/Wellstone_BiLateral_Biopsy">repository</a>, how we build the Bioconductor transcript-based database (TxDB) package that we used for RNA-seq data analysis, and finally the RNA-seq data preprocessing and read counts.</p>
+<p>The purpose of this book is to promote computational transparency and reproducibility in relation to our manuscript titled “Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression.” Through detailed explanations of our decision-making processes based on machine learning and statistical inferences, we aim to provide readers with a comprehensive understanding of our computational methods and coding. In addition, the book contains reproducible codes that generate results on the fly, enhancing the accessibility and usability of our research.</p>
+<p>In this study, we obtained bilateral tibialis anterior (TA) biopsied muscles from 34 subjects. The muscle biopsies (n=68) were processed for MRI characterization, histopathological scoring, RNA extraction for RNA sequencing , and DNA extraction for bisulfite sequencing of the 4qA permissive allele in the region of exon 2-3. Through the metrics yield by these processes, we were able to validate the association of MRI and RNA molecular signatures, and identify immune cell markers associated with immune cell infiltrates and symmetric trends in the disease. Additionally, we curated and proposed panels of genes as post-therapeutic targets for clinical trial designs.</p>
+<p>This book discusses the following topics:</p>
+<ol style="list-style-type: decimal">
+<li>Transcript-based assessment of muscle cell type content of the FSHD biopsied muscle</li>
+<li>FSHD molecular signatures, including DUX4, extracurricular matrix, inflammatory, complement activation, and immunoglobulins</li>
+<li>ML classification based on the FSHD molecular signatures</li>
+<li>MRI characteristics and DUX4 signatures</li>
+<li>Bilateral comparison analysis</li>
+<li>Immune cell infiltrates signature</li>
+</ol>
 <div id="software" class="section level2" number="1.1">
 <h2>
 <span class="header-section-number">1.1</span> Software<a class="anchor" aria-label="anchor" href="#software"><i class="fas fa-link"></i></a>
 </h2>
 <p>R (4.2.2) and packages from the Bioconductor (3.17) and Tidyverse projects. Most used packages include <code>GenomicAlignments</code>, <code>GenomicFeatures</code>, <code>DESeq2</code>, <code>dplyr</code>, <code>ggplot2</code>, <code>caret</code>, and genomic-related BioC packages for annotation.</p>
 </div>
-<div id="data-sets" class="section level2" number="1.2">
+<div id="repos-structure" class="section level2" number="1.2">
 <h2>
-<span class="header-section-number">1.2</span> Data sets<a class="anchor" aria-label="anchor" href="#data-sets"><i class="fas fa-link"></i></a>
+<span class="header-section-number">1.2</span> Repos structure<a class="anchor" aria-label="anchor" href="#repos-structure"><i class="fas fa-link"></i></a>
 </h2>
-<ul>
-<li>RNA-seq gene expression: <code>DESeqDataSet</code> instances obtaining gene counts, TPM, RPKM, as well as range and annotation data</li>
-<li>MRI characteristics including regional fat fraction, whole muscle fat percent, and STIR rating</li>
-<li>Clinical data including histopathological scores, muscle strength, and clinical severity score</li>
-<li>Methylation percentage from the Bisulfite sequencing</li>
-</ul>
-</div>
-<div id="repos-structure" class="section level2" number="1.3">
-<h2>
-<span class="header-section-number">1.3</span> Repos structure<a class="anchor" aria-label="anchor" href="#repos-structure"><i class="fas fa-link"></i></a>
-</h2>
+<p>The section outlines the structure of our repository, which is available at <a href="https://github.com/FredHutch/Wellstone_BiLateral_Biopsy">here</a>.</p>
 <pre><code>\data: 
     |- sanitized.dds.rda: DESeqDataSet instance; longitudinal RNA-seq
+    |- longitudinal_dds.rda: DESeqDataSet instance include the longitudinal 
+       RNA-seq gene counts and metadata (MRI, pathology, and clinical data)
     |- cluster_df.rda: data.frame instance
-    |- dds.rda: DESeqDataSet instance; bilateral RNA-seq data
-    |- comprehensive_df.rda: data.frame instance obtaining 
-       clinical, MRI, and methylation data
+    |- bilateral_dds.rda: DESeqDataSet instance; bilateral RNA-seq data
+    |- comprehensive_df.rda: data.frame instance obtaining the biletarl
+       cohort's clinical, MRI, pathology, FSHD molecular signature scores,
+       and methylation data
 
 \docs: *.html; folder hosts the gitbook 
 \gitbook: *.Rmd that makes the gitbook
 \scripts: *.R; un-orgnaized R code of our initial data 
           exploration and bioinformatics analysis
-\extdata: *.xlsx; supplemental tables</code></pre>
+\extdata: *.xlsx; extra files and supplemental tables</code></pre>
 </div>
-<div id="annotation-package" class="section level2" number="1.4">
+<div id="annotation-package" class="section level2" number="1.3">
 <h2>
-<span class="header-section-number">1.4</span> Annotation package<a class="anchor" aria-label="anchor" href="#annotation-package"><i class="fas fa-link"></i></a>
+<span class="header-section-number">1.3</span> Annotation package<a class="anchor" aria-label="anchor" href="#annotation-package"><i class="fas fa-link"></i></a>
 </h2>
-<p>The annotation we used for the analysis was collected from Gencode v35. The code chunk below is an example of building a customized <code>TxDB</code> package, named <code>hg38.HomoSapiens.Gencode.v35</code>, for our bioinformatics analysis.</p>
-<div id="build-txdb-package-from-gtf" class="section level3" number="1.4.1">
-<h3>
-<span class="header-section-number">1.4.1</span> Build TxDB package from GTF<a class="anchor" aria-label="anchor" href="#build-txdb-package-from-gtf"><i class="fas fa-link"></i></a>
-</h3>
-<p>The steps are:</p>
-<ol style="list-style-type: decimal">
-<li>Transform the downloaded Gencode v35 GTF file into a <code>GRange</code> instance</li>
-<li>Convert the <code>GRange</code> instance into a TxDB package</li>
-<li><ol start="3" style="list-style-type: decimal">
-<li>(Optional) Include the gene annotation (gene_name, gene_type, gene_ID, and gene_type) as a <code>DataFrame</code> instance in the <code>data</code> folder in the package. This step not necessary if building an Ensembl DB package (<code>EnsDb</code>)</li>
-</ol></li>
-</ol>
+<p>To conducto our RNA-seq analysis, used annotations from Gencode v35 and built a customized <code>TxDB</code> package, which we named <code>hg38.HomoSapiens.Gencode.v35</code>. For instructions on building Bioconductor <code>TxDB</code> or <code>EsbDB</code> annotation packages, please refer to Appendix A.</p>
+</div>
+<div id="rna-seq-preprocessing-and-gene-counts" class="section level2" number="1.4">
+<h2>
+<span class="header-section-number">1.4</span> RNA-seq preprocessing and gene counts<a class="anchor" aria-label="anchor" href="#rna-seq-preprocessing-and-gene-counts"><i class="fas fa-link"></i></a>
+</h2>
+<p>To pre-preprocess the RNA-seq data, we filtered out unqualified raw reads, trimmed the Illumina universal adapters using <em>Trimmomatic</em>, and aligned the remaining reads to GRCh38.p13 with <em>Rsubread</em>.</p>
+<p>The code chunk below provides an example of how we used <code>GenomicAlignments</code>, <code>BiocParallel</code>, and a customized <code>TxDB</code> package (<code>hg38.HomoSapiens.Gencode.v35</code>) to count reads and generate an <code>RangedSummarizedExperiment</code> object. Note that the <code>sort_files</code> parameter indicates the location of the sorted, indexed BAM files used in our analysis. In the <code>summarizOverlaps()</code> function, I chose to use <code>Intersectionstrict</code> mode that only count reads that are completely contained within the range of exons, and ignore any ambiguous reads that straddle different gene features.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">rtracklayer</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/GenomicFeatures">GenomicFeatures</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## Define the destination and package name of your TxDB package</span></span>
-<span><span class="va">pkg_name</span> <span class="op">&lt;-</span> <span class="st">"hg38.HomoSapiens.Gencode.v35"</span></span>
-<span><span class="va">dest_dir</span> <span class="op">&lt;-</span> <span class="st">"/fh/fast/tapscott_s/CompBio/hg38"</span></span>
-<span></span>
-<span><span class="co">## Where is my GTF file</span></span>
-<span><span class="va">gtf_file</span> <span class="op">&lt;-</span> <span class="st">"/fh/fast/tapscott_s/CompBio/genome_reference/GRCh38/Annotation/gencode.v35.annotation.gtf"</span></span>
-<span></span>
-<span><span class="co">## Import the GTF file into a GRange instance</span></span>
-<span><span class="va">gencode</span> <span class="op">&lt;-</span> <span class="fu">rtracklayer</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rtracklayer/man/GFFFile-class.html">import.gff</a></span><span class="op">(</span><span class="va">gtf_file</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## Define metadata: version, source, and etc.</span></span>
-<span><span class="va">organism</span> <span class="op">&lt;-</span> <span class="st">"human"</span></span>
-<span><span class="va">release</span> <span class="op">&lt;-</span> <span class="st">"v35"</span></span>
-<span><span class="va">dataSource</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_"</span>,</span>
-<span>                     <span class="va">organism</span>, <span class="st">"/"</span>, <span class="va">release</span><span class="op">)</span></span>
-<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
-<span>  name<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Organism"</span>, <span class="st">"Resource URL"</span>, <span class="st">"Resource GTF file"</span>,</span>
-<span>         <span class="st">"Taxonomy ID"</span>, <span class="st">"miRBase build ID"</span>, <span class="st">"Data source"</span><span class="op">)</span>,</span>
-<span>  value<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Homo sapiens"</span>, <span class="va">dataSource</span>, <span class="va">gtf_file</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="va">dataSource</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## Prepare the metadata</span></span>
-<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu">GenomicFeatures</span><span class="fu">:::</span><span class="fu">.prepareGFFMetadata</span><span class="op">(</span><span class="va">gtf_file</span>, <span class="va">dataSource</span>,</span>
-<span>                                                  organism<span class="op">=</span><span class="st">"Homo sapiens"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## Combine the GRange instance and metadata into a TxDB instance</span></span>
-<span><span class="va">txdb</span> <span class="op">&lt;-</span> <span class="fu">GenomicFeatures</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/pkg/GenomicFeatures/man/makeTxDbFromGRanges.html">makeTxDbFromGRanges</a></span><span class="op">(</span>gr<span class="op">=</span><span class="va">gencode</span>,</span>
-<span>                                              metadata<span class="op">=</span><span class="va">metadata</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## Build a TxDb package</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/GenomicFeatures/man/makeTxDbPackage.html">makeTxDbPackage</a></span><span class="op">(</span><span class="va">txdb</span>, version<span class="op">=</span><span class="st">"3.6.2"</span>, author<span class="op">=</span><span class="st">"Chao-Jen Wong"</span>,</span>
-<span>                pkgname<span class="op">=</span><span class="va">pkg_name</span>, destDir<span class="op">=</span><span class="va">dest_dir</span>, license<span class="op">=</span><span class="st">"Artistic-2.0"</span>,</span>
-<span>                provider<span class="op">=</span><span class="st">"Gencode"</span>, providerVersion<span class="op">=</span><span class="va">release</span>,</span>
-<span>                maintainer<span class="op">=</span><span class="st">"Chao-Jen Wong &lt;cwon2@fredhutch.org&gt;"</span><span class="op">)</span></span></code></pre></div>
-<p>The downside of the <code>TxDB</code> package is that it does not carry the corresponding columns of gene_name, gene_type, and gene_symbols as the original GTF file obtained. So adding a <code>DataFrame</code> instance to include that information might provide convenience in future usage.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gene.anno</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">mcols</a></span><span class="op">(</span><span class="va">gencode</span><span class="op">)</span><span class="op">[</span><span class="va">gencode</span><span class="op">$</span><span class="va">type</span><span class="op">==</span><span class="st">"gene"</span>, <span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">gene.anno</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">gene.anno</span><span class="op">$</span><span class="va">gene_id</span></span>
-<span></span>
-<span><span class="co">#' put annotation to the data directory</span></span>
-<span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">dest_dir</span>, <span class="va">pkg_name</span>, <span class="st">"data"</span><span class="op">)</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="va">data_dir</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">data_dir</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/save.html">save</a></span><span class="op">(</span><span class="va">gene.anno</span>, file<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"gene.anno.rda"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div id="build-ensdb-package-using-annotationhub" class="section level3" number="1.4.2">
-<h3>
-<span class="header-section-number">1.4.2</span> Build EnsDb package using <code>AnnotationHub</code><a class="anchor" aria-label="anchor" href="#build-ensdb-package-using-annotationhub"><i class="fas fa-link"></i></a>
-</h3>
-<p>In retrospect, I would use <code><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">AnnotationHub()</a></code> and <code>GenomicFeatures::makeEnsembldbPackage()</code> to make an <code>EnsDB</code> package instead of <code>TxDB</code> because <code>EnsDB</code> has slots/functions to retrieve the gene information. Below is an example:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#'</span></span>
-<span><span class="co">#' EnsDb.Hsapiens.v92: </span></span>
-<span><span class="co">#'</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">AnnotationHub</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/GenomicFeatures">GenomicFeatures</a></span><span class="op">)</span></span>
-<span><span class="va">ah</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">AnnotationHub</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">query</a></span><span class="op">(</span><span class="va">ah</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"hsapiens"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">edb</span> <span class="op">&lt;-</span> <span class="va">ah</span><span class="op">[[</span><span class="st">"AH60977"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqlevelsStyle.html">seqlevelsStyle</a></span><span class="op">(</span><span class="va">edb</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"NCBI"</span></span>
-<span><span class="fu">makeEnsembldbPackage</span><span class="op">(</span>ensdb<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dbconn.html">dbfile</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dbconn.html">dbconn</a></span><span class="op">(</span><span class="va">edb</span><span class="op">)</span><span class="op">)</span>, version<span class="op">=</span><span class="st">"1.0.0"</span>,</span>
-<span>                     maintainer<span class="op">=</span><span class="st">"Chao-Jen Wong &lt;cwon2@fredhutch.org&gt;"</span>,</span>
-<span>                     author<span class="op">=</span><span class="st">"Chao-Jen Wong"</span>,</span>
-<span>                     destDir<span class="op">=</span><span class="st">"/fh/fast//tapscott_s/CompBio/hg38"</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div id="preprocessing-and-gene-counts" class="section level2" number="1.5">
-<h2>
-<span class="header-section-number">1.5</span> Preprocessing and gene counts<a class="anchor" aria-label="anchor" href="#preprocessing-and-gene-counts"><i class="fas fa-link"></i></a>
-</h2>
-<p>For the RNA-seq data preprocessing, we filtered unqualified raw reads, trimmed the Illumina universal adapters by <em>Trimmomatic</em>, and aligned the reads against GRCh38.p13 by <em>Rsubread</em>.</p>
-<p>The code chunk below shows an example of how to use <code>GenomicAlignments</code>, <code>BiocParallel</code>, and customized TxDB (<code>hg38.HomoSapiens.Gencode.v35</code>) packages to count reads and make an <code>RangedSummarizedExperiment</code> instance. <strong>NOTE</strong>: <code>sort_files</code> indicated the location of my sorted, indexed BAM files.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># sort_files gives the location of my bam files</span></span>
 <span><span class="va">sort_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">scratch_dir</span>, full.name<span class="op">=</span><span class="cn">TRUE</span>, pattern<span class="op">=</span><span class="st">"\\.bam$"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/GenomicFeatures">GenomicFeatures</a></span><span class="op">)</span></span>
@@ -216,18 +139,16 @@
 <span><span class="va">features</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqlevels-wrappers.html">keepStandardChromosomes</a></span><span class="op">(</span><span class="va">features</span>,</span>
 <span>                                    species <span class="op">=</span> <span class="st">"Homo_sapiens"</span>,</span>
 <span>                                    pruning.mode<span class="op">=</span><span class="st">"fine"</span><span class="op">)</span></span>
-<span><span class="va">rse</span> <span class="op">&lt;-</span> <span class="fu">GenomicAlignments</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GenomicAlignments/man/summarizeOverlaps-methods.html">summarizeOverlaps</a></span><span class="op">(</span>features<span class="op">=</span><span class="va">features</span>,</span>
-<span>                                            reads <span class="op">=</span> <span class="fu">Rsamtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Rsamtools/man/BamFile-class.html">BamFileList</a></span><span class="op">(</span><span class="va">sort_file</span><span class="op">)</span>,</span>
-<span>                                            mode <span class="op">=</span> <span class="st">"IntersectionStrict"</span>,</span>
-<span>                                            ignore.strand<span class="op">=</span><span class="cn">TRUE</span>, </span>
-<span>                                            singleEnd<span class="op">=</span><span class="cn">TRUE</span>,</span>
-<span>                                            inter.feature<span class="op">=</span><span class="cn">TRUE</span>, </span>
-<span>                                            BPPARAM<span class="op">=</span><span class="va">bp_param</span><span class="op">)</span></span></code></pre></div>
-<p>The assigned parameters of the <code>summarizOverlaps()</code> function are my preference mode in only counting the reads that are completely fall within the range of exons and ignoring ambiguous reads straddling different gene features.</p>
-<script type="text/javascript">
-title=document.getElementById('header');
-title.innerHTML = '<img src="images/cover.jpeg" alt="cover image" style="width:500px;height:100px;">' + title.innerHTML
-</script>
+<span><span class="va">rse</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu">GenomicAlignments</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GenomicAlignments/man/summarizeOverlaps-methods.html">summarizeOverlaps</a></span><span class="op">(</span>features<span class="op">=</span><span class="va">features</span>,</span>
+<span>                                       reads <span class="op">=</span></span>
+<span>                                         <span class="fu">Rsamtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Rsamtools/man/BamFile-class.html">BamFileList</a></span><span class="op">(</span><span class="va">sort_file</span><span class="op">)</span>,</span>
+<span>                                       mode <span class="op">=</span> <span class="st">"IntersectionStrict"</span>,</span>
+<span>                                       ignore.strand<span class="op">=</span><span class="cn">TRUE</span>, </span>
+<span>                                       singleEnd<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>                                       inter.feature<span class="op">=</span><span class="cn">TRUE</span>, </span>
+<span>                                       BPPARAM<span class="op">=</span><span class="va">bp_param</span><span class="op">)</span></span></code></pre></div>
+
 </div>
 </div>
   <div class="chapter-nav">
@@ -238,15 +159,9 @@ title.innerHTML = '<img src="images/cover.jpeg" alt="cover image" style="width:5
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#about"><span class="header-section-number">1</span> About</a></li>
 <li><a class="nav-link" href="#software"><span class="header-section-number">1.1</span> Software</a></li>
-<li><a class="nav-link" href="#data-sets"><span class="header-section-number">1.2</span> Data sets</a></li>
-<li><a class="nav-link" href="#repos-structure"><span class="header-section-number">1.3</span> Repos structure</a></li>
-<li>
-<a class="nav-link" href="#annotation-package"><span class="header-section-number">1.4</span> Annotation package</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#build-txdb-package-from-gtf"><span class="header-section-number">1.4.1</span> Build TxDB package from GTF</a></li>
-<li><a class="nav-link" href="#build-ensdb-package-using-annotationhub"><span class="header-section-number">1.4.2</span> Build EnsDb package using AnnotationHub</a></li>
-</ul>
-</li>
-<li><a class="nav-link" href="#preprocessing-and-gene-counts"><span class="header-section-number">1.5</span> Preprocessing and gene counts</a></li>
+<li><a class="nav-link" href="#repos-structure"><span class="header-section-number">1.2</span> Repos structure</a></li>
+<li><a class="nav-link" href="#annotation-package"><span class="header-section-number">1.3</span> Annotation package</a></li>
+<li><a class="nav-link" href="#rna-seq-preprocessing-and-gene-counts"><span class="header-section-number">1.4</span> RNA-seq preprocessing and gene counts</a></li>
 </ul>
 
       <div class="book-extra">
@@ -264,7 +179,7 @@ title.innerHTML = '<img src="images/cover.jpeg" alt="cover image" style="width:5
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Wellstone bilateral tibialis anterior muscle biopsy study</strong>" was written by Chao-Jen Wong. It was last built on 2023-04-07.</p>
+    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-04-10.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

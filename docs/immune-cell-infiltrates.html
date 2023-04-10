@@ -4,17 +4,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 9 Immune cell infiltrates signature | Wellstone bilateral tibialis anterior muscle biopsy study</title>
+<title>Chapter 9 Immune cell infiltrates signature | Wellstone bilateral tibialis anterior FSHD biopsied muscle study</title>
 <meta name="author" content="Chao-Jen Wong">
 <meta name="description" content="Based on the longitudinal study, we have discovered that T cell proliferation, migration, and B cell-mediated immunity response are more prevalent in severely affected muscles, such as “IG-high”...">
 <meta name="generator" content="bookdown 0.32 with bs4_book()">
-<meta property="og:title" content="Chapter 9 Immune cell infiltrates signature | Wellstone bilateral tibialis anterior muscle biopsy study">
+<meta property="og:title" content="Chapter 9 Immune cell infiltrates signature | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/immune-cell-infiltrates.html">
 <meta property="og:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
 <meta property="og:description" content="Based on the longitudinal study, we have discovered that T cell proliferation, migration, and B cell-mediated immunity response are more prevalent in severely affected muscles, such as “IG-high”...">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chapter 9 Immune cell infiltrates signature | Wellstone bilateral tibialis anterior muscle biopsy study">
+<meta name="twitter:title" content="Chapter 9 Immune cell infiltrates signature | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
 <meta name="twitter:description" content="Based on the longitudinal study, we have discovered that T cell proliferation, migration, and B cell-mediated immunity response are more prevalent in severely affected muscles, such as “IG-high”...">
 <meta name="twitter:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -38,7 +38,7 @@
 
     <div class="d-flex align-items-start justify-content-between">
       <h1>
-        <a href="index.html" title="">Wellstone bilateral tibialis anterior muscle biopsy study</a>
+        <a href="index.html" title="">Wellstone bilateral tibialis anterior FSHD biopsied muscle study</a>
       </h1>
       <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
     </div>
@@ -61,6 +61,8 @@
 <li><a class="active" href="immune-cell-infiltrates.html"><span class="header-section-number">9</span> Immune cell infiltrates signature</a></li>
 <li><a class="" href="complement-scoring.html"><span class="header-section-number">10</span> Complement scoring</a></li>
 <li><a class="" href="references.html">References</a></li>
+<li class="book-part">Appendix</li>
+<li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build TxDB package from GTF</a></li>
 </ul>
 
         <div class="book-extra">
@@ -78,7 +80,7 @@
 <li>Determine the differentially expressed genes (High vs. control) associated with the enriched GO terms (from step 1), and use heatmap visualization to observe the trend of an increase in gene expression across all longitudinal and bilateral samples, associated with the severity of FSHD (characterised by STIR status, fat fraction/infiltration percent) and/or complement scoring.</li>
 <li>Identify immune cell markers that are differentially expressed (High vs. control) using the IRIS database (Abbs 2009) as a source.</li>
 </ol>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mikelove/DESeq2">DESeq2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">pheatmap</span><span class="op">)</span></span>
@@ -121,7 +123,7 @@
 <span class="header-section-number">9.1</span> Enriched biological processes directly associated with T/B cells<a class="anchor" aria-label="anchor" href="#enriched-biological-processes-directly-associated-with-tb-cells"><i class="fas fa-link"></i></a>
 </h2>
 <p>The code chunk below (1) obtains the enriched GO terms in more affected muscles from the longitudinal study, supplementary table 5, and (2) retains the enriched GO terms containing the terms including <code>T cell</code>, <code>B cell</code>, <code>humoral</code>, <code>immunoglobulin</code>, and <code>complement</code>. Total 20 terms are extracted.</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">high_enriched</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
 <span>    <span class="st">"suppl_table_5_Candidate_Biomarkers_and_Enriched_Go.xlsx"</span><span class="op">)</span>,</span>
 <span>    sheet<span class="op">=</span><span class="fl">2</span>, skip<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
@@ -383,13 +385,13 @@ regulation of T cell migration
 </tr>
 </tbody>
 </table></div>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  </span>
 <span></span>
 <span><span class="co">#lymphocyte_go &lt;- high_enriched %&gt;%</span></span>
 <span><span class="co">#   dplyr::filter(str_detect(term, "lymphocyte"))</span></span></code></pre></div>
 <p>Display the p-values yielded by GSEA:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">infiltrates_go</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">term</span>, <span class="va">over_represented_pvalue</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">term</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
@@ -423,7 +425,7 @@ regulation of T cell migration
 Figure 9.1: Enriched GO terms related to T and B cells and immunoglobulin domains. Red dots present the p-value of enriched GO terms in IG or High samples.
 </p>
 </div>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">fig_dir</span>, <span class="st">"longitudinal-enriched-immunity-GO.pdf"</span><span class="op">)</span>, </span>
 <span>       width<span class="op">=</span><span class="fl">3.8</span>, height<span class="op">=</span><span class="fl">4.2</span><span class="op">)</span>  </span>
@@ -435,7 +437,7 @@ Figure 9.1: Enriched GO terms related to T and B cells and immunoglobulin domain
 <span class="header-section-number">9.2</span> Significant genes associated with the T/B-associated enriched GO terms<a class="anchor" aria-label="anchor" href="#significant-genes-associated-with-the-tb-associated-enriched-go-terms"><i class="fas fa-link"></i></a>
 </h2>
 <p>The code chunk below aim to identify significantly expressed genes in High or IG-High (vs. contls) that are involved in the enriched GO terms obtained previously.</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">high_sig</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
 <span>    <span class="st">"suppl_table_5_Candidate_Biomarkers_and_Enriched_Go.xlsx"</span><span class="op">)</span>,</span>
 <span>    sheet<span class="op">=</span><span class="fl">1</span>, skip<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -475,7 +477,7 @@ Figure 9.1: Enriched GO terms related to T and B cells and immunoglobulin domain
 <span class="header-section-number">9.2.1</span> Heatmap: Longitudinal study<a class="anchor" aria-label="anchor" href="#heatmap-longitudinal-study"><i class="fas fa-link"></i></a>
 </h3>
 <p>Now we visualized the trend of the increased expression levels on the longitidunal samples, arranges by ML-defined classes: Control, Mild, Moderate, IG-High, High, and Muscle-low.</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Control<span class="op">=</span><span class="st">"#ff7f00"</span>, </span>
 <span>                    Mild<span class="op">=</span><span class="st">"#a65628"</span>, </span>
 <span>                    Moderate<span class="op">=</span><span class="st">"#f781bf"</span>, </span>
@@ -518,7 +520,7 @@ Figure 9.2: Heatmap demonstrating the increased expression trend on more affecte
 <span class="header-section-number">9.2.2</span> Heatmap: bilateral study<a class="anchor" aria-label="anchor" href="#heatmap-bilateral-study"><i class="fas fa-link"></i></a>
 </h3>
 <p>Heatmap of the expression levels of 95 genes on the bilateral samples.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">class</span>, <span class="va">Fat_Infilt_Percent</span>, <span class="va">STIR_status</span>,</span>
@@ -559,7 +561,7 @@ Figure 9.2: Heatmap demonstrating the increased expression trend on more affecte
 </h2>
 <p>Using a generic cell-type marker dataset from the immune response in silico (IRIS) (Abbas 2009), we detected 63 immune cell markers whose expression levels are signficiantly elevated in more affected muscles. With additonal significant immunity-related markers, including such as cytokine receptors in B cells (IL-4R, IL-21R), STAT6, Leukocyte immunoglobulin-like receptor B family (LILRB4, LILRB5), T cell surface antigens (CD2 and CD4), T and B cell interaction and migration (CCL19), and STAT6, we demonstrated a immune cell infiltrate signatures in both longitudinal and bilateral samples.</p>
 <p>Code chunk below identified 63 immune cell markers as a subset of the IRIS database (Abbas 2009).</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">PLIER</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">bloodCellMarkersIRISDMAP</span><span class="op">)</span></span>
 <span><span class="co"># about 860 markers</span></span>
@@ -607,7 +609,7 @@ Figure 9.2: Heatmap demonstrating the increased expression trend on more affecte
 <span class="header-section-number">9.3.1</span> Viz the immune cell infiltrate siganiture from the longitudinal study<a class="anchor" aria-label="anchor" href="#viz-the-immune-cell-infiltrate-siganiture-from-the-longitudinal-study"><i class="fas fa-link"></i></a>
 </h3>
 <p>The following heatmap illustrates that there is a tendency of higher expression levels in muscles that are more affected.</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Control<span class="op">=</span><span class="st">"#ff7f00"</span>, </span>
 <span>                    Mild<span class="op">=</span><span class="st">"#a65628"</span>, </span>
 <span>                    Moderate<span class="op">=</span><span class="st">"#f781bf"</span>, </span>
@@ -648,7 +650,7 @@ Figure 9.3: Heapmap demonstrating the expression levels (by row-wise z-score of 
 <span class="header-section-number">9.3.2</span> Bilateral study<a class="anchor" aria-label="anchor" href="#bilateral-study"><i class="fas fa-link"></i></a>
 </h3>
 <p>The heatmap for the bilateral study below incorporates the complement scoring.</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">class</span>, <span class="va">Fat_Infilt_Percent</span>, <span class="va">STIR_status</span>,</span>
@@ -687,7 +689,7 @@ Figure 9.3: Heapmap demonstrating the expression levels (by row-wise z-score of 
 <span class="header-section-number">9.4</span> Complement scoring vs. immune cell infiltrates signature<a class="anchor" aria-label="anchor" href="#complement-scoring-vs.-immune-cell-infiltrates-signature"><i class="fas fa-link"></i></a>
 </h2>
 <p>The 63 immune cell markers mentioned earlier characterize the signature of immune cell infiltration. The heatmap presented in Fig. <a href="#fig:bilat-63-sig-immune-cell-markers-heatmap"><strong>??</strong></a> shows that the elevated expression levels of these markers are in line with the complement scoring. The following code chunk computes the Spearman correlation coefficient, which is equal to 0.456.</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">[</span><span class="va">tmp</span><span class="op">$</span><span class="va">gene_id</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">signature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/colSums.html">colMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">tpm</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -732,7 +734,7 @@ Figure 9.4: Dotplot of immune cell infiltrates signature (presented by average z
 <span class="header-section-number">9.5</span> STIR status vs. immune cell infiltrates signature<a class="anchor" aria-label="anchor" href="#stir-status-vs.-immune-cell-infiltrates-signature"><i class="fas fa-link"></i></a>
 </h2>
 <p>The heatmap <a href="#fig:bilat-63-sig-immune-cell-markers-heatmap"><strong>??</strong></a> also suggested that elevated immune cell signatures is associated with with STIR status: wilcox test p-value = <span class="math inline">\(3e-6\)</span>.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">`STIR_status`</span>, y<span class="op">=</span><span class="va">avg_z_score</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -743,7 +745,7 @@ Figure 9.4: Dotplot of immune cell infiltrates signature (presented by average z
 <span>                 stackratio<span class="op">=</span><span class="fl">1.5</span>, dotsize<span class="op">=</span><span class="fl">1.5</span>, alpha<span class="op">=</span><span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="08-immune-cell-infiltrates-signature_files/figure-html/STIR-vs-immune-cell-infilrates-signatures-1.png" width="672" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -775,7 +777,7 @@ Figure 9.4: Dotplot of immune cell infiltrates signature (presented by average z
 </h3>
 <p>In the previous section, we identified a signature of immune cell infiltrates characterized by 63 immune cell markers in the longitudinal study. Here we compute their expression correlation between left and right muscles in the bilateral study.</p>
 <p>The code below shows the tools to compute the correlation between L and R muscles on the immune cell infiltrate markers.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">col_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># convert gene_id to Gencode35</span></span>
 <span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="va">sig_blood_iris</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -816,7 +818,7 @@ Figure 9.4: Dotplot of immune cell infiltrates signature (presented by average z
 <span>                        <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"..."</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Display the correlation and average TPM grouped by ML-based classes.</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gene_cor_63</span> <span class="op">&lt;-</span> <span class="fu">.markers_bilateral_correlation</span><span class="op">(</span>markers<span class="op">=</span><span class="va">markers</span>,</span>
 <span>                                           dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">.avg_TPM_by_class</span><span class="op">(</span>markers <span class="op">=</span> <span class="va">markers</span>, dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span>, </span>
@@ -2711,7 +2713,7 @@ Monocyte
 <span class="header-section-number">9.6.2</span> Top loading variables by the PLIER package<a class="anchor" aria-label="anchor" href="#top-loading-variables-by-the-plier-package"><i class="fas fa-link"></i></a>
 </h3>
 <p>Previously, we used The PLIER package to estimate the immune cell type contributions to FSHD transcriptome. The top Z, loading variables, are important in determining the relative proportion of the immune cell type contribution. Listed below are the top loading variables. Note that they are not necessary exhibiting strong expression levels.</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"plier_topZ_markers.rda"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="va">plier_topZ_markers</span><span class="op">$</span><span class="va">bilat_markers</span></span>
 <span><span class="va">gene_cor_topZ</span> <span class="op">&lt;-</span> <span class="fu">.markers_bilateral_correlation</span><span class="op">(</span>markers<span class="op">=</span><span class="va">markers</span>,</span>
@@ -3274,7 +3276,7 @@ ENSG00000196092
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Wellstone bilateral tibialis anterior muscle biopsy study</strong>" was written by Chao-Jen Wong. It was last built on 2023-04-07.</p>
+    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-04-10.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -4,17 +4,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 8 Bilateral comparison | Wellstone bilateral tibialis anterior muscle biopsy study</title>
+<title>Chapter 8 Bilateral comparison | Wellstone bilateral tibialis anterior FSHD biopsied muscle study</title>
 <meta name="author" content="Chao-Jen Wong">
 <meta name="description" content="# load libraries suppressPackageStartupMessages(library(tidyverse)) suppressPackageStartupMessages(library(DESeq2)) suppressPackageStartupMessages(library(writexl))...">
 <meta name="generator" content="bookdown 0.32 with bs4_book()">
-<meta property="og:title" content="Chapter 8 Bilateral comparison | Wellstone bilateral tibialis anterior muscle biopsy study">
+<meta property="og:title" content="Chapter 8 Bilateral comparison | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/bilateral-comparison.html">
 <meta property="og:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
 <meta property="og:description" content="# load libraries suppressPackageStartupMessages(library(tidyverse)) suppressPackageStartupMessages(library(DESeq2)) suppressPackageStartupMessages(library(writexl))...">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chapter 8 Bilateral comparison | Wellstone bilateral tibialis anterior muscle biopsy study">
+<meta name="twitter:title" content="Chapter 8 Bilateral comparison | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
 <meta name="twitter:description" content="# load libraries suppressPackageStartupMessages(library(tidyverse)) suppressPackageStartupMessages(library(DESeq2)) suppressPackageStartupMessages(library(writexl))...">
 <meta name="twitter:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -38,7 +38,7 @@
 
     <div class="d-flex align-items-start justify-content-between">
       <h1>
-        <a href="index.html" title="">Wellstone bilateral tibialis anterior muscle biopsy study</a>
+        <a href="index.html" title="">Wellstone bilateral tibialis anterior FSHD biopsied muscle study</a>
       </h1>
       <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
     </div>
@@ -61,6 +61,8 @@
 <li><a class="" href="immune-cell-infiltrates.html"><span class="header-section-number">9</span> Immune cell infiltrates signature</a></li>
 <li><a class="" href="complement-scoring.html"><span class="header-section-number">10</span> Complement scoring</a></li>
 <li><a class="" href="references.html">References</a></li>
+<li class="book-part">Appendix</li>
+<li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build TxDB package from GTF</a></li>
 </ul>
 
         <div class="book-extra">
@@ -72,7 +74,7 @@
 <h1>
 <span class="header-section-number">8</span> Bilateral comparison<a class="anchor" aria-label="anchor" href="#bilateral-comparison"><i class="fas fa-link"></i></a>
 </h1>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load libraries</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mikelove/DESeq2">DESeq2</a></span><span class="op">)</span><span class="op">)</span></span>
@@ -99,7 +101,7 @@
 </h2>
 <p>Of 34 subjects, ten were rated STIR+ in both TAs, 19 STIR- bilaterally, and only five discordant for STIR. Our question was, given 43- STIR and 25 STIR+ to form 34 pairs, what are the expected values of the STIR+, STIR- and discordant STIR-/STIR+ pairs? Are the observed values different from the expected values?</p>
 <p>To answer the question, we performed 1000 runs of simulation, in which each run, 34 pairs were randomly drowned from 43 STIR- and 25 STIR+ samples, yielding the numbers of STIR+, STIR-, and discordance STIR+/- pairs. This simulation built three distributions of the number of three types of pairs, and the expected values of each pair type are 4.5 pairs for STIR+, 13.5 for STIR- and 16 and STIR+/-. The observed values of STIR+ (10) and STIR- (19) pairs reveal symmetric trends in STIR characteristics.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># simulation distribution of the STIR+/+ (1,1), STIR-/- (0,0), and STIR-/+ (0,1) paire # 0 = STIR-</span></span>
 <span><span class="co"># 1 = STIR+</span></span>
 <span><span class="va">n_simulation</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
@@ -126,35 +128,35 @@
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>`STIR-/-`<span class="op">=</span> <span class="va">`0`</span>, `STIR+/-`<span class="op">=</span><span class="va">`1`</span>, `STIR+/+`<span class="op">=</span><span class="va">`2`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span><span class="op">(</span>key<span class="op">=</span><span class="st">"pairs"</span>, value<span class="op">=</span><span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="bilateral-comparison.html#cb24-1" aria-hidden="true" tabindex="-1"></a>annot <span class="ot">&lt;-</span> sim_res <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(pairs) <span class="sc">%&gt;%</span></span>
-<span id="cb24-2"><a href="bilateral-comparison.html#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mu =</span> <span class="fu">mean</span>(n)) <span class="sc">%&gt;%</span></span>
-<span id="cb24-3"><a href="bilateral-comparison.html#cb24-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">x_mu =</span> mu, <span class="at">y_mu =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb24-4"><a href="bilateral-comparison.html#cb24-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">x_n=</span><span class="fu">c</span>(<span class="dv">19</span>, <span class="dv">5</span>, <span class="dv">10</span>), <span class="at">y_n=</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb24-5"><a href="bilateral-comparison.html#cb24-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">mu_label =</span> <span class="fu">format</span>(mu, <span class="at">digit=</span><span class="dv">2</span>))</span>
-<span id="cb24-6"><a href="bilateral-comparison.html#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="bilateral-comparison.html#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sim_res, <span class="fu">aes</span>(<span class="at">x=</span>n)) <span class="sc">+</span></span>
-<span id="cb24-8"><a href="bilateral-comparison.html#cb24-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_density</span>(<span class="at">adjust=</span><span class="fl">3.5</span>, <span class="at">n=</span><span class="dv">256</span>) <span class="sc">+</span></span>
-<span id="cb24-9"><a href="bilateral-comparison.html#cb24-9" aria-hidden="true" tabindex="-1"></a>   <span class="co">#geom_histogram(bins=10) +</span></span>
-<span id="cb24-10"><a href="bilateral-comparison.html#cb24-10" aria-hidden="true" tabindex="-1"></a>   <span class="fu">facet_wrap</span>( <span class="sc">~</span> pairs, <span class="at">nrow=</span><span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb24-11"><a href="bilateral-comparison.html#cb24-11" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_point</span>(<span class="at">data=</span>annot, <span class="fu">aes</span>(<span class="at">x=</span>x_n, <span class="at">y=</span>y_n), </span>
-<span id="cb24-12"><a href="bilateral-comparison.html#cb24-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">size=</span><span class="dv">2</span>, <span class="at">color=</span><span class="st">"red"</span>, <span class="at">shape=</span><span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb24-13"><a href="bilateral-comparison.html#cb24-13" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_text</span>(<span class="at">data=</span>annot, <span class="fu">aes</span>(<span class="at">x=</span>x_mu, <span class="at">y=</span>y_mu, </span>
-<span id="cb24-14"><a href="bilateral-comparison.html#cb24-14" aria-hidden="true" tabindex="-1"></a>                             <span class="at">label=</span><span class="fu">paste0</span>(<span class="st">"mu = "</span>, mu_label)), </span>
-<span id="cb24-15"><a href="bilateral-comparison.html#cb24-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">hjust=</span><span class="dv">0</span>, <span class="at">vjust=</span><span class="dv">0</span>, <span class="at">color=</span><span class="st">"gray50"</span>) <span class="sc">+</span></span>
-<span id="cb24-16"><a href="bilateral-comparison.html#cb24-16" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_vline</span>(<span class="at">data=</span>annot, <span class="fu">aes</span>(<span class="at">xintercept=</span>mu),</span>
-<span id="cb24-17"><a href="bilateral-comparison.html#cb24-17" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype=</span><span class="st">"dashed"</span>, <span class="at">color=</span><span class="st">"gray50"</span>) <span class="sc">+</span></span>
-<span id="cb24-18"><a href="bilateral-comparison.html#cb24-18" aria-hidden="true" tabindex="-1"></a>   <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"number of pairs"</span>, <span class="at">y=</span><span class="st">"density"</span>) <span class="sc">+</span></span>
-<span id="cb24-19"><a href="bilateral-comparison.html#cb24-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">theme_bw</span>()</span>
-<span id="cb24-20"><a href="bilateral-comparison.html#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(pkg_dir, <span class="st">"figures"</span>, <span class="st">"STIR-2000-simulation-pairs.pdf"</span>), </span>
-<span id="cb24-21"><a href="bilateral-comparison.html#cb24-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">width=</span><span class="dv">4</span>, <span class="at">height=</span><span class="dv">4</span>)   </span>
-<span id="cb24-22"><a href="bilateral-comparison.html#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="bilateral-comparison.html#cb21-1" aria-hidden="true" tabindex="-1"></a>annot <span class="ot">&lt;-</span> sim_res <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(pairs) <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="bilateral-comparison.html#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mu =</span> <span class="fu">mean</span>(n)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="bilateral-comparison.html#cb21-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">x_mu =</span> mu, <span class="at">y_mu =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href="bilateral-comparison.html#cb21-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">x_n=</span><span class="fu">c</span>(<span class="dv">19</span>, <span class="dv">5</span>, <span class="dv">10</span>), <span class="at">y_n=</span><span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-5"><a href="bilateral-comparison.html#cb21-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">mu_label =</span> <span class="fu">format</span>(mu, <span class="at">digit=</span><span class="dv">2</span>))</span>
+<span id="cb21-6"><a href="bilateral-comparison.html#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="bilateral-comparison.html#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sim_res, <span class="fu">aes</span>(<span class="at">x=</span>n)) <span class="sc">+</span></span>
+<span id="cb21-8"><a href="bilateral-comparison.html#cb21-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_density</span>(<span class="at">adjust=</span><span class="fl">3.5</span>, <span class="at">n=</span><span class="dv">256</span>) <span class="sc">+</span></span>
+<span id="cb21-9"><a href="bilateral-comparison.html#cb21-9" aria-hidden="true" tabindex="-1"></a>   <span class="co">#geom_histogram(bins=10) +</span></span>
+<span id="cb21-10"><a href="bilateral-comparison.html#cb21-10" aria-hidden="true" tabindex="-1"></a>   <span class="fu">facet_wrap</span>( <span class="sc">~</span> pairs, <span class="at">nrow=</span><span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb21-11"><a href="bilateral-comparison.html#cb21-11" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_point</span>(<span class="at">data=</span>annot, <span class="fu">aes</span>(<span class="at">x=</span>x_n, <span class="at">y=</span>y_n), </span>
+<span id="cb21-12"><a href="bilateral-comparison.html#cb21-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">size=</span><span class="dv">2</span>, <span class="at">color=</span><span class="st">"red"</span>, <span class="at">shape=</span><span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb21-13"><a href="bilateral-comparison.html#cb21-13" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_text</span>(<span class="at">data=</span>annot, <span class="fu">aes</span>(<span class="at">x=</span>x_mu, <span class="at">y=</span>y_mu, </span>
+<span id="cb21-14"><a href="bilateral-comparison.html#cb21-14" aria-hidden="true" tabindex="-1"></a>                             <span class="at">label=</span><span class="fu">paste0</span>(<span class="st">"mu = "</span>, mu_label)), </span>
+<span id="cb21-15"><a href="bilateral-comparison.html#cb21-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">hjust=</span><span class="dv">0</span>, <span class="at">vjust=</span><span class="dv">0</span>, <span class="at">color=</span><span class="st">"gray50"</span>) <span class="sc">+</span></span>
+<span id="cb21-16"><a href="bilateral-comparison.html#cb21-16" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_vline</span>(<span class="at">data=</span>annot, <span class="fu">aes</span>(<span class="at">xintercept=</span>mu),</span>
+<span id="cb21-17"><a href="bilateral-comparison.html#cb21-17" aria-hidden="true" tabindex="-1"></a>              <span class="at">linetype=</span><span class="st">"dashed"</span>, <span class="at">color=</span><span class="st">"gray50"</span>) <span class="sc">+</span></span>
+<span id="cb21-18"><a href="bilateral-comparison.html#cb21-18" aria-hidden="true" tabindex="-1"></a>   <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"number of pairs"</span>, <span class="at">y=</span><span class="st">"density"</span>) <span class="sc">+</span></span>
+<span id="cb21-19"><a href="bilateral-comparison.html#cb21-19" aria-hidden="true" tabindex="-1"></a>   <span class="fu">theme_bw</span>()</span>
+<span id="cb21-20"><a href="bilateral-comparison.html#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">file.path</span>(pkg_dir, <span class="st">"figures"</span>, <span class="st">"STIR-2000-simulation-pairs.pdf"</span>), </span>
+<span id="cb21-21"><a href="bilateral-comparison.html#cb21-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">width=</span><span class="dv">4</span>, <span class="at">height=</span><span class="dv">4</span>)   </span>
+<span id="cb21-22"><a href="bilateral-comparison.html#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span></code></pre></div>
 </div>
 <div id="fat-infiltration" class="section level2" number="8.2">
 <h2>
 <span class="header-section-number">8.2</span> Fat infiltration<a class="anchor" aria-label="anchor" href="#fat-infiltration"><i class="fas fa-link"></i></a>
 </h2>
 <p>The Pearson correlation between right and left fat infiltration is 0.82.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fat_cor</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Subject</span>, <span class="va">location</span>, <span class="va">Fat_Infilt_Percent</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">location</span>, value<span class="op">=</span><span class="va">Fat_Infilt_Percent</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -165,7 +167,7 @@
 <span><span class="co">#&gt;     cor</span></span>
 <span><span class="co">#&gt;   &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1 0.821</span></span></code></pre></div>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Subject</span>, <span class="va">location</span>, <span class="va">Fat_Infilt_Percent</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">location</span>, value<span class="op">=</span><span class="va">Fat_Infilt_Percent</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -191,7 +193,7 @@
 Figure 8.1: Left and right whole muscle fat percent.
 </p>
 </div>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span>file<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>,</span>
 <span>                      <span class="st">"fat-infilt-left-and-right.pdf"</span><span class="op">)</span>,</span>
@@ -201,7 +203,7 @@ Figure 8.1: Left and right whole muscle fat percent.
 <h2>
 <span class="header-section-number">8.3</span> Muscle strength<a class="anchor" aria-label="anchor" href="#muscle-strength"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Subject</span>, <span class="va">location</span>, <span class="va">`Foot Dorsiflexors`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">location</span>, value<span class="op">=</span><span class="va">`Foot Dorsiflexors`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -230,7 +232,7 @@ Figure 8.1: Left and right whole muscle fat percent.
 Figure 8.2: Left and right TA muscle strength (foot dorsiflexors).
 </p>
 </div>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span>file<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>,</span>
 <span>                      <span class="st">"dorsiflexors-infilt-left-and-right.pdf"</span><span class="op">)</span>,</span>
@@ -240,7 +242,7 @@ Figure 8.2: Left and right TA muscle strength (foot dorsiflexors).
 <h2>
 <span class="header-section-number">8.4</span> Histopathological variables<a class="anchor" aria-label="anchor" href="#histopathological-variables"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Subject</span>, <span class="va">location</span>, <span class="va">`Cumulative Score`</span>,</span>
 <span>                <span class="va">`I. Variability in Fiber`</span>,</span>
@@ -270,7 +272,7 @@ Figure 8.2: Left and right TA muscle strength (foot dorsiflexors).
 <span><span class="va">path_cor</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">pathology_var</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>cor<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">L</span>, <span class="va">R</span><span class="op">)</span><span class="op">)</span> </span>
 <span>  </span></code></pre></div>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">L</span>, y<span class="op">=</span><span class="va">R</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html">geom_jitter</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.1</span>, height<span class="op">=</span><span class="fl">0.1</span>, size<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method<span class="op">=</span><span class="st">"lm"</span>, se<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
@@ -291,7 +293,7 @@ Figure 8.2: Left and right TA muscle strength (foot dorsiflexors).
 Figure 8.3: Lift and right TA muscle histopathological variables.
 </p>
 </div>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>, <span class="st">"bilateral_cor_pathological_var.pdf"</span><span class="op">)</span>, width<span class="op">=</span><span class="fl">6</span>, height<span class="op">=</span><span class="fl">4</span><span class="op">)</span>    </span></code></pre></div>
 </div>
 <div id="fshd-signatures-bilateral-comparisons" class="section level2" number="8.5">
@@ -303,7 +305,7 @@ Figure 8.3: Lift and right TA muscle histopathological variables.
 <span class="header-section-number">8.5.1</span> Per-gene correlation<a class="anchor" aria-label="anchor" href="#per-gene-correlation"><i class="fas fa-link"></i></a>
 </h3>
 <p>We calculated the left-t-right correlation for every genes in the baskets. The expression level used here is TPM.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get TPM for each gene</span></span>
 <span><span class="va">bilat_tpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_dfr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">all_baskets</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">basket_name</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">id</span> <span class="op">&lt;-</span> <span class="va">all_baskets</span><span class="op">[[</span><span class="va">basket_name</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">gencode_v35</span></span>
@@ -324,7 +326,7 @@ Figure 8.3: Lift and right TA muscle histopathological variables.
 <span><span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>basket<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">basket</span>, levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">all_baskets</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="co">#  dplyr::filter(!Subject %in% c("13-0007", "13-0009"))</span></span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gene_cor</span> <span class="op">&lt;-</span> <span class="va">bilat_tpm</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">L</span>, <span class="va">R</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>L_log <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">L</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span>, R_log<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">R</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -392,7 +394,7 @@ IG
 </tr>
 </tbody>
 </table></div>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gene_cor</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">correlation</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">basket</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"DUX4-M"</span>, <span class="st">"DUX4-M12"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">basket</span>, y<span class="op">=</span><span class="va">correlation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -407,13 +409,13 @@ IG
 <span>          axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, </span>
 <span>                                     vjust <span class="op">=</span> <span class="fl">0.5</span>, hjust<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="07-bilateral-comparison_files/figure-html/boxplot-per-gene-bilat-correlation-by-basket-1.png" width="672"></div>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span>file<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>,</span>
 <span>                      <span class="st">"bilat-basket-comparison-cor-by-gene.pdf"</span><span class="op">)</span>,</span>
 <span>       width<span class="op">=</span><span class="fl">2</span>, height<span class="op">=</span><span class="fl">3</span><span class="op">)</span>  </span></code></pre></div>
 <p><strong>Scatter plot for each genes</strong>
 6 by 5 scatter plots</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dux4_corr</span> <span class="op">&lt;-</span> <span class="va">gene_cor</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">basket</span> <span class="op">==</span> <span class="st">"DUX4-M6"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>formated<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/format.html">format</a></span><span class="op">(</span><span class="va">correlation</span>, digit<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -431,10 +433,10 @@ IG
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>trans<span class="op">=</span><span class="st">"log10"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>trans<span class="op">=</span><span class="st">"log10"</span><span class="op">)</span> </span></code></pre></div>
 <div class="inline-figure"><img src="07-bilateral-comparison_files/figure-html/per-gene-correlation-scatter-DUX4-M6-1.png" width="576"></div>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>, <span class="st">"bilateral_cor_DUX4_basket_genes.pdf"</span><span class="op">)</span>,</span>
 <span>       width<span class="op">=</span><span class="fl">7</span>, height<span class="op">=</span><span class="fl">1.7</span><span class="op">)</span>  </span></code></pre></div>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ecm_corr</span> <span class="op">&lt;-</span> <span class="va">gene_cor</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">basket</span> <span class="op">==</span> <span class="st">"ECM"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>formated<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/format.html">format</a></span><span class="op">(</span><span class="va">correlation</span>, digit<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -452,10 +454,10 @@ IG
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>trans<span class="op">=</span><span class="st">"log10"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>trans<span class="op">=</span><span class="st">"log10"</span><span class="op">)</span> </span></code></pre></div>
 <div class="inline-figure"><img src="07-bilateral-comparison_files/figure-html/per-gene-correlation-scatter-ECM-M6-1.png" width="576"></div>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>, <span class="st">"bilateral_cor_ECM_basket_genes.pdf"</span><span class="op">)</span>,</span>
 <span>       width<span class="op">=</span><span class="fl">7</span>, height<span class="op">=</span><span class="fl">1.7</span><span class="op">)</span>  </span></code></pre></div>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">inflam_corr</span> <span class="op">&lt;-</span> <span class="va">gene_cor</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">basket</span> <span class="op">==</span> <span class="st">"Inflamm"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>formated<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/format.html">format</a></span><span class="op">(</span><span class="va">correlation</span>, digit<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -473,10 +475,10 @@ IG
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>trans<span class="op">=</span><span class="st">"log10"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>trans<span class="op">=</span><span class="st">"log10"</span><span class="op">)</span> </span></code></pre></div>
 <div class="inline-figure"><img src="07-bilateral-comparison_files/figure-html/per-gene-correlation-scatter-inflam-1.png" width="576"></div>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>, <span class="st">"bilateral_cor_Inflamm_basket_genes.pdf"</span><span class="op">)</span>,</span>
 <span>       width<span class="op">=</span><span class="fl">7</span>, height<span class="op">=</span><span class="fl">1.7</span><span class="op">)</span>  </span></code></pre></div>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">complement_corr</span> <span class="op">&lt;-</span> <span class="va">gene_cor</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">basket</span> <span class="op">==</span> <span class="st">"Complement"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>formated<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/format.html">format</a></span><span class="op">(</span><span class="va">correlation</span>, digit<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -494,10 +496,10 @@ IG
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>trans<span class="op">=</span><span class="st">"log10"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>trans<span class="op">=</span><span class="st">"log10"</span><span class="op">)</span> </span></code></pre></div>
 <div class="inline-figure"><img src="07-bilateral-comparison_files/figure-html/per-gene-correlation-scatter-Complement-1.png" width="576"></div>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>, <span class="st">"bilateral_cor_Complement_basket_genes.pdf"</span><span class="op">)</span>,</span>
 <span>       width<span class="op">=</span><span class="fl">7</span>, height<span class="op">=</span><span class="fl">1.7</span><span class="op">)</span>  </span></code></pre></div>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ig_corr</span> <span class="op">&lt;-</span> <span class="va">gene_cor</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">basket</span> <span class="op">==</span> <span class="st">"IG"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>formated<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/format.html">format</a></span><span class="op">(</span><span class="va">correlation</span>, digit<span class="op">=</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -515,7 +517,7 @@ IG
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>trans<span class="op">=</span><span class="st">"log10"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>trans<span class="op">=</span><span class="st">"log10"</span><span class="op">)</span> </span></code></pre></div>
 <div class="inline-figure"><img src="07-bilateral-comparison_files/figure-html/per-gene-correlation-scatter-IG-1.png" width="576"></div>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>, <span class="st">"bilateral_cor_IG_basket_genes.pdf"</span><span class="op">)</span>,</span>
 <span>       width<span class="op">=</span><span class="fl">7</span>, height<span class="op">=</span><span class="fl">1.7</span><span class="op">)</span>  </span></code></pre></div>
 </div>
@@ -524,7 +526,7 @@ IG
 <span class="header-section-number">8.5.2</span> Per-basket by log sum<a class="anchor" aria-label="anchor" href="#per-basket-by-log-sum"><i class="fas fa-link"></i></a>
 </h3>
 <p>Here we calculate the per-basket bilateral correlation using basket scores (accumulated <span class="math inline">\(log_{10}(TPM+1)\)</span>).</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Subject</span>, <span class="va">location</span>, <span class="va">`DUX4-M6-logSum`</span>,</span>
 <span>                <span class="va">`Inflamm-logSum`</span>, <span class="va">`ECM-logSum`</span>, <span class="va">`IG-logSum`</span>,</span>
@@ -539,7 +541,7 @@ IG
 <span></span>
 <span><span class="va">basket_cor</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">basket</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>cor<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">L</span>, <span class="va">R</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">L</span>, y<span class="op">=</span><span class="va">R</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">geom_smooth</a></span><span class="op">(</span>method<span class="op">=</span><span class="st">"lm"</span>, se<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
@@ -560,7 +562,7 @@ IG
 Figure 8.4: Basket score between the feft and Right TA muscles.
 </p>
 </div>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">draft_fig_dir</span>, <span class="st">"bilateral_cor_baskets.pdf"</span><span class="op">)</span>,</span>
 <span>       width<span class="op">=</span><span class="fl">5</span>, height<span class="op">=</span><span class="fl">3.5</span><span class="op">)</span>  </span></code></pre></div>
 
@@ -601,7 +603,7 @@ Figure 8.4: Basket score between the feft and Right TA muscles.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Wellstone bilateral tibialis anterior muscle biopsy study</strong>" was written by Chao-Jen Wong. It was last built on 2023-04-07.</p>
+    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-04-10.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
