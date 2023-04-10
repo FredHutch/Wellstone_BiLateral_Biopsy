@@ -18,15 +18,11 @@ tab:display-63-sig-immune-cell-tpm
 tab:plier-markers
 about
 software
-data-sets
 repos-structure
 annotation-package
-build-txdb-package-from-gtf
-build-ensdb-package-using-annotationhub
-preprocessing-and-gene-counts
+rna-seq-preprocessing-and-gene-counts
 study-cohort
 muscle-content
-mri-fat
 MRI-vs-DUX4-score
 stir-status-and-dux4-signatures
 logistics-prediction-of-dux4-signature-occurrence
@@ -62,3 +58,5 @@ correlation-with-basekt-scores
 visualize-the-relationship
 complement-scoring-vs.-stir-status
 complement-scoring-vs.-class
+appendixA-buildTxDB
+build-ensdb-package-using-annotationhub
