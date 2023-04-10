@@ -1,5 +1,5 @@
 --- 
-title: "Wellstone bilateral tibialis anterior muscle biopsy study"
+title: "Wellstone bilateral tibialis anterior FSHD biopsied muscle study"
 author: "Chao-Jen Wong"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -8,130 +8,60 @@ bibliography: [book.bib, packages.bib]
 cover-image: images/cover.jpeg
 url: https://fredHutch.github.io/Wellstone_BiLateral_Biopsy
 description: |
-  This is a book written to support computational transparency and reproducibility for our publication, Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression.
+  This book is written to support computational transparency and reproducibility for our publication titled "Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression".
 biblio-style: apalike
 csl: chicago-fullnote-bibliography.csl
 ---
 
 # About
 
-This gitbook is written to support our publication's computational transparency and reproducibility, _Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression_. 
+The purpose of this book is to promote computational transparency and reproducibility in relation to our manuscript titled "Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression." Through detailed explanations of our decision-making processes based on machine learning and statistical inferences, we aim to provide readers with a comprehensive understanding of our computational methods and coding. In addition, the book contains reproducible codes that generate results on the fly, enhancing the accessibility and usability of our research.
 
-The data analyses for the study included RNA-seq hypothesis-based and classification-based differential analysis, machine learning, linear regression, correlation analysis, and logistics regression. In this book, we included adequate details about how and why we choose our approaches and present readable, reproducible code that generates the results on the fly.
+In this study, we obtained bilateral tibialis anterior (TA) biopsied muscles from 34 subjects. The muscle biopsies (n=68) were processed for MRI characterization, histopathological scoring, RNA extraction for RNA sequencing , and DNA extraction for bisulfite sequencing of the 4qA permissive allele in the region of exon 2-3. Through the metrics yield by these processes, we were able to validate the association of MRI and RNA molecular signatures, and identify immune cell markers associated with immune cell infiltrates and symmetric trends in the disease. Additionally, we curated and proposed panels of genes as post-therapeutic targets for clinical trial designs.
 
-The following sections discuss the software we used for the data analysis, what material we included in the [repository](https://github.com/FredHutch/Wellstone_BiLateral_Biopsy), how we build the Bioconductor transcript-based database (TxDB) package that we used for RNA-seq data analysis, and finally the RNA-seq data preprocessing and read counts.
+This book discusses the following topics:
+
+1. Transcript-based assessment of muscle cell type content of the FSHD biopsied muscle
+2. FSHD molecular signatures, including DUX4, extracurricular matrix, inflammatory, complement activation, and immunoglobulins
+3. ML classification based on the FSHD molecular signatures
+4. MRI characteristics and DUX4 signatures 
+5. Bilateral comparison analysis
+6. Immune cell infiltrates signature
+
 
 ## Software
 R (4.2.2) and packages from the Bioconductor (3.17) and Tidyverse projects. Most used packages include `GenomicAlignments`, `GenomicFeatures`, `DESeq2`, `dplyr`, `ggplot2`, `caret`, and genomic-related BioC packages for annotation. 
 
-## Data sets
-- RNA-seq gene expression: `DESeqDataSet` instances obtaining gene counts, TPM, RPKM, as well as range and annotation data
-- MRI characteristics including regional fat fraction, whole muscle fat percent, and STIR rating
-- Clinical data including histopathological scores, muscle strength, and clinical severity score
-- Methylation percentage from the Bisulfite sequencing
-
 
 ## Repos structure
+The section outlines the structure of our repository, which is available at [here](https://github.com/FredHutch/Wellstone_BiLateral_Biopsy). 
 
 ```
 \data: 
     |- sanitized.dds.rda: DESeqDataSet instance; longitudinal RNA-seq
+    |- longitudinal_dds.rda: DESeqDataSet instance include the longitudinal 
+       RNA-seq gene counts and metadata (MRI, pathology, and clinical data)
     |- cluster_df.rda: data.frame instance
-    |- dds.rda: DESeqDataSet instance; bilateral RNA-seq data
-    |- comprehensive_df.rda: data.frame instance obtaining 
-       clinical, MRI, and methylation data
+    |- bilateral_dds.rda: DESeqDataSet instance; bilateral RNA-seq data
+    |- comprehensive_df.rda: data.frame instance obtaining the biletarl
+       cohort's clinical, MRI, pathology, FSHD molecular signature scores,
+       and methylation data
 
 \docs: *.html; folder hosts the gitbook 
 \gitbook: *.Rmd that makes the gitbook
 \scripts: *.R; un-orgnaized R code of our initial data 
           exploration and bioinformatics analysis
-\extdata: *.xlsx; supplemental tables
+\extdata: *.xlsx; extra files and supplemental tables
 ```
 
 ## Annotation package
-The annotation we used for the analysis was collected from Gencode v35. The code chunk below is an example of building a customized `TxDB` package, named `hg38.HomoSapiens.Gencode.v35`, for our bioinformatics analysis. 
+To conducto our RNA-seq analysis, used annotations from Gencode v35 and built a customized `TxDB` package, which we named `hg38.HomoSapiens.Gencode.v35`. For instructions on building Bioconductor `TxDB` or `EsbDB` annotation packages, please refer to Appendix A.
 
-### Build TxDB package from GTF 
-The steps are:
 
-1. Transform the downloaded Gencode v35 GTF file into a `GRange` instance
-2. Convert the `GRange` instance into a TxDB package
-3. 3. (Optional) Include the gene annotation (gene_name, gene_type, gene_ID, and gene_type) as a `DataFrame` instance in the `data` folder in the package. This step not necessary if building an Ensembl DB package (`EnsDb`)
+## RNA-seq preprocessing and gene counts
+To pre-preprocess the RNA-seq data, we filtered out unqualified raw reads, trimmed the Illumina universal adapters using _Trimmomatic_, and aligned the remaining reads to GRCh38.p13 with _Rsubread_.
 
-```{r build-gencodev35-TxDB, eval=FALSE}
-library(rtracklayer)
-library(GenomicFeatures)
-
-## Define the destination and package name of your TxDB package
-pkg_name <- "hg38.HomoSapiens.Gencode.v35"
-dest_dir <- "/fh/fast/tapscott_s/CompBio/hg38"
-
-## Where is my GTF file
-gtf_file <- "/fh/fast/tapscott_s/CompBio/genome_reference/GRCh38/Annotation/gencode.v35.annotation.gtf"
-
-## Import the GTF file into a GRange instance
-gencode <- rtracklayer::import.gff(gtf_file)
-
-## Define metadata: version, source, and etc.
-organism <- "human"
-release <- "v35"
-dataSource <- paste0("ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_",
-                     organism, "/", release)
-metadata <- data.frame(
-  name=c("Organism", "Resource URL", "Resource GTF file",
-         "Taxonomy ID", "miRBase build ID", "Data source"),
-  value=c("Homo sapiens", dataSource, gtf_file, NA, NA, dataSource))
-
-## Prepare the metadata
-metadata <- GenomicFeatures:::.prepareGFFMetadata(gtf_file, dataSource,
-                                                  organism="Homo sapiens")
-
-## Combine the GRange instance and metadata into a TxDB instance
-txdb <- GenomicFeatures:::makeTxDbFromGRanges(gr=gencode,
-                                              metadata=metadata)
-
-## Build a TxDb package
-makeTxDbPackage(txdb, version="3.6.2", author="Chao-Jen Wong",
-                pkgname=pkg_name, destDir=dest_dir, license="Artistic-2.0",
-                provider="Gencode", providerVersion=release,
-                maintainer="Chao-Jen Wong <cwon2@fredhutch.org>")
-```
-
-The downside of the `TxDB` package is that it does not carry the corresponding columns of gene_name, gene_type, and gene_symbols as the original GTF file obtained. So adding a `DataFrame` instance to include that information might provide convenience in future usage. 
-
-```{r gene-annotation, eval=FALSE}
-gene.anno <- mcols(gencode)[gencode$type=="gene", ]
-rownames(gene.anno) <- gene.anno$gene_id
-
-#' put annotation to the data directory
-data_dir <- file.path(dest_dir, pkg_name, "data")
-if (!file.exists(data_dir))
-    dir.create(data_dir)
-save(gene.anno, file=file.path(data_dir, "gene.anno.rda"))
-```
-
-### Build EnsDb package using `AnnotationHub`
-In retrospect, I would use `AnnotationHub()` and `GenomicFeatures::makeEnsembldbPackage()` to make an `EnsDB` package instead of `TxDB` because `EnsDB` has slots/functions to retrieve the gene information. Below is an example: 
-```{r annotaitonHub-example, eval=FALSE}
-#'
-#' EnsDb.Hsapiens.v92: 
-#'
-library(AnnotationHub)
-library(GenomicFeatures)
-ah <- AnnotationHub()
-query(ah, c("hsapiens"))
-edb <- ah[["AH60977"]]
-seqlevelsStyle(edb) <- "NCBI"
-makeEnsembldbPackage(ensdb=dbfile(dbconn(edb)), version="1.0.0",
-                     maintainer="Chao-Jen Wong <cwon2@fredhutch.org>",
-                     author="Chao-Jen Wong",
-                     destDir="/fh/fast//tapscott_s/CompBio/hg38")
-```
-
-## Preprocessing and gene counts
-For the RNA-seq data preprocessing, we filtered unqualified raw reads, trimmed the Illumina universal adapters by _Trimmomatic_, and aligned the reads against GRCh38.p13 by _Rsubread_.
-
-The code chunk below shows an example of how to use `GenomicAlignments`, `BiocParallel`, and customized TxDB (`hg38.HomoSapiens.Gencode.v35`) packages to count reads and make an `RangedSummarizedExperiment` instance. __NOTE__: `sort_files` indicated the location of my sorted, indexed BAM files.
+The code chunk below provides an example of how we used `GenomicAlignments`, `BiocParallel`, and a customized `TxDB` package (`hg38.HomoSapiens.Gencode.v35`) to count reads and generate an `RangedSummarizedExperiment` object. Note that the `sort_files` parameter indicates the location of the sorted, indexed BAM files used in our analysis. In the `summarizOverlaps()` function, I chose to use `Intersectionstrict` mode that only count reads that are completely contained within the range of exons, and ignore any ambiguous reads that straddle different gene features. 
 
 ```{r make-se, eval=FALSE}
 # sort_files gives the location of my bam files
@@ -148,17 +78,14 @@ features <- GenomicFeatures::exonsBy(hg38.HomoSapiens.Gencode.v35, by="gene")
 features <- keepStandardChromosomes(features,
                                     species = "Homo_sapiens",
                                     pruning.mode="fine")
-rse <- GenomicAlignments::summarizeOverlaps(features=features,
-                                            reads = Rsamtools::BamFileList(sort_file),
-                                            mode = "IntersectionStrict",
-                                            ignore.strand=TRUE, 
-                                            singleEnd=TRUE,
-                                            inter.feature=TRUE, 
-                                            BPPARAM=bp_param)
+rse <- 
+  GenomicAlignments::summarizeOverlaps(features=features,
+                                       reads =
+                                         Rsamtools::BamFileList(sort_file),
+                                       mode = "IntersectionStrict",
+                                       ignore.strand=TRUE, 
+                                       singleEnd=TRUE,
+                                       inter.feature=TRUE, 
+                                       BPPARAM=bp_param)
 ```
-The assigned parameters of the `summarizOverlaps()` function are my preference mode in only counting the reads that are completely fall within the range of exons and ignoring ambiguous reads straddling different gene features.
 
-```{js, echo = FALSE}
-title=document.getElementById('header');
-title.innerHTML = '<img src="images/cover.jpeg" alt="cover image" style="width:500px;height:100px;">' + title.innerHTML
-```
