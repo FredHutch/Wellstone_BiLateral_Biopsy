@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 9 Immune cell type proportion by PLIER | Wellstone bilateral tibialis anterior FSHD biopsied muscle study</title>
+<meta name="author" content="Chao-Jen Wong">
+<meta name="description" content="The PLIER package1 provides an alternative to examine the immune cell infiltration, without involving in GO or differential analysis as we have investigated in @ref{immune-cell-infiltrates}. PLIER...">
+<meta name="generator" content="bookdown 0.32 with bs4_book()">
+<meta property="og:title" content="Chapter 9 Immune cell type proportion by PLIER | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
+<meta property="og:type" content="book">
+<meta property="og:url" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/plier.html">
+<meta property="og:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
+<meta property="og:description" content="The PLIER package1 provides an alternative to examine the immune cell infiltration, without involving in GO or differential analysis as we have investigated in @ref{immune-cell-infiltrates}. PLIER...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 9 Immune cell type proportion by PLIER | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
+<meta name="twitter:description" content="The PLIER package1 provides an alternative to examine the immune cell infiltration, without involving in GO or differential analysis as we have investigated in @ref{immune-cell-infiltrates}. PLIER...">
+<meta name="twitter:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Sen-0.4.5/font.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM%20Mono&amp;display=swap" rel="stylesheet">
+<link href="libs/Bitter-0.4.5/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.4.2/transition.js"></script><script src="libs/bs3compat-0.4.2/tabs.js"></script><script src="libs/bs3compat-0.4.2/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Wellstone bilateral tibialis anterior FSHD biopsied muscle study</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html"><span class="header-section-number">1</span> About</a></li>
+<li><a class="" href="study-cohort.html"><span class="header-section-number">2</span> Study cohort</a></li>
+<li><a class="" href="muscle-content.html"><span class="header-section-number">3</span> Transcript-based accessment for muscle content</a></li>
+<li><a class="" href="MRI-vs-DUX4-score.html"><span class="header-section-number">4</span> MRI characteristics and DUX4 molecular signatures</a></li>
+<li><a class="" href="DUX4-basket.html"><span class="header-section-number">5</span> DUX4 basket</a></li>
+<li><a class="" href="other-baskets.html"><span class="header-section-number">6</span> Inflammatory, ECM, complement activation and immunoglobulins signatures</a></li>
+<li><a class="" href="bilateral-comparison.html"><span class="header-section-number">7</span> Bilateral comparison</a></li>
+<li><a class="" href="immune-cell-infiltrates.html"><span class="header-section-number">8</span> Immune cell infiltrates signature</a></li>
+<li><a class="active" href="plier.html"><span class="header-section-number">9</span> Immune cell type proportion by PLIER</a></li>
+<li><a class="" href="complement-scoring.html"><span class="header-section-number">10</span> Complement scoring</a></li>
+<li><a class="" href="references.html">References</a></li>
+<li class="book-part">Appendix</li>
+<li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build TxDB package from GTF</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/FredHutch/Wellstone_BiLateral_Biopsy">View book source <i class="fas fa-air-freshener"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="plier" class="section level1" number="9">
+<h1>
+<span class="header-section-number">9</span> Immune cell type proportion by PLIER<a class="anchor" aria-label="anchor" href="#plier"><i class="fas fa-link"></i></a>
+</h1>
+<p>The <em>PLIER</em> package<span class="citation"><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Boris M. Hartmann Weiguang Mao Elena Zaslavsky, &lt;span&gt;“Pathway-Level Information Extractor (PLIER) for Gene Expression Data,”&lt;/span&gt; &lt;em&gt;Nature Methods&lt;/em&gt;, 2019.&lt;/p&gt;"><sup>1</sup></a></span> provides an alternative to examine the immune cell infiltration, without involving in GO or differential analysis as we have investigated in @ref{immune-cell-infiltrates}. PLIER employes eigenvalue-like decomposition to estimate the immune cell contribution to the FSHD transcriptome. The top loading variables from the resulting eigenvalue-like latent variables (LV) are potential indicators of immune infiltrate signatures. We utilized the PLIER algorithm for analyzing both longitudinal and bilateral samples. The expression levels of the most influential loading variables are depicted in this chapter.</p>
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># define parameters and load datasets: bilat_dds and longitudinal_dds</span></span>
+<span><span class="va">pkg_dir</span> <span class="op">&lt;-</span> <span class="st">"/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"</span></span>
+<span><span class="va">fig_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"figures"</span>, <span class="st">"immune-infiltration"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"scripts"</span>, <span class="st">"load_variables_and_datasets.R"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># returns bilat_dds and longitudinal_dds</span></span></code></pre></div>
+<p>We ultitized the <em>IRIS</em> dataset<span class="citation"><a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Dhays Seshasayee R. Abbas Kristen Wolslegel, &lt;span&gt;“IRIS: Deconvolution of Blood Microarray Data Identifies Cellular Activation Patterns in Systemic Lupus Erythematosus,”&lt;/span&gt; &lt;em&gt;PLOS ONE&lt;/em&gt;, 2009, &lt;a href="https://doi.org/10.1371/journal.pone.0006098" role="doc-biblioref"&gt;https://doi.org/10.1371/journal.pone.0006098&lt;/a&gt;.&lt;/p&gt;'><sup>2</sup></a></span> from <em>PLIER</em> as the baseline of immnune cell types and markers.</p>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">PLIER</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">bloodCellMarkersIRISDMAP</span><span class="op">)</span></span>
+<span><span class="co"># Extract the IRIS dataset from `bloodCellMarkersIRISDMAP`</span></span>
+<span><span class="va">blood_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">bloodCellMarkersIRISDMAP</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">gene_name</span>, <span class="fu"><a href="https://rdrr.io/pkg/tidyselect/man/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"IRIS"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/tidyselect/man/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">bilat_coldata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">longi_coldata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div id="plier-longitudinal-samples" class="section level2" number="9.1">
+<h2>
+<span class="header-section-number">9.1</span> PLIER Longitudinal samples<a class="anchor" aria-label="anchor" href="#plier-longitudinal-samples"><i class="fas fa-link"></i></a>
+</h2>
+<p>In this section, we applied PLIER to estimate the immune cell type proportion for the longitudiname samples.</p>
+<div id="steps" class="section level3" number="9.1.1">
+<h3>
+<span class="header-section-number">9.1.1</span> Steps<a class="anchor" aria-label="anchor" href="#steps"><i class="fas fa-link"></i></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>run PLIER, the <code>priorMat</code> only includes the IRIS dataset (<code>blood_iris</code>)</li>
+<li>Select top LVs with AUC &gt; 0.8 and FDR &lt; 0.05</li>
+<li>Verify the top LVs of elevated proportion in FSHD and filter out the false positives</li>
+<li>Identify top loading varibles associated with the selected top LVs</li>
+</ol>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># use RPKM as suggested by the PLIER authers; TPM yields similar results</span></span>
+<span><span class="va">longitudinal_rpkm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">)</span><span class="op">[[</span><span class="st">"RPKM"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">longitudinal_tpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">longitudinal_rpkm</span><span class="op">)</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">longitudinal_tpm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">)</span><span class="op">$</span><span class="va">gene_name</span></span>
+<span></span>
+<span><span class="va">priorMat</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="va">bloodCellMarkersIRISDMAP</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">blood_iris</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="co"># remove col "gene_name" </span></span>
+<span><span class="va">plier_longi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/PLIER/man/PLIER.html">PLIER</a></span><span class="op">(</span><span class="va">longitudinal_rpkm</span>, <span class="co"># or longitudinal_rpkm</span></span>
+<span>                     priorMat<span class="op">=</span><span class="va">priorMat</span>,</span>
+<span>                     scale <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 24.90828</span></span>
+<span><span class="co">#&gt; [1] "L2 is set to 24.908276840206"</span></span>
+<span><span class="co">#&gt; [1] "L1 is set to 12.454138420103"</span></span>
+<span><span class="va">mat_u</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/PLIER/man/plotU.html">plotU</a></span><span class="op">(</span><span class="va">plier_longi</span>, auc.cutoff <span class="op">=</span> <span class="fl">0.70</span>, fdr.cutoff <span class="op">=</span> <span class="fl">0.05</span>, top <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<span style="display:block;" id="fig:longitudinal-prepare-for-plier"></span>
+<img src="09-immune-cell-type-proportion_files/figure-html/longitudinal-prepare-for-plier-1.png" alt="Significant LVs with AUC &gt; 0.8 and FDR &lt; 0.05." width="672"><p class="caption">
+Figure 9.1: Significant LVs with AUC &gt; 0.8 and FDR &lt; 0.05.
+</p>
+</div>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sig_sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">mat_u</span><span class="op">$</span><span class="va">iirow</span><span class="op">)</span><span class="op">[</span><span class="va">mat_u</span><span class="op">$</span><span class="va">iirow</span><span class="op">]</span></span></code></pre></div>
+<p>Displayed below is the visualization of eight latent variables (LVs) that potentially capture the immune cell infiltrate signatures in the more affected muscles. It is important to note that there may be some false positives among them.</p>
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># proportion boxplots of all the sig LVs </span></span>
+<span><span class="va">sig_proportion_longi</span> <span class="op">&lt;-</span> <span class="va">plier_longi</span><span class="op">$</span><span class="va">B</span><span class="op">[</span><span class="va">mat_u</span><span class="op">$</span><span class="va">iicol</span>, <span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"LV_index"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/gather.html">gather</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">sample_id</span>, value<span class="op">=</span><span class="va">proportion</span>, <span class="op">-</span><span class="va">LV_index</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">longi_coldata</span>, <span class="va">sample_id</span>, <span class="va">cluster</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="va">outliers</span> <span class="op">&lt;-</span> <span class="va">sig_proportion_longi</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">proportion</span> <span class="op">&gt;</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sig_proportion_longi</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">proportion</span> <span class="op">&lt;</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">cluster</span>, y<span class="op">=</span><span class="va">proportion</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.3</span>, outlier.shape <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_jitter.html">geom_jitter</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.3</span>, size<span class="op">=</span><span class="fl">0.3</span>, color<span class="op">=</span><span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">LV_index</span>, scale<span class="op">=</span><span class="st">"free_y"</span>, ncol<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.5</span>, hjust<span class="op">=</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>        axis.title.x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        panel.grid.major <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>, panel.grid.minor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<span style="display:block;" id="fig:plier-B-and-Z"></span>
+<img src="09-immune-cell-type-proportion_files/figure-html/plier-B-and-Z-1.png" alt="The cell type proportion of all significant LVs" width="768"><p class="caption">
+Figure 9.2: The cell type proportion of all significant LVs
+</p>
+</div>
+</div>
+<div id="five-best-lvs-showing-immune-cell-infiltrat-signatures" class="section level3" number="9.1.2">
+<h3>
+<span class="header-section-number">9.1.2</span> Five best LVs showing immune cell infiltrat signatures<a class="anchor" aria-label="anchor" href="#five-best-lvs-showing-immune-cell-infiltrat-signatures"><i class="fas fa-link"></i></a>
+</h3>
+<p>Based on the information extracted from the U, top Z, and B matrices, it can be concluded that LV30, LV4, LV5, LV12, and LV46 are the most reliable latent variables indicating heightened immune cell infiltration. Consequently, we have generated plots for our publication showcasing the following latent variables: LV30 (CD4 Tcell-Th1), LV4 and LV12 (Neutrophil resting), LV40 (IgG and IgA B memory cell), and LV5 (dendritic cell).</p>
+<p>NOTE: I hide the code chuck for they are tidious, but the reader cand find them in the original Rmd files.</p>
+<div id="lv30iris_cd4tcell-th1-restimulated48hour" class="section level4" number="9.1.2.1">
+<h4>
+<span class="header-section-number">9.1.2.1</span> LV30,IRIS_CD4Tcell-Th1-restimulated48hour<a class="anchor" aria-label="anchor" href="#lv30iris_cd4tcell-th1-restimulated48hour"><i class="fas fa-link"></i></a>
+</h4>
+<div class="inline-figure"><img src="09-immune-cell-type-proportion_files/figure-html/LV30-longitudinal-proportion-1.png" width="672"></div>
+</div>
+<div id="lv4iris_neutrophil-resting" class="section level4" number="9.1.2.2">
+<h4>
+<span class="header-section-number">9.1.2.2</span> LV4,IRIS_Neutrophil-Resting<a class="anchor" aria-label="anchor" href="#lv4iris_neutrophil-resting"><i class="fas fa-link"></i></a>
+</h4>
+<div class="inline-figure"><img src="09-immune-cell-type-proportion_files/figure-html/L4-proportion-IRIS_Neutrophil-Resting-1.png" width="672"></div>
+</div>
+<div id="lv12iris_neutrophil-resting" class="section level4" number="9.1.2.3">
+<h4>
+<span class="header-section-number">9.1.2.3</span> LV12,IRIS_Neutrophil-Resting<a class="anchor" aria-label="anchor" href="#lv12iris_neutrophil-resting"><i class="fas fa-link"></i></a>
+</h4>
+<div class="inline-figure"><img src="09-immune-cell-type-proportion_files/figure-html/L12-proportion-IRIS_Neutrophil-Resting-1.png" width="672"></div>
+</div>
+<div id="lv5iris_dendriticcell-lpsstimulated" class="section level4" number="9.1.2.4">
+<h4>
+<span class="header-section-number">9.1.2.4</span> LV5,IRIS_DendriticCell-LPSstimulated<a class="anchor" aria-label="anchor" href="#lv5iris_dendriticcell-lpsstimulated"><i class="fas fa-link"></i></a>
+</h4>
+<div class="inline-figure"><img src="09-immune-cell-type-proportion_files/figure-html/LV5-proportion-IRIS_DendrticCell-1.png" width="672"></div>
+</div>
+<div id="lv40iris_bcell-memory_igg_iga" class="section level4" number="9.1.2.5">
+<h4>
+<span class="header-section-number">9.1.2.5</span> LV40,IRIS_Bcell-Memory_IgG_IgA<a class="anchor" aria-label="anchor" href="#lv40iris_bcell-memory_igg_iga"><i class="fas fa-link"></i></a>
+</h4>
+<div class="inline-figure"><img src="09-immune-cell-type-proportion_files/figure-html/LV40-Bcell-Memory_IgG_IgA-1.png" width="672"></div>
+</div>
+</div>
+<div id="top-loading-variables-z-of-selected-lvs" class="section level3" number="9.1.3">
+<h3>
+<span class="header-section-number">9.1.3</span> Top loading variables Z of selected LVs<a class="anchor" aria-label="anchor" href="#top-loading-variables-z-of-selected-lvs"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">LV_index</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">12</span>, <span class="fl">30</span>, <span class="fl">40</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">LV_index</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">plier_longi</span><span class="op">$</span><span class="va">B</span><span class="op">[</span><span class="va">LV_index</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">priorMat</span> <span class="op">&lt;-</span> <span class="va">bloodCellMarkersIRISDMAP</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">blood_iris</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">top</span> <span class="op">=</span> <span class="fl">15</span></span>
+<span><span class="va">sub_iris</span> <span class="op">&lt;-</span> <span class="va">blood_iris</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">gene_name</span>, <span class="va">`IRIS_CD4Tcell-Th1-restimulated48hour`</span>,</span>
+<span>                <span class="va">`IRIS_CD4Tcell-Th2-restimulated48hour`</span>, </span>
+<span>                <span class="va">`IRIS_DendriticCell-Control`</span>,</span>
+<span>                <span class="va">`IRIS_DendriticCell-LPSstimulated`</span>,</span>
+<span>                <span class="va">`IRIS_CD4Tcell-Th2-restimulated12hour`</span>,</span>
+<span>                <span class="va">`IRIS_Bcell-Memory_IgG_IgA`</span>,</span>
+<span>                <span class="va">`IRIS_Neutrophil-Resting`</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">longi_topZ</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map_dfr.html">map_dfr</a></span><span class="op">(</span><span class="va">LV_index</span>, <span class="kw">function</span><span class="op">(</span><span class="va">index</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">plier_longi</span><span class="op">$</span><span class="va">Z</span><span class="op">[</span>, <span class="va">index</span>, drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="op">-</span><span class="va">V1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/top_n.html">top_n</a></span><span class="op">(</span><span class="va">top</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">V1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="co">#dplyr::rename_with(~paste0("LV", as.character(index))) %&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">sub_iris</span>, by<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="co"># turn NA to 0</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/replace.html">replace</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>in_markerSet <span class="op">=</span> </span>
+<span>                    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/if_else.html">if_else</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/tidyselect/man/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>
+<span>                                    <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, .after<span class="op">=</span><span class="va">gene_name</span><span class="op">)</span></span>
+<span>    <span class="co"># which pathway?</span></span>
+<span><span class="op">}</span>, .id<span class="op">=</span><span class="st">"LV_index"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="co"># append gene_id</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">anno_ens88</span>, by<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">anno_gencode35</span>, <span class="va">gencode35_id</span>, <span class="va">gene_name</span><span class="op">)</span>, </span>
+<span>            by<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span></span>
+<span><span class="va">longi_topZ</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">LV_index</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarize</a></span><span class="op">(</span>n<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">in_markerSet</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>format <span class="op">=</span> <span class="st">"html"</span>, </span>
+<span>               caption<span class="op">=</span><span class="st">"The five most reliable LVs and the number of top loading variables associated with the LVs."</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:longi-top-Z">Table 9.1: </span>The five most reliable LVs and the number of top loading variables associated with the LVs.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+LV_index
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+12,IRIS_Neutrophil-Resting
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+30,IRIS_CD4Tcell-Th1-restimulated48hour
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4,IRIS_Neutrophil-Resting
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+40,IRIS_Bcell-Memory_IgG_IgA
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5,IRIS_DendriticCell-LPSstimulated
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>The code chunk below tidied up the top loading variables and attached annotation.</p>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">longi_topZ</span> <span class="op">&lt;-</span> <span class="va">longi_topZ</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>cell_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">LV_index</span>, <span class="st">"[0-9]*,IRIS_"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">longi_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map_dfr.html">map_dfr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">LV_index</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">lv</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">longi_topZ</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">LV_index</span> <span class="op">==</span> <span class="va">lv</span>, <span class="va">in_markerSet</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">LV_index</span>, <span class="va">cell_type</span>, <span class="va">ens_id</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="va">cell_type</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">anno_ens88</span>, <span class="va">ens88_id</span>, <span class="va">ens_id</span>, <span class="va">gene_name</span><span class="op">)</span>, </span>
+<span>            by<span class="op">=</span><span class="st">"ens_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">ens88_id</span><span class="op">)</span></span></code></pre></div>
+<div id="heatmap-of-top-loading-variables" class="section level4" number="9.1.3.1">
+<h4>
+<span class="header-section-number">9.1.3.1</span> Heatmap of top loading variables<a class="anchor" aria-label="anchor" href="#heatmap-of-top-loading-variables"><i class="fas fa-link"></i></a>
+</h4>
+Below is the heatmap illustrating the z-scores of the log TPM (transcripts per million) values for the top loading variables associated with the five latent variables (LVs).
+<div class="figure">
+<span style="display:block;" id="fig:longitudinal-topZ-of-top-LVs"></span>
+<img src="09-immune-cell-type-proportion_files/figure-html/longitudinal-topZ-of-top-LVs-1.png" alt="Heatmap of the top loading variables associated with the five LVs for longitudinal samples." width="672"><p class="caption">
+Figure 9.3: Heatmap of the top loading variables associated with the five LVs for longitudinal samples.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="plier-to-the-bilateral-samples" class="section level2" number="9.2">
+<h2>
+<span class="header-section-number">9.2</span> PLIER to the bilateral samples<a class="anchor" aria-label="anchor" href="#plier-to-the-bilateral-samples"><i class="fas fa-link"></i></a>
+</h2>
+<p>We applied PLIER to the bilateral samples in the same matter. The cut off values for LVs are : AUC = 0.7 and FDR = 0.05</p>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bilat_rpkm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span><span class="op">[[</span><span class="st">"RPKM"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">bilat_tpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">bilat_rpkm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">bilat_tpm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span><span class="op">$</span><span class="va">gene_name</span></span>
+<span><span class="va">plier_bilat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/PLIER/man/PLIER.html">PLIER</a></span><span class="op">(</span><span class="va">bilat_rpkm</span>, <span class="co"># or longitudinal_rpkm</span></span>
+<span>                     priorMat<span class="op">=</span><span class="va">priorMat</span>,</span>
+<span>                     scale <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 29.88863</span></span>
+<span><span class="co">#&gt; [1] "L2 is set to 29.8886299733202"</span></span>
+<span><span class="co">#&gt; [1] "L1 is set to 14.9443149866601"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/save.html">save</a></span><span class="op">(</span><span class="va">plier_bilat</span>, file<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"plier_bliat.rda"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">mat_u</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/PLIER/man/plotU.html">plotU</a></span><span class="op">(</span><span class="va">plier_bilat</span>, auc.cutoff <span class="op">=</span> <span class="fl">0.7</span>, fdr.cutoff <span class="op">=</span> <span class="fl">0.05</span>, top <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="09-immune-cell-type-proportion_files/figure-html/plier-bilateral-1.png" width="672"></div>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bilat_col_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># define sig LV_index: </span></span>
+<span><span class="va">LV_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">14</span>, <span class="fl">18</span>, <span class="fl">20</span>, <span class="fl">26</span>, <span class="fl">22</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">LV_index</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">plier_bilat</span><span class="op">$</span><span class="va">B</span><span class="op">[</span><span class="va">LV_index</span>, <span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#plier_bilat$B[LV_index, ] %&gt;% as.data.frame() %&gt;%</span></span>
+<span><span class="co">#  rownames_to_column(var="LV_index") %&gt;%</span></span>
+<span><span class="co">#  tidyr::gather(key=sample_id, value=proportion, -LV_index) %&gt;%</span></span>
+<span><span class="co">#  left_join(dplyr::select(bilat_col_data, sample_id, class), by="sample_id") %&gt;%</span></span>
+<span><span class="co">#  dplyr::filter(proportion &gt;= 3) %&gt;%</span></span>
+<span><span class="co">#  knitr::kable(caption="Samples with extreme proportions. Remov ed from the #figure below.")</span></span>
+<span></span>
+<span><span class="co"># boxplot for proportion of potential LVs</span></span>
+<span><span class="va">plier_bilat</span><span class="op">$</span><span class="va">B</span><span class="op">[</span><span class="va">mat_u</span><span class="op">$</span><span class="va">iicol</span>, <span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"LV_index"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/gather.html">gather</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">sample_id</span>, value<span class="op">=</span><span class="va">proportion</span>, <span class="op">-</span><span class="va">LV_index</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">bilat_col_data</span>, <span class="va">sample_id</span>, <span class="va">class</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">proportion</span> <span class="op">&lt;</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">class</span>, y<span class="op">=</span><span class="va">proportion</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.3</span>, outlier.shape <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_jitter.html">geom_jitter</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.3</span>, size<span class="op">=</span><span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">LV_index</span>, scale<span class="op">=</span><span class="st">"free_y"</span>, nrow<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="co">#labs(title="Remove outliers with proportion &gt; 3 ") +</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.5</span>, hjust<span class="op">=</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>          axis.title.x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="09-immune-cell-type-proportion_files/figure-html/plier-bilat-proportion-1.png" width="768"></div>
+<div id="three-base-lvs-demonstrating-elevated-immune-cell-proportion" class="section level3" number="9.2.1">
+<h3>
+<span class="header-section-number">9.2.1</span> Three base LVs demonstrating elevated immune cell proportion<a class="anchor" aria-label="anchor" href="#three-base-lvs-demonstrating-elevated-immune-cell-proportion"><i class="fas fa-link"></i></a>
+</h3>
+<p>The significant LVs that show elevated immune cell type contribution in FSHD are LV2 (Bcell-Memory_IgG_IgA), LV22 (Neutrophil-resting) and LV20 (DendriticCell-LPSstimulated). LV18 and LV26 do have elevated proportion in moderatedly-affected muscles.</p>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bilat_proportion</span> <span class="op">&lt;-</span> <span class="va">plier_bilat</span><span class="op">$</span><span class="va">B</span><span class="op">[</span><span class="va">LV_index</span>, <span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"LV_index"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/gather.html">gather</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">sample_id</span>, value<span class="op">=</span><span class="va">proportion</span>, <span class="op">-</span><span class="va">LV_index</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">bilat_col_data</span>, <span class="va">sample_id</span>, <span class="va">class</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> </span></code></pre></div>
+<div id="lv2-iris_bcell-memory_igg_iga" class="section level4" number="9.2.1.1">
+<h4>
+<span class="header-section-number">9.2.1.1</span> LV2, IRIS_Bcell-Memory_IgG_IgA<a class="anchor" aria-label="anchor" href="#lv2-iris_bcell-memory_igg_iga"><i class="fas fa-link"></i></a>
+</h4>
+<div class="inline-figure"><img src="09-immune-cell-type-proportion_files/figure-html/LV2-Bcll-memory-1.png" width="672"></div>
+</div>
+<div id="lv22iris_neutrophil-resting" class="section level4" number="9.2.1.2">
+<h4>
+<span class="header-section-number">9.2.1.2</span> LV22,IRIS_Neutrophil-Resting<a class="anchor" aria-label="anchor" href="#lv22iris_neutrophil-resting"><i class="fas fa-link"></i></a>
+</h4>
+<div class="inline-figure"><img src="09-immune-cell-type-proportion_files/figure-html/bilat-LV22-neutrophil-resting-1.png" width="672"></div>
+</div>
+<div id="lv20iris_dendriticcell-lpsstimulated" class="section level4" number="9.2.1.3">
+<h4>
+<span class="header-section-number">9.2.1.3</span> LV20,IRIS_DendriticCell-LPSstimulated<a class="anchor" aria-label="anchor" href="#lv20iris_dendriticcell-lpsstimulated"><i class="fas fa-link"></i></a>
+</h4>
+<div class="inline-figure"><img src="09-immune-cell-type-proportion_files/figure-html/LV20-dendritic-1.png" width="672"></div>
+</div>
+<div id="top-loading-variables-z-of-selected-lvs-1" class="section level4" number="9.2.1.4">
+<h4>
+<span class="header-section-number">9.2.1.4</span> Top loading variables (Z) of selected LVs<a class="anchor" aria-label="anchor" href="#top-loading-variables-z-of-selected-lvs-1"><i class="fas fa-link"></i></a>
+</h4>
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bilat_LV</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">20</span>, <span class="fl">22</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">bilat_LV</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">plier_bilat</span><span class="op">$</span><span class="va">B</span><span class="op">[</span><span class="va">bilat_LV</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">priorMat</span> <span class="op">&lt;-</span> <span class="va">bloodCellMarkersIRISDMAP</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">blood_iris</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">top</span> <span class="op">=</span> <span class="fl">15</span></span>
+<span><span class="va">sub_iris</span> <span class="op">&lt;-</span> <span class="va">blood_iris</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">gene_name</span>, <span class="va">`IRIS_CD4Tcell-Th1-restimulated48hour`</span>,</span>
+<span>                <span class="va">`IRIS_CD4Tcell-Th2-restimulated48hour`</span>, </span>
+<span>                <span class="va">`IRIS_Bcell-Memory_IgG_IgA`</span>, <span class="va">`IRIS_Bcell-naive`</span>,</span>
+<span>                <span class="va">`IRIS_Bcell-naive`</span>, <span class="va">`IRIS_Bcell-Memory_IgM`</span>,</span>
+<span>                <span class="va">`IRIS_Neutrophil-Resting`</span>,</span>
+<span>                <span class="va">`IRIS_DendriticCell-Control`</span>,</span>
+<span>                <span class="va">`IRIS_DendriticCell-LPSstimulated`</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bilat_topZ</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map_dfr.html">map_dfr</a></span><span class="op">(</span><span class="va">bilat_LV</span>, <span class="kw">function</span><span class="op">(</span><span class="va">index</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">plier_bilat</span><span class="op">$</span><span class="va">Z</span><span class="op">[</span>, <span class="va">index</span>, drop<span class="op">=</span><span class="cn">FALSE</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="op">-</span><span class="va">V1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/top_n.html">top_n</a></span><span class="op">(</span><span class="va">top</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">V1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="co">#dplyr::rename_with(~paste0("LV", as.character(index))) %&gt;%</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">sub_iris</span>, by<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="co"># turn NA to 0</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/replace.html">replace</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>in_markerSet <span class="op">=</span> </span>
+<span>                    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/if_else.html">if_else</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/tidyselect/man/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>,</span>
+<span>                                    <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, .after<span class="op">=</span><span class="va">gene_name</span><span class="op">)</span></span>
+<span><span class="op">}</span>, .id<span class="op">=</span><span class="st">"LV_index"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="co"># append gene_id</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">anno_ens88</span>, by<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">anno_gencode35</span>, <span class="va">gencode35_id</span>, <span class="va">gene_name</span><span class="op">)</span>, </span>
+<span>            by<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span></span>
+<span><span class="co">#top_z &lt;- bilat_topZ</span></span>
+<span><span class="va">bilat_topZ</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">LV_index</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarize</a></span><span class="op">(</span>n<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">in_markerSet</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption<span class="op">=</span><span class="st">"The three best LVs and the number of associated makers."</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:plier-bilat-top-z">Table 9.2: </span>The three best LVs and the number of associated makers.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+LV_index
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+2,IRIS_Bcell-Memory_IgG_IgA
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+20,IRIS_DendriticCell-LPSstimulated
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+22,IRIS_Neutrophil-Resting
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+</tbody>
+</table></div>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#bilat_LV &lt;- c(2, 20, 22)</span></span>
+<span><span class="co">#names(bilat_LV) &lt;- rownames(plier_bilat$B[bilat_LV, ])</span></span>
+<span><span class="va">bilat_topZ</span> <span class="op">&lt;-</span> <span class="va">bilat_topZ</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>cell_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">LV_index</span>, <span class="st">"[0-9]*,IRIS_"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bilat_markers</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map_dfr.html">map_dfr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">bilat_LV</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">lv</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">bilat_topZ</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">LV_index</span> <span class="op">==</span> <span class="va">lv</span>, <span class="va">in_markerSet</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">LV_index</span>, <span class="va">cell_type</span>, <span class="va">ens_id</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="va">cell_type</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>   <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">anno_gencode35</span>, <span class="va">gencode35_id</span>, <span class="va">ens_id</span>, <span class="va">gene_name</span><span class="op">)</span>, </span>
+<span>            by<span class="op">=</span><span class="st">"ens_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode35_id</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div id="heatmap" class="section level4" number="9.2.1.5">
+<h4>
+<span class="header-section-number">9.2.1.5</span> Heatmap<a class="anchor" aria-label="anchor" href="#heatmap"><i class="fas fa-link"></i></a>
+</h4>
+<p>Figure below is a heatmap depicted the row-wise z-score of the <span class="math inline">\(\log_{10} TPM\)</span> of the top loading variables associated with the three LVs.</p>
+<div class="figure">
+<span style="display:block;" id="fig:bilat-topz-heatmap"></span>
+<img src="09-immune-cell-type-proportion_files/figure-html/bilat-topz-heatmap-1.png" alt="Heatmap of 18 top Z (loading variables) in the bilateral samples." width="768"><p class="caption">
+Figure 9.4: Heatmap of 18 top Z (loading variables) in the bilateral samples.
+</p>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+  <div class="chapter-nav">
+<div class="prev"><a href="immune-cell-infiltrates.html"><span class="header-section-number">8</span> Immune cell infiltrates signature</a></div>
+<div class="next"><a href="complement-scoring.html"><span class="header-section-number">10</span> Complement scoring</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#plier"><span class="header-section-number">9</span> Immune cell type proportion by PLIER</a></li>
+<li>
+<a class="nav-link" href="#plier-longitudinal-samples"><span class="header-section-number">9.1</span> PLIER Longitudinal samples</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#steps"><span class="header-section-number">9.1.1</span> Steps</a></li>
+<li><a class="nav-link" href="#five-best-lvs-showing-immune-cell-infiltrat-signatures"><span class="header-section-number">9.1.2</span> Five best LVs showing immune cell infiltrat signatures</a></li>
+<li><a class="nav-link" href="#top-loading-variables-z-of-selected-lvs"><span class="header-section-number">9.1.3</span> Top loading variables Z of selected LVs</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#plier-to-the-bilateral-samples"><span class="header-section-number">9.2</span> PLIER to the bilateral samples</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#three-base-lvs-demonstrating-elevated-immune-cell-proportion"><span class="header-section-number">9.2.1</span> Three base LVs demonstrating elevated immune cell proportion</a></li></ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/FredHutch/Wellstone_BiLateral_Biopsy/blob/master/gitbook/09-immune-cell-type-proportion.Rmd">View source <i class="fas fa-air-freshener"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/FredHutch/Wellstone_BiLateral_Biopsy/edit/master/gitbook/09-immune-cell-type-proportion.Rmd">Edit this page <i class="fas fa-air-freshener"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-05-19.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
