@@ -9,5 +9,6 @@ presentations
 wellstone-application
 extdata
 docs/*.md
+gitbook/_bookdown_files
 scripts/16-make-supple-table-1.R
 scripts/misc_plays_PLIER_package.R

@@ -28,6 +28,28 @@
     
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -58,7 +80,8 @@
 <li><a class="" href="other-baskets.html"><span class="header-section-number">6</span> Inflammatory, ECM, complement activation and immunoglobulins signatures</a></li>
 <li><a class="" href="bilateral-comparison.html"><span class="header-section-number">7</span> Bilateral comparison</a></li>
 <li><a class="" href="immune-cell-infiltrates.html"><span class="header-section-number">8</span> Immune cell infiltrates signature</a></li>
-<li><a class="" href="complement-scoring.html"><span class="header-section-number">9</span> Complement scoring</a></li>
+<li><a class="" href="plier.html"><span class="header-section-number">9</span> Immune cell type proportion by PLIER</a></li>
+<li><a class="" href="complement-scoring.html"><span class="header-section-number">10</span> Complement scoring</a></li>
 <li><a class="" href="references.html">References</a></li>
 <li class="book-part">Appendix</li>
 <li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build TxDB package from GTF</a></li>
@@ -73,22 +96,27 @@
 <h1>
 <span class="header-section-number">1</span> About<a class="anchor" aria-label="anchor" href="#about"><i class="fas fa-link"></i></a>
 </h1>
-<p>The purpose of this book is to promote computational transparency and reproducibility in relation to our manuscript titled “Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression.” Through detailed explanations of our decision-making processes based on machine learning and statistical inferences, we aim to provide readers with a comprehensive understanding of our computational methods and coding. In addition, the book contains reproducible codes that generate results on the fly, enhancing the accessibility and usability of our research.</p>
+<p>The primary objective of this book is to advocate for computational transparency and reproducibility in conjunction with our manuscript entitled <a href="https://www.biorxiv.org/content/biorxiv/early/2023/02/20/2023.02.20.529303.full.pdf">“Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression.”</a> By offering detailed explanations of our decision-making processes grounded in machine learning and statistical inferences, we provide readers with a comprehensive comprehension of our computational methods and coding. Furthermore, the book includes reproducible codes that generate real-time results, enhancing the accessibility and usability of our research.</p>
 <p>In this study, we obtained bilateral tibialis anterior (TA) biopsied muscles from 34 subjects. The muscle biopsies (n=68) were processed for MRI characterization, histopathological scoring, RNA extraction for RNA sequencing , and DNA extraction for bisulfite sequencing of the 4qA permissive allele in the region of exon 2-3. Through the metrics yield by these processes, we were able to validate the association of MRI and RNA molecular signatures, and identify immune cell markers associated with immune cell infiltrates and symmetric trends in the disease. Additionally, we curated and proposed panels of genes as post-therapeutic targets for clinical trial designs.</p>
 <p>This book discusses the following topics:</p>
 <ol style="list-style-type: decimal">
 <li>Transcript-based assessment of muscle cell type content of the FSHD biopsied muscle</li>
 <li>FSHD molecular signatures, including DUX4, extracurricular matrix, inflammatory, complement activation, and immunoglobulins</li>
 <li>ML classification based on the FSHD molecular signatures</li>
-<li>MRI characteristics and DUX4 signatures</li>
+<li>Identification of six baskets containing genes that exhibit specific signatures associated with FSHD</li>
+<li>Association of MRI characteristics with signatures of DUX4 expression</li>
 <li>Bilateral comparison analysis</li>
-<li>Immune cell infiltrates signature</li>
+<li>Verification of immune cell infiltrate signatures and immune cell type proportions</li>
 </ol>
 <div id="software" class="section level2" number="1.1">
 <h2>
 <span class="header-section-number">1.1</span> Software<a class="anchor" aria-label="anchor" href="#software"><i class="fas fa-link"></i></a>
 </h2>
-<p>R (4.2.2) and packages from the Bioconductor (3.17) and Tidyverse projects. Most used packages include <code>GenomicAlignments</code>, <code>GenomicFeatures</code>, <code>DESeq2</code>, <code>dplyr</code>, <code>ggplot2</code>, <code>caret</code>, and genomic-related BioC packages for annotation.</p>
+<ul>
+<li>R (4.2.2) and packages from the Bioconductor (3.17) and Tidyverse projects. Most used packages include <code>GenomicAlignments</code>, <code>GenomicFeatures</code>, <code>DESeq2</code>, <code>dplyr</code>, <code>ggplot2</code>, <code>caret</code>, and genomic-related BioC packages for annotation.</li>
+<li>
+<code>fastqc</code>, <code>Subread</code>, <code>samTools</code>, and <code>cutadapt</code> for RNA-seq data preprocessing, and <code>PLIER</code> for immune cell type proportions.</li>
+</ul>
 </div>
 <div id="repos-structure" class="section level2" number="1.2">
 <h2>
@@ -178,7 +206,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-04-10.</p>
+    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-05-19.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

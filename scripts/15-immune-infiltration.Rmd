@@ -530,6 +530,7 @@ ggsave(file.path(pkg_dir, "figures", "immune-infiltration",
                  "longitudinal-LV12-Neutrophil-Resting.pdf"),
        width=2, height=3)
 ```
+
 ```{r LV5-proportion-IRIS_DendrticCell}
 sig_proportion_longi %>%
   dplyr::filter(LV_index=="5,IRIS_DendriticCell-LPSstimulated") %>%
@@ -627,6 +628,7 @@ gg <- per_gene_boxplot_groupby_cluster(dds=longitudinal_dds, gene_info,
                                  subtitle="Longitudinal cohort")
 gg + ylim(0, 1.5)
 ```
+
 ### Validation using bilateral cohort
 Now validate using the bilateral cohort.
 
@@ -677,6 +679,9 @@ gg + ylim(c(0, 1))
 ```
 
 ## Applying PILER to the Bilateral cohort
+
+Cut off values: ACU = 0.7 and FDR = 0.05
+
 ```{r plier-bilateral}
 bilat_rpkm <- assays(bilat_dds)[["RPKM"]]
 bilat_tpm <- assays(bilat_dds)[["TPM"]]
@@ -694,7 +699,7 @@ Let's define the `LV_index`.
 bilat_col_data <- colData(bilat_dds) %>% as.data.frame() %>%
   left_join(bilat_MLpredict, by="sample_id")
 
-# define sig LV_index
+# define sig LV_index: 
 LV_index <- c(2, 18, 20, 26, 22)
 names(LV_index) <- rownames(plier_bilat$B[LV_index, ])
 
@@ -795,9 +800,9 @@ ggsave(file=file.path(pkg_dir, "figures", "immune-infiltration",
 ```
 
 ### TOP Zs
-Select LV2 (B-cell) and LV20 and check the top Z heatmap.
+Select LV2 (B-cell), LV20, and LV22 and check the top Z heatmap.
 ```{r plier-bilat-topU, fig.height=6, fig.width=4}
-LV_index <- c(2, 18, 20)
+LV_index <- c(2, 20, 22)
 names(LV_index) <- rownames(plier_bilat$B[LV_index, ])
 priorMat <- bloodCellMarkersIRISDMAP[, names(blood_iris)[-1]]
 # top Z the loading variables and ranked by -Z
@@ -902,7 +907,7 @@ bilat_markers <-  map_dfr(names(bilat_LV), function(lv) {
 
 # save the markers
 plier_topZ_markers <- list(bilat_markers=bilat_markers,
-                           longigutinal_markers = longi_markers)
+                           longitudinal_markers = longi_markers)
 save(plier_topZ_markers, file=file.path(pkg_dir, "data",
                                         "plier_topZ_markers.rda"))
 ```
@@ -931,7 +936,7 @@ Heatmap of 43 top Z (loading variables) in the bilateral samples.
 ```{r longitudinal-topz-heatmap}
 file_name <- file.path(pkg_dir, "figures", "immune-infiltration",
                        "longitudinal-topZ-heatmap.pdf")
-# annotaiton color
+# annotation color
 cluster_color <- c(Control="#ff7f00", 
                     Mild="#a65628", 
                     Moderate="#f781bf", 

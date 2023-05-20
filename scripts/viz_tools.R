@@ -34,8 +34,8 @@ per_gene_boxplot_groupby_cluster <-
 topZ_heatmp_group_by_types_class <- 
   # row gaps based on cell types
   # column gaps based on cluster
-  function(markers_topZ, dds, factor, file_name,
-           ann_cor ) {
+  function(markers_topZ, dds, factor, 
+           annotation_col, ann_cor, ...) {
     # markers_topZ is either bilat_markers or longi_markers including the columns: gene_id, gene_name, cell_type
     class <- colData(dds)[, factor]
     tpm <- lapply(levels(class), function(x) {
@@ -51,8 +51,10 @@ topZ_heatmp_group_by_types_class <-
     rownames(tpm) <- markers_topZ$gene_name
     zscore_tpm <- (tpm - rowMeans(tpm)) / rowSds(tpm)
     gaps_col <- cumsum(table(class))
-    annotation_col <- colData(dds)[colnames(tpm), factor, drop=FALSE] %>% as.data.frame()
-    colnames(annotation_col) <- "class"
+    
+    #annotation_col <- colData(dds)[colnames(tpm), factor, drop=FALSE] %>% as.data.frame()
+    #colnames(annotation_col) <- "class"
+    
     # rows
     annotation_row <- markers_topZ[, "cell_type", drop=FALSE]
     rownames(annotation_row) <- markers_topZ$gene_name
@@ -71,8 +73,8 @@ topZ_heatmp_group_by_types_class <-
              scale="none",
              annotation_colors=ann_cor,
              angle_col = 90,
-             cluster_rows=FALSE, cluster_cols=FALSE, 
-             filename=file_name)
+             cluster_rows=FALSE, 
+             cluster_cols=FALSE, ...)
 }
 
 markers_heatmp_group_by_types_class <- 
@@ -96,8 +98,6 @@ markers_heatmp_group_by_types_class <-
     gaps_col <- cumsum(table(class))
 
     # column annotation
-    #annotation_col <- colData(dds)[colnames(tpm), factor, drop=FALSE] %>% as.data.frame()
-    #colnames(annotation_col) <- "class"
     annotation_col <- annotation_col[colnames(tpm), ]
 
     # rows

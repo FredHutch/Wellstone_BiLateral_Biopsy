@@ -28,6 +28,28 @@
     
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -58,7 +80,8 @@
 <li><a class="" href="other-baskets.html"><span class="header-section-number">6</span> Inflammatory, ECM, complement activation and immunoglobulins signatures</a></li>
 <li><a class="" href="bilateral-comparison.html"><span class="header-section-number">7</span> Bilateral comparison</a></li>
 <li><a class="" href="immune-cell-infiltrates.html"><span class="header-section-number">8</span> Immune cell infiltrates signature</a></li>
-<li><a class="" href="complement-scoring.html"><span class="header-section-number">9</span> Complement scoring</a></li>
+<li><a class="" href="plier.html"><span class="header-section-number">9</span> Immune cell type proportion by PLIER</a></li>
+<li><a class="" href="complement-scoring.html"><span class="header-section-number">10</span> Complement scoring</a></li>
 <li><a class="" href="references.html">References</a></li>
 <li class="book-part">Appendix</li>
 <li><a class="active" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build TxDB package from GTF</a></li>
@@ -69,7 +92,7 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="appendixA-buildTxDB" class="section level1" number="10">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="appendixA-buildTxDB" class="section level1" number="11">
 <h1>
 <span class="header-section-number">A</span> Build TxDB package from GTF<a class="anchor" aria-label="anchor" href="#appendixA-buildTxDB"><i class="fas fa-link"></i></a>
 </h1>
@@ -79,7 +102,7 @@
 <li>Next, prepare metadata and convert the <code>GRange</code> instance into a <code>TxDB</code> package.</li>
 <li>Optionally, you can include gene annotation information (such as gene_name, gene_type, gene_ID, and gene_type) as a DataFrame instance in the data folder of the package. However, this step is not necessary if you’re building an Ensembl DB package (EnsDb).</li>
 </ol>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">rtracklayer</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/GenomicFeatures">GenomicFeatures</a></span><span class="op">)</span></span>
 <span></span>
@@ -117,7 +140,7 @@
 <span>                provider<span class="op">=</span><span class="st">"Gencode"</span>, providerVersion<span class="op">=</span><span class="va">release</span>,</span>
 <span>                maintainer<span class="op">=</span><span class="st">"Chao-Jen Wong &lt;cwon2@fredhutch.org&gt;"</span><span class="op">)</span></span></code></pre></div>
 <p>The downside of the <code>TxDB</code> package is that it does not carry the corresponding columns of gene_name, gene_type, and gene_symbols as the original GTF file obtained. So adding a <code>DataFrame</code> instance to include that information might provide convenience in future usage.</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gene.anno</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">mcols</a></span><span class="op">(</span><span class="va">gencode</span><span class="op">)</span><span class="op">[</span><span class="va">gencode</span><span class="op">$</span><span class="va">type</span><span class="op">==</span><span class="st">"gene"</span>, <span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">gene.anno</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">gene.anno</span><span class="op">$</span><span class="va">gene_id</span></span>
 <span></span>
@@ -126,12 +149,12 @@
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="va">data_dir</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">data_dir</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/save.html">save</a></span><span class="op">(</span><span class="va">gene.anno</span>, file<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"gene.anno.rda"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div id="build-ensdb-package-using-annotationhub" class="section level3" number="10.0.1">
+<div id="build-ensdb-package-using-annotationhub" class="section level3" number="11.0.1">
 <h3>
 <span class="header-section-number">A.0.1</span> Build EnsDb package using <code>AnnotationHub</code><a class="anchor" aria-label="anchor" href="#build-ensdb-package-using-annotationhub"><i class="fas fa-link"></i></a>
 </h3>
 <p>In retrospect, I would use <code><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">AnnotationHub()</a></code> and <code>GenomicFeatures::makeEnsembldbPackage()</code> to make an <code>EnsDB</code> package instead of <code>TxDB</code> because <code>EnsDB</code> has slots/functions to retrieve the gene information. Below is an example:</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#'</span></span>
 <span><span class="co">#' EnsDb.Hsapiens.v92: </span></span>
 <span><span class="co">#'</span></span>
@@ -146,8 +169,23 @@
 <span>                     author<span class="op">=</span><span class="st">"Chao-Jen Wong"</span>,</span>
 <span>                     destDir<span class="op">=</span><span class="st">"/fh/fast//tapscott_s/CompBio/hg38"</span><span class="op">)</span></span></code></pre></div>
 
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-iris" class="csl-entry">
+R. Abbas, Dhays Seshasayee, Kristen Wolslegel. <span>“IRIS: Deconvolution of Blood Microarray Data Identifies Cellular Activation Patterns in Systemic Lupus Erythematosus.”</span> <em>PLOS ONE</em>, 2009. <a href="https://doi.org/10.1371/journal.pone.0006098">https://doi.org/10.1371/journal.pone.0006098</a>.
+</div>
+<div id="ref-plier" class="csl-entry">
+Weiguang Mao, Boris M. Hartmann, Elena Zaslavsky. <span>“Pathway-Level Information Extractor (PLIER) for Gene Expression Data.”</span> <em>Nature Methods</em>, 2019.
 </div>
 </div>
+</div>
+</div>
+
+
+
+
+
+
+
   <div class="chapter-nav">
 <div class="prev"><a href="references.html">References</a></div>
 <div class="empty"></div>
@@ -159,8 +197,8 @@
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/FredHutch/Wellstone_BiLateral_Biopsy/blob/master/gitbook/11-appendixA-TxDB.Rmd">View source <i class="fas fa-air-freshener"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/FredHutch/Wellstone_BiLateral_Biopsy/edit/master/gitbook/11-appendixA-TxDB.Rmd">Edit this page <i class="fas fa-air-freshener"></i></a></li>
+<li><a id="book-source" href="https://github.com/FredHutch/Wellstone_BiLateral_Biopsy/blob/master/gitbook/12-appendixA-TxDB.Rmd">View source <i class="fas fa-air-freshener"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/FredHutch/Wellstone_BiLateral_Biopsy/edit/master/gitbook/12-appendixA-TxDB.Rmd">Edit this page <i class="fas fa-air-freshener"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -172,7 +210,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-04-10.</p>
+    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-05-19.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

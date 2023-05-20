@@ -15,7 +15,7 @@ csl: chicago-fullnote-bibliography.csl
 
 # About
 
-The purpose of this book is to promote computational transparency and reproducibility in relation to our manuscript titled "Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression." Through detailed explanations of our decision-making processes based on machine learning and statistical inferences, we aim to provide readers with a comprehensive understanding of our computational methods and coding. In addition, the book contains reproducible codes that generate results on the fly, enhancing the accessibility and usability of our research.
+The primary objective of this book is to advocate for computational transparency and reproducibility in conjunction with our manuscript entitled ["Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression."](https://www.biorxiv.org/content/biorxiv/early/2023/02/20/2023.02.20.529303.full.pdf) By offering detailed explanations of our decision-making processes grounded in machine learning and statistical inferences, we provide readers with a comprehensive comprehension of our computational methods and coding. Furthermore, the book includes reproducible codes that generate real-time results, enhancing the accessibility and usability of our research.
 
 In this study, we obtained bilateral tibialis anterior (TA) biopsied muscles from 34 subjects. The muscle biopsies (n=68) were processed for MRI characterization, histopathological scoring, RNA extraction for RNA sequencing , and DNA extraction for bisulfite sequencing of the 4qA permissive allele in the region of exon 2-3. Through the metrics yield by these processes, we were able to validate the association of MRI and RNA molecular signatures, and identify immune cell markers associated with immune cell infiltrates and symmetric trends in the disease. Additionally, we curated and proposed panels of genes as post-therapeutic targets for clinical trial designs.
 
@@ -24,14 +24,16 @@ This book discusses the following topics:
 1. Transcript-based assessment of muscle cell type content of the FSHD biopsied muscle
 2. FSHD molecular signatures, including DUX4, extracurricular matrix, inflammatory, complement activation, and immunoglobulins
 3. ML classification based on the FSHD molecular signatures
-4. MRI characteristics and DUX4 signatures 
-5. Bilateral comparison analysis
-6. Immune cell infiltrates signature
+4. Identification of six baskets containing genes that exhibit specific signatures associated with FSHD
+5. Association of MRI characteristics with signatures of DUX4 expression 
+6. Bilateral comparison analysis
+7. Verification of immune cell infiltrate signatures and immune cell type proportions
 
 
 ## Software
-R (4.2.2) and packages from the Bioconductor (3.17) and Tidyverse projects. Most used packages include `GenomicAlignments`, `GenomicFeatures`, `DESeq2`, `dplyr`, `ggplot2`, `caret`, and genomic-related BioC packages for annotation. 
 
+- R (4.2.2) and packages from the Bioconductor (3.17) and Tidyverse projects. Most used packages include `GenomicAlignments`, `GenomicFeatures`, `DESeq2`, `dplyr`, `ggplot2`, `caret`, and genomic-related BioC packages for annotation.
+- `fastqc`, `Subread`, `samTools`, and `cutadapt` for RNA-seq data preprocessing, and `PLIER` for immune cell type proportions.
 
 ## Repos structure
 The section outlines the structure of our repository, which is available at [here](https://github.com/FredHutch/Wellstone_BiLateral_Biopsy). 

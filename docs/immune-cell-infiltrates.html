@@ -6,16 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 8 Immune cell infiltrates signature | Wellstone bilateral tibialis anterior FSHD biopsied muscle study</title>
 <meta name="author" content="Chao-Jen Wong">
-<meta name="description" content="Based on the longitudinal study, we have discovered that T cell proliferation, migration, and B cell-mediated immunity response are more prevalent in severely affected muscles, such as “IG-high”...">
+<meta name="description" content="Please note that in the longitudinal study, we employed K-means clustering to identify five distinct clusters labeled as Mild, Moderate, IG-High, High, and Muscle-Low. Through this study, we have...">
 <meta name="generator" content="bookdown 0.32 with bs4_book()">
 <meta property="og:title" content="Chapter 8 Immune cell infiltrates signature | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/immune-cell-infiltrates.html">
 <meta property="og:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
-<meta property="og:description" content="Based on the longitudinal study, we have discovered that T cell proliferation, migration, and B cell-mediated immunity response are more prevalent in severely affected muscles, such as “IG-high”...">
+<meta property="og:description" content="Please note that in the longitudinal study, we employed K-means clustering to identify five distinct clusters labeled as Mild, Moderate, IG-High, High, and Muscle-Low. Through this study, we have...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 8 Immune cell infiltrates signature | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
-<meta name="twitter:description" content="Based on the longitudinal study, we have discovered that T cell proliferation, migration, and B cell-mediated immunity response are more prevalent in severely affected muscles, such as “IG-high”...">
+<meta name="twitter:description" content="Please note that in the longitudinal study, we employed K-means clustering to identify five distinct clusters labeled as Mild, Moderate, IG-High, High, and Muscle-Low. Through this study, we have...">
 <meta name="twitter:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
@@ -27,6 +27,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
     
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
   </style>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -58,7 +80,8 @@
 <li><a class="" href="other-baskets.html"><span class="header-section-number">6</span> Inflammatory, ECM, complement activation and immunoglobulins signatures</a></li>
 <li><a class="" href="bilateral-comparison.html"><span class="header-section-number">7</span> Bilateral comparison</a></li>
 <li><a class="active" href="immune-cell-infiltrates.html"><span class="header-section-number">8</span> Immune cell infiltrates signature</a></li>
-<li><a class="" href="complement-scoring.html"><span class="header-section-number">9</span> Complement scoring</a></li>
+<li><a class="" href="plier.html"><span class="header-section-number">9</span> Immune cell type proportion by PLIER</a></li>
+<li><a class="" href="complement-scoring.html"><span class="header-section-number">10</span> Complement scoring</a></li>
 <li><a class="" href="references.html">References</a></li>
 <li class="book-part">Appendix</li>
 <li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build TxDB package from GTF</a></li>
@@ -73,7 +96,7 @@
 <h1>
 <span class="header-section-number">8</span> Immune cell infiltrates signature<a class="anchor" aria-label="anchor" href="#immune-cell-infiltrates"><i class="fas fa-link"></i></a>
 </h1>
-<p>Based on the longitudinal study, we have discovered that T cell proliferation, migration, and B cell-mediated immunity response are more prevalent in severely affected muscles, such as “IG-high” and “High.” The objective of this chapter is as follows:</p>
+<p>Please note that in the longitudinal study, we employed K-means clustering to identify five distinct clusters labeled as Mild, Moderate, IG-High, High, and Muscle-Low. Through this study, we have found that T cell proliferation, migration, and B cell-mediated immune responses are more prominent in severely affected muscles, specifically those labelled as “IG-high” and “High”. The objective of this chapter is as follows:</p>
 <ol style="list-style-type: decimal">
 <li>Identify the enriched GO terms (biological processes) directly linked to T/B cells and circulating immunoglobulins in the longitudinal study (High or IG0high vs. control).</li>
 <li>Determine the differentially expressed genes (High vs. control) associated with the enriched GO terms (from step 1), and use heatmap visualization to observe the trend of an increase in gene expression across all longitudinal and bilateral samples, associated with the severity of FSHD (characterised by STIR status, fat fraction/infiltration percent) and/or complement scoring.</li>
@@ -100,55 +123,54 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"scripts"</span>, <span class="st">"viz_tools.R"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># tidy annotation from two datasets</span></span>
-<span><span class="va">anno_gencode35</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"gencode35_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co"># BiLat study using Gencode 36</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ens_id<span class="op">=</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">gencode35_id</span>, <span class="st">"\\..*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">gene_name</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">anno_gencode35</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"gencode35_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="co"># BiLat study using Gencode 36</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>ens_id<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">gencode35_id</span>, <span class="st">"\\..*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/distinct.html">distinct</a></span><span class="op">(</span><span class="va">gene_name</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">anno_ens88</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"ens88_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co"># longitudinal study ens v88</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ens_id<span class="op">=</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">gene_id</span>, <span class="st">"\\..*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">gene_name</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">ens88_id</span>, <span class="va">ens_id</span>, <span class="va">gene_name</span><span class="op">)</span></span>
+<span><span class="va">anno_ens88</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"ens88_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="co"># longitudinal study ens v88</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>ens_id<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">gene_id</span>, <span class="st">"\\..*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/distinct.html">distinct</a></span><span class="op">(</span><span class="va">gene_name</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">ens88_id</span>, <span class="va">ens_id</span>, <span class="va">gene_name</span><span class="op">)</span></span>
 <span><span class="co"># insert class to bilat_dds</span></span>
-<span><span class="va">col_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">bilat_MLpredict</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span></span>
+<span><span class="va">col_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">bilat_MLpredict</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span></span>
 <span><span class="va">bilat_dds</span><span class="op">$</span><span class="va">class</span> <span class="op">&lt;-</span> <span class="va">col_data</span><span class="op">$</span><span class="va">class</span></span>
 <span></span>
-<span><span class="va">longitudinal_dds</span><span class="op">$</span><span class="va">STIR_status</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">$</span><span class="va">STIR_rating</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="st">"STIR+"</span>, <span class="st">"STIR-"</span><span class="op">)</span></span>
-<span>                                        </span></code></pre></div>
+<span><span class="va">longitudinal_dds</span><span class="op">$</span><span class="va">STIR_status</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/if_else.html">if_else</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">$</span><span class="va">STIR_rating</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="st">"STIR+"</span>, <span class="st">"STIR-"</span><span class="op">)</span></span></code></pre></div>
 <div id="enriched-biological-processes-directly-associated-with-tb-cells" class="section level2" number="8.1">
 <h2>
 <span class="header-section-number">8.1</span> Enriched biological processes directly associated with T/B cells<a class="anchor" aria-label="anchor" href="#enriched-biological-processes-directly-associated-with-tb-cells"><i class="fas fa-link"></i></a>
 </h2>
 <p>The code chunk below (1) obtains the enriched GO terms in more affected muscles from the longitudinal study, supplementary table 5, and (2) retains the enriched GO terms containing the terms including <code>T cell</code>, <code>B cell</code>, <code>humoral</code>, <code>immunoglobulin</code>, and <code>complement</code>. Total 20 terms are extracted.</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">high_enriched</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
+<code class="sourceCode R"><span><span class="va">high_enriched</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/readxl/man/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
 <span>    <span class="st">"suppl_table_5_Candidate_Biomarkers_and_Enriched_Go.xlsx"</span><span class="op">)</span>,</span>
 <span>    sheet<span class="op">=</span><span class="fl">2</span>, skip<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ig_enriched</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
+<span><span class="va">ig_enriched</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/readxl/man/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
 <span>    <span class="st">"suppl_table_5_Candidate_Biomarkers_and_Enriched_Go.xlsx"</span><span class="op">)</span>,</span>
 <span>    sheet<span class="op">=</span><span class="fl">4</span>, skip<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">moderate_enriched</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
+<span><span class="va">moderate_enriched</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/readxl/man/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
 <span>    <span class="st">"suppl_table_5_Candidate_Biomarkers_and_Enriched_Go.xlsx"</span><span class="op">)</span>,</span>
 <span>    sheet<span class="op">=</span><span class="fl">6</span>, skip<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># get the lymphocyte related GO ID</span></span>
-<span><span class="va">infiltrates_go</span> <span class="op">&lt;-</span> <span class="va">high_enriched</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">term</span>, <span class="st">"T cell|B cell|humoral|immunoglobulin|complement"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">infiltrates_go</span> <span class="op">&lt;-</span> <span class="va">high_enriched</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">term</span>, <span class="st">"T cell|B cell|humoral|immunoglobulin|complement"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">infiltrates_go</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">over_represented_pvalue</span>, <span class="va">term</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>pvalue <span class="op">=</span> <span class="va">over_represented_pvalue</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>pvalue <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/format.html">format</a></span><span class="op">(</span><span class="va">pvalue</span>, scientific <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">category</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kbl.html">kbl</a></span><span class="op">(</span>caption<span class="op">=</span><span class="st">"Enriched biological process GO terms (n=20)  related to T/B cells, humoral immune response, and immunoglobulin domains."</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">infiltrates_go</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">over_represented_pvalue</span>, <span class="va">term</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>pvalue <span class="op">=</span> <span class="va">over_represented_pvalue</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>pvalue <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/format.html">format</a></span><span class="op">(</span><span class="va">pvalue</span>, scientific <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="va">category</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kbl.html">kbl</a></span><span class="op">(</span>caption<span class="op">=</span><span class="st">"Enriched biological process GO terms (n=20)  related to T/B cells, humoral immune response, and immunoglobulin domains. Identified using the longitudinal IG-High and High samples (vs. controls)."</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_classic.html">kable_paper</a></span><span class="op">(</span><span class="st">"hover"</span>, full_width <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-table"><table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
 <caption>
-<span id="tab:sup-table-5">Table 8.1: </span>Enriched biological process GO terms (n=20) related to T/B cells, humoral immune response, and immunoglobulin domains.
+<span id="tab:sup-table-5">Table 8.1: </span>Enriched biological process GO terms (n=20) related to T/B cells, humoral immune response, and immunoglobulin domains. Identified using the longitudinal IG-High and High samples (vs. controls).
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -384,99 +406,90 @@ regulation of T cell migration
 </tr>
 </tbody>
 </table></div>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span>  </span>
-<span></span>
-<span><span class="co">#lymphocyte_go &lt;- high_enriched %&gt;%</span></span>
-<span><span class="co">#   dplyr::filter(str_detect(term, "lymphocyte"))</span></span></code></pre></div>
 <p>Display the p-values yielded by GSEA:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">infiltrates_go</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">term</span>, <span class="va">over_represented_pvalue</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">term</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">ig_enriched</span>, <span class="va">category</span>, <span class="va">over_represented_pvalue</span><span class="op">)</span>,</span>
-<span>            by<span class="op">=</span><span class="st">"category"</span>, suffix<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">".High"</span>, <span class="st">".IG-High"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">class</span>, value<span class="op">=</span><span class="va">pvalue</span>, <span class="op">-</span><span class="va">category</span>, <span class="op">-</span><span class="va">term</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>class <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">class</span>, </span>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">infiltrates_go</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">term</span>, <span class="va">over_represented_pvalue</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="va">term</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">ig_enriched</span>, <span class="va">category</span>, <span class="va">over_represented_pvalue</span><span class="op">)</span>,</span>
+<span>            by<span class="op">=</span><span class="st">"category"</span>, suffix<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">".High"</span>, <span class="st">".IG-High"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/gather.html">gather</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">class</span>, value<span class="op">=</span><span class="va">pvalue</span>, <span class="op">-</span><span class="va">category</span>, <span class="op">-</span><span class="va">term</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">class</span>, </span>
 <span>                                    <span class="st">"over_represented_pvalue."</span>, <span class="st">""</span><span class="op">)</span>,</span>
-<span>                term <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_trunc.html">str_trunc</a></span><span class="op">(</span><span class="va">term</span>, <span class="fl">45</span><span class="op">)</span>,</span>
-<span>                class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">class</span>, levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IG-High"</span>, <span class="st">"High"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>log10pvalue <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">pvalue</span><span class="op">)</span><span class="op">)</span> </span>
+<span>                term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_trunc.html">str_trunc</a></span><span class="op">(</span><span class="va">term</span>, <span class="fl">45</span><span class="op">)</span>,</span>
+<span>                class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">class</span>, levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IG-High"</span>, <span class="st">"High"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>log10pvalue <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">pvalue</span><span class="op">)</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="va">cat_levels</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">class</span> <span class="op">==</span> <span class="st">"High"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">category</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">term</span><span class="op">)</span></span>
+<span><span class="va">cat_levels</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">class</span> <span class="op">==</span> <span class="st">"High"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="va">category</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/pull.html">pull</a></span><span class="op">(</span><span class="va">term</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>term<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">term</span>, levels<span class="op">=</span><span class="va">cat_levels</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">df</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>term<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">term</span>, levels<span class="op">=</span><span class="va">cat_levels</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co">#dplyr::mutate(term = factor(term,levels=cat_levels)) %&gt;%</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">class</span>, y<span class="op">=</span><span class="va">term</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>size<span class="op">=</span><span class="va">log10pvalue</span><span class="op">)</span>, color<span class="op">=</span><span class="st">"red1"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">class</span>, y<span class="op">=</span><span class="va">term</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>size<span class="op">=</span><span class="va">log10pvalue</span><span class="op">)</span>, color<span class="op">=</span><span class="st">"red1"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>,</span>
 <span>               show.legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"Enriched GO terms related to T/B cells and immunoglobulins"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.title.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>        plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust<span class="op">=</span><span class="fl">1</span>, size<span class="op">=</span><span class="fl">9.5</span><span class="op">)</span>,</span>
-<span>        axis.title.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 11 rows containing missing values</span></span>
-<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">labs</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"Enriched GO terms related to T/B cells and immunoglobulins"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/theme.html">theme</a></span><span class="op">(</span>axis.title.x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        plot.title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/element.html">element_text</a></span><span class="op">(</span>hjust<span class="op">=</span><span class="fl">1</span>, size<span class="op">=</span><span class="fl">9.5</span><span class="op">)</span>,</span>
+<span>        axis.title.y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:infiltrates-go-p-values"></span>
 <img src="08-immune-cell-infiltrates-signature_files/figure-html/infiltrates-go-p-values-1.png" alt="Enriched GO terms related to T and B cells and immunoglobulin domains. Red dots present the p-value of enriched GO terms in IG or High samples." width="672"><p class="caption">
 Figure 8.1: Enriched GO terms related to T and B cells and immunoglobulin domains. Red dots present the p-value of enriched GO terms in IG or High samples.
 </p>
 </div>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">fig_dir</span>, <span class="st">"longitudinal-enriched-immunity-GO.pdf"</span><span class="op">)</span>, </span>
-<span>       width<span class="op">=</span><span class="fl">3.8</span>, height<span class="op">=</span><span class="fl">4.2</span><span class="op">)</span>  </span>
-<span><span class="co">#&gt; Warning: Removed 11 rows containing missing values</span></span>
-<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">fig_dir</span>, <span class="st">"longitudinal-enriched-immunity-GO.pdf"</span><span class="op">)</span>, </span>
+<span>       width<span class="op">=</span><span class="fl">3.8</span>, height<span class="op">=</span><span class="fl">4.2</span><span class="op">)</span>  </span></code></pre></div>
 </div>
 <div id="significant-genes-associated-with-the-tb-associated-enriched-go-terms" class="section level2" number="8.2">
 <h2>
 <span class="header-section-number">8.2</span> Significant genes associated with the T/B-associated enriched GO terms<a class="anchor" aria-label="anchor" href="#significant-genes-associated-with-the-tb-associated-enriched-go-terms"><i class="fas fa-link"></i></a>
 </h2>
 <p>The code chunk below aim to identify significantly expressed genes in High or IG-High (vs. contls) that are involved in the enriched GO terms obtained previously.</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">high_sig</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
+<p><strong>Results:</strong> Total 95 B/T cell immunity response significant markers are identified.</p>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">high_sig</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/readxl/man/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
 <span>    <span class="st">"suppl_table_5_Candidate_Biomarkers_and_Enriched_Go.xlsx"</span><span class="op">)</span>,</span>
-<span>    sheet<span class="op">=</span><span class="fl">1</span>, skip<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">gene_name</span>, <span class="va">gencode_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ens_id <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">gencode_id</span>, <span class="st">"\\..*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span></span>
+<span>    sheet<span class="op">=</span><span class="fl">1</span>, skip<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">gene_name</span>, <span class="va">gencode_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>ens_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">gencode_id</span>, <span class="st">"\\..*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ig_sig</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
+<span><span class="va">ig_sig</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/readxl/man/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
 <span>    <span class="st">"suppl_table_5_Candidate_Biomarkers_and_Enriched_Go.xlsx"</span><span class="op">)</span>,</span>
-<span>    sheet<span class="op">=</span><span class="fl">3</span>, skip<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">gene_name</span>, <span class="va">gencode_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ens_id <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">gencode_id</span>, <span class="st">"\\..*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">sig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">bind_rows</a></span><span class="op">(</span><span class="va">high_sig</span>, <span class="va">ig_sig</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">gene_name</span>, .keep_all<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    sheet<span class="op">=</span><span class="fl">3</span>, skip<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">gene_name</span>, <span class="va">gencode_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>ens_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">gencode_id</span>, <span class="st">"\\..*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/bind_rows.html">bind_rows</a></span><span class="op">(</span><span class="va">high_sig</span>, <span class="va">ig_sig</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/distinct.html">distinct</a></span><span class="op">(</span><span class="va">gene_name</span>, .keep_all<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## keep the genes that involved in the infiltrates_go</span></span>
 <span><span class="va">gene2cat</span> <span class="op">&lt;-</span> <span class="fu">goseq</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/goseq/man/getgo.html">getgo</a></span><span class="op">(</span><span class="va">sig</span><span class="op">$</span><span class="va">ens_id</span>, <span class="st">"hg38"</span>, <span class="st">"ensGene"</span>, fetch.cats <span class="op">=</span> <span class="st">"GO:BP"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">gene2cat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">sig</span><span class="op">$</span><span class="va">ens_id</span></span>
 <span><span class="va">cat2gene</span> <span class="op">&lt;-</span> <span class="fu">goseq</span><span class="fu">:::</span><span class="fu">reversemapping</span><span class="op">(</span><span class="va">gene2cat</span><span class="op">)</span><span class="op">[</span><span class="va">infiltrates_go</span><span class="op">$</span><span class="va">category</span><span class="op">]</span></span>
-<span><span class="va">infiltrates_act</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_dfr</a></span><span class="op">(</span><span class="va">cat2gene</span>, <span class="kw">function</span><span class="op">(</span><span class="va">cat_gene</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">sig</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">ens_id</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="va">cat_gene</span><span class="op">)</span></span>
-<span><span class="op">}</span>, .id<span class="op">=</span><span class="st">"category"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">category</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">infiltrates_go</span>, <span class="va">category</span>, <span class="va">term</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"category"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>GOID <span class="op">=</span> <span class="va">category</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">gene_name</span>, .keep_all<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">infiltrates_act</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map_dfr.html">map_dfr</a></span><span class="op">(</span><span class="va">cat2gene</span>, <span class="kw">function</span><span class="op">(</span><span class="va">cat_gene</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">sig</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="va">ens_id</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="va">cat_gene</span><span class="op">)</span></span>
+<span><span class="op">}</span>, .id<span class="op">=</span><span class="st">"category"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="va">category</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">infiltrates_go</span>, <span class="va">category</span>, <span class="va">term</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"category"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>GOID <span class="op">=</span> <span class="va">category</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/distinct.html">distinct</a></span><span class="op">(</span><span class="va">gene_name</span>, .keep_all<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="co">#arrange(gene_name) %&gt;%</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>category <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">term</span>, <span class="st">"T cell"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"T cell migration / activation"</span>,</span>
-<span>    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">term</span>, <span class="st">"humoral|complement"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"B cell mediated / humoral immune response"</span>,</span>
-<span>    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">term</span>, <span class="st">"adaptive"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"adaptive immune response (IG domains)"</span></span>
-<span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">gene_name</span><span class="op">)</span></span></code></pre></div>
-<p>Total 95 B/T cell immunity response significant markers are identified.</p>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/case_when.html">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">term</span>, <span class="st">"T cell"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"T cell migration / activation"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">term</span>, <span class="st">"humoral|complement"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"B cell mediated / humoral immune response"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">term</span>, <span class="st">"adaptive"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"adaptive immune response (IG domains)"</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">gene_name</span><span class="op">)</span></span></code></pre></div>
 <div id="heatmap-longitudinal-study" class="section level3" number="8.2.1">
 <h3>
 <span class="header-section-number">8.2.1</span> Heatmap: Longitudinal study<a class="anchor" aria-label="anchor" href="#heatmap-longitudinal-study"><i class="fas fa-link"></i></a>
 </h3>
-<p>Now we visualized the trend of the increased expression levels on the longitidunal samples, arranges by ML-defined classes: Control, Mild, Moderate, IG-High, High, and Muscle-low.</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<p>We have employed a heatmap to visualize the trend of increased expression levels for the 95 significant genes previously identified to be associated with enriched T/B and IG Gene Ontology (GO) terms. The order of the samples in the heatmap is arranged as Control, Mild, Moderate, IG-High, High, and Muscle-low.</p>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Control<span class="op">=</span><span class="st">"#ff7f00"</span>, </span>
 <span>                    Mild<span class="op">=</span><span class="st">"#a65628"</span>, </span>
 <span>                    Moderate<span class="op">=</span><span class="st">"#f781bf"</span>, </span>
@@ -484,22 +497,23 @@ Figure 8.1: Enriched GO terms related to T and B cells and immunoglobulin domain
 <span>                   `Muscle-Low`<span class="op">=</span><span class="st">"#377eb8"</span><span class="op">)</span></span>
 <span><span class="va">category_color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/wesanderson/man/wes_palette.html">wes_palette</a></span><span class="op">(</span><span class="st">"Darjeeling2"</span>, n<span class="op">=</span><span class="fl">4</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">category_color</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Factor-class.html">levels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">infiltrates_act</span><span class="op">$</span><span class="va">category</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">ann_cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>class <span class="op">=</span> <span class="va">cluster_color</span>, category <span class="op">=</span> <span class="va">category_color</span><span class="op">)</span></span>
+<span><span class="va">col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#ccece6"</span>, <span class="st">"#006d2c"</span><span class="op">)</span></span>
+<span><span class="va">stir_pal</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"STIR+"</span> <span class="op">=</span> <span class="st">"#006d2c"</span>, <span class="st">"STIR-"</span> <span class="op">=</span> <span class="st">"#ccece6"</span><span class="op">)</span></span>
+<span><span class="va">complement_pal</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"3"</span> <span class="op">=</span> <span class="st">"#006d2c"</span>, <span class="st">"2"</span> <span class="op">=</span> <span class="st">"#66c2a4"</span>, <span class="st">"1"</span> <span class="op">=</span> <span class="st">"#ccece6"</span><span class="op">)</span></span>
+<span><span class="co"># column annotation: class, fat fraction, STIR rating, and histophatology</span></span>
 <span></span>
-<span><span class="co"># include column annotaion: class, fat fraction, STIR rating, and histophatology</span></span>
-<span><span class="va">col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#f7f7f7"</span>, <span class="st">"#238b45"</span><span class="op">)</span></span>
-<span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">cluster</span>, <span class="va">fat_fraction</span>, <span class="va">STIR_status</span>, </span>
+<span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">cluster</span>, <span class="va">fat_fraction</span>, <span class="va">STIR_status</span>, </span>
 <span>                <span class="co">#STIR_rating,</span></span>
-<span>                <span class="va">Pathology.Score</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>class<span class="op">=</span><span class="va">cluster</span>, `fat fraction`<span class="op">=</span><span class="va">fat_fraction</span>,</span>
-<span>                `STIR+/-` <span class="op">=</span> <span class="va">STIR_status</span>,</span>
-<span>                `histopathology` <span class="op">=</span> <span class="va">Pathology.Score</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>`STIR+/-` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`STIR+/-`</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
+<span>                <span class="va">Pathology.Score</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>class<span class="op">=</span><span class="va">cluster</span>, `STIR+/-` <span class="op">=</span> <span class="va">STIR_status</span>,</span>
+<span>                `fat fraction`<span class="op">=</span><span class="va">fat_fraction</span>,</span>
+<span>                `histopathology` <span class="op">=</span> <span class="va">Pathology.Score</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>`STIR+/-` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`STIR+/-`</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># column annotation color</span></span>
 <span><span class="va">ann_cor</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>class <span class="op">=</span> <span class="va">cluster_color</span>, category <span class="op">=</span> <span class="va">category_color</span>,</span>
-<span>                 `fat fraction` <span class="op">=</span> <span class="va">col</span>, `STIR+/-` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`STIR-`<span class="op">=</span><span class="st">"#f7f7f7"</span>,</span>
-<span>                                                     `STIR+`<span class="op">=</span><span class="st">"#238b45"</span><span class="op">)</span>,</span>
+<span>                 `STIR+/-` <span class="op">=</span> <span class="va">stir_pal</span>,</span>
+<span>                 `fat fraction` <span class="op">=</span> <span class="va">col</span>, </span>
 <span>                 `histopathology` <span class="op">=</span> <span class="va">col</span><span class="op">)</span></span>
 <span><span class="fu">markers_heatmp_group_by_types_class</span><span class="op">(</span>markers <span class="op">=</span> <span class="va">infiltrates_act</span>, </span>
 <span>                                    dds <span class="op">=</span> <span class="va">longitudinal_dds</span>, </span>
@@ -509,8 +523,8 @@ Figure 8.1: Enriched GO terms related to T and B cells and immunoglobulin domain
 <span>                                    annotation_legend<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:heatmap-immune-infiltrate-longi"></span>
-<img src="08-immune-cell-infiltrates-signature_files/figure-html/heatmap-immune-infiltrate-longi-1.png" alt="Heatmap demonstrating the increased expression trend on more affected muscle. Color presented the row-wised z-score of expression levels." width="768"><p class="caption">
-Figure 8.2: Heatmap demonstrating the increased expression trend on more affected muscle. Color presented the row-wised z-score of expression levels.
+<img src="08-immune-cell-infiltrates-signature_files/figure-html/heatmap-immune-infiltrate-longi-1.png" alt="Heatmap demonstrating the increased expression trend for 95 previously identifed T/B and IG domain related genes on more affected muscle. Color presented the row-wised z-score of expression levels." width="768"><p class="caption">
+Figure 8.2: Heatmap demonstrating the increased expression trend for 95 previously identifed T/B and IG domain related genes on more affected muscle. Color presented the row-wised z-score of expression levels.
 </p>
 </div>
 </div>
@@ -518,38 +532,41 @@ Figure 8.2: Heatmap demonstrating the increased expression trend on more affecte
 <h3>
 <span class="header-section-number">8.2.2</span> Heatmap: bilateral study<a class="anchor" aria-label="anchor" href="#heatmap-bilateral-study"><i class="fas fa-link"></i></a>
 </h3>
-<p>Heatmap of the expression levels of 95 genes on the bilateral samples.</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">class</span>, <span class="va">Fat_Infilt_Percent</span>, <span class="va">STIR_status</span>,</span>
-<span>                <span class="va">`Cumulative Score`</span>, <span class="va">`Complement Scoring`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>`fat percent` <span class="op">=</span> <span class="va">Fat_Infilt_Percent</span>, </span>
+<p>The code chunk provided below generates a heatmap that visualizes the expression levels of the 95 genes from the bilateral samples. The samples are ordered based on their classification into Control-like and Moderate+, determined by ML-based classification, and Muscle-Low based on the low expression levels of muscle markers.</p>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">class</span>, <span class="va">Fat_Infilt_Percent</span>, <span class="va">STIR_status</span>,</span>
+<span>                <span class="va">`Cumulative Score`</span>, <span class="va">`Complement Scoring`</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>`fat percent` <span class="op">=</span> <span class="va">Fat_Infilt_Percent</span>, </span>
 <span>                `STIR+/-` <span class="op">=</span> <span class="va">STIR_status</span>,</span>
-<span>                `histopathology` <span class="op">=</span> <span class="va">`Cumulative Score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">column_to_rownames</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span></span>
-<span></span>
+<span>                `histopathology` <span class="op">=</span> <span class="va">`Cumulative Score`</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">column_to_rownames</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>`Complement Scoring` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, </span>
+<span>                                              levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"3"</span>, <span class="st">"2"</span>, <span class="st">"1"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>                </span>
 <span><span class="va">class_color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`Control-like`<span class="op">=</span><span class="st">"#a65628"</span>, </span>
 <span>                    `Moderate+`<span class="op">=</span><span class="st">"#984ea3"</span>, </span>
 <span>                    `Muscle-Low`<span class="op">=</span><span class="st">"#377eb8"</span><span class="op">)</span></span>
 <span><span class="va">ann_cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>class <span class="op">=</span> <span class="va">class_color</span>, category <span class="op">=</span> <span class="va">category_color</span>,</span>
 <span>                `fat percent` <span class="op">=</span> <span class="va">col</span>, </span>
-<span>                `STIR+/-` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`STIR-`<span class="op">=</span><span class="st">"#f7f7f7"</span>, `STIR+`<span class="op">=</span><span class="st">"#238b45"</span><span class="op">)</span>,</span>
+<span>                `STIR+/-` <span class="op">=</span> <span class="va">stir_pal</span>,</span>
 <span>                `histopathology` <span class="op">=</span> <span class="va">col</span>, </span>
-<span>                `Complement Scoring` <span class="op">=</span> <span class="va">col</span><span class="op">)</span></span>
+<span>                `Complement Scoring` <span class="op">=</span> <span class="va">complement_pal</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="va">infiltrates_act</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">anno_gencode35</span>, <span class="va">ens_id</span>, <span class="va">gencode35_id</span><span class="op">)</span>,</span>
-<span>            by<span class="op">=</span><span class="st">"ens_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">gene_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode35_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">gene_id</span><span class="op">)</span></span>
+<span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="va">infiltrates_act</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">anno_gencode35</span>, <span class="va">ens_id</span>, <span class="va">gencode35_id</span><span class="op">)</span>,</span>
+<span>            by<span class="op">=</span><span class="st">"ens_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">gene_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode35_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">gene_id</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">markers_heatmp_group_by_types_class</span><span class="op">(</span>markers <span class="op">=</span> <span class="va">markers</span>, </span>
 <span>                                    dds <span class="op">=</span> <span class="va">bilat_dds</span>, </span>
 <span>                                    factor <span class="op">=</span> <span class="st">"class"</span>, </span>
 <span>                                    annotation_legend<span class="op">=</span><span class="cn">TRUE</span>,</span>
 <span>                                    annotation_col <span class="op">=</span> <span class="va">annotation_col</span>,</span>
+<span>                                    border_color <span class="op">=</span> <span class="st">"transparent"</span>,</span>
 <span>                                    ann_cor <span class="op">=</span> <span class="va">ann_cor</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="08-immune-cell-infiltrates-signature_files/figure-html/heatmap-immune-infiltrate-bilat-1.png" width="768"></div>
 </div>
@@ -560,81 +577,81 @@ Figure 8.2: Heatmap demonstrating the increased expression trend on more affecte
 </h2>
 <p>Using a generic cell-type marker dataset from the immune response in silico (IRIS) (Abbas 2009), we detected 63 immune cell markers whose expression levels are signficiantly elevated in more affected muscles. With additonal significant immunity-related markers, including such as cytokine receptors in B cells (IL-4R, IL-21R), STAT6, Leukocyte immunoglobulin-like receptor B family (LILRB4, LILRB5), T cell surface antigens (CD2 and CD4), T and B cell interaction and migration (CCL19), and STAT6, we demonstrated a immune cell infiltrate signatures in both longitudinal and bilateral samples.</p>
 <p>Code chunk below identified 63 immune cell markers as a subset of the IRIS database (Abbas 2009).</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">PLIER</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">bloodCellMarkersIRISDMAP</span><span class="op">)</span></span>
 <span><span class="co"># about 860 markers</span></span>
-<span><span class="va">blood_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">bloodCellMarkersIRISDMAP</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">gene_name</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"IRIS"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> </span>
+<span><span class="va">blood_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">bloodCellMarkersIRISDMAP</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">gene_name</span>, <span class="fu"><a href="https://rdrr.io/pkg/tidyselect/man/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"IRIS"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/tidyselect/man/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># 63 are DE in High</span></span>
-<span><span class="va">sig_blood_iris</span> <span class="op">&lt;-</span> <span class="va">high_sig</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">blood_iris</span>, by<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> </span>
+<span><span class="va">sig_blood_iris</span> <span class="op">&lt;-</span> <span class="va">high_sig</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">blood_iris</span>, by<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> </span>
 <span><span class="va">category</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">sig_blood_iris</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sig_blood_iris</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">sig_blood_iris</span><span class="op">$</span><span class="va">category</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">sig_blood_iris</span><span class="op">[</span>, <span class="fl">4</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sig_blood_iris</span><span class="op">)</span><span class="op">]</span>, <span class="fl">1</span>, </span>
 <span>        <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unlist.html">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.vector.html">as.vector</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>    <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/if_else.html">if_else</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unlist.html">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.vector.html">as.vector</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">category</span><span class="op">[</span><span class="va">tmp</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span>       <span class="op">}</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sig_blood_iris</span>  <span class="op">&lt;-</span> <span class="va">sig_blood_iris</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">gene_name</span>, <span class="va">gencode_id</span>, <span class="va">ens_id</span>, <span class="va">category</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>category <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">category</span>, <span class="st">"IRIS_"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>category <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">category</span>, <span class="st">"\\-.*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">gene_name</span><span class="op">)</span> </span>
+<span><span class="va">sig_blood_iris</span>  <span class="op">&lt;-</span> <span class="va">sig_blood_iris</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">gene_name</span>, <span class="va">gencode_id</span>, <span class="va">ens_id</span>, <span class="va">category</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">category</span>, <span class="st">"IRIS_"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringr/man/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">category</span>, <span class="st">"\\-.*"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">gene_name</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># add others: IL-4R, IL-21R, LILRB4, LILRB5, CD2, CD4, CCL19</span></span>
 <span><span class="va">others</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>gene_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IL4R"</span>, <span class="st">"IL21R"</span>, <span class="st">"LILRB4"</span>,</span>
 <span>                                   <span class="st">"LILRB5"</span>,</span>
-<span>                                   <span class="st">"CD2"</span>, <span class="st">"CD4"</span>, <span class="st">"CCL19"</span>, <span class="st">"STAT6"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">anno_ens88</span>, by<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">ens88_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/add_column.html">add_column</a></span><span class="op">(</span>category<span class="op">=</span><span class="st">"Others"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">gene_name</span><span class="op">)</span></span>
+<span>                                   <span class="st">"CD2"</span>, <span class="st">"CD4"</span>, <span class="st">"CCL19"</span>, <span class="st">"STAT6"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">anno_ens88</span>, by<span class="op">=</span><span class="st">"gene_name"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">ens88_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/add_column.html">add_column</a></span><span class="op">(</span>category<span class="op">=</span><span class="st">"Others"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="va">gene_name</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sig_blood_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html">bind_rows</a></span><span class="op">(</span><span class="va">sig_blood_iris</span>, <span class="va">others</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">category</span>, </span>
+<span><span class="va">sig_blood_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/bind_rows.html">bind_rows</a></span><span class="op">(</span><span class="va">sig_blood_iris</span>, <span class="va">others</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">category</span>, </span>
 <span>                                  levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Bcell"</span>, <span class="st">"CD4Tcell"</span>, <span class="st">"CD8Tcell"</span>,</span>
 <span>                                             <span class="st">"DendriticCell"</span>,</span>
 <span>                                             <span class="st">"Monocyte"</span>, <span class="st">"Neutrophil"</span>,</span>
 <span>                                             <span class="st">"NKcell"</span>, <span class="st">"PlasmaCell"</span>,</span>
 <span>                                             <span class="st">"Others"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div id="viz-the-immune-cell-infiltrate-siganiture-from-the-longitudinal-study" class="section level3" number="8.3.1">
+<div id="heamap-the-longitudinal-study" class="section level3" number="8.3.1">
 <h3>
-<span class="header-section-number">8.3.1</span> Viz the immune cell infiltrate siganiture from the longitudinal study<a class="anchor" aria-label="anchor" href="#viz-the-immune-cell-infiltrate-siganiture-from-the-longitudinal-study"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.3.1</span> Heamap: the longitudinal study<a class="anchor" aria-label="anchor" href="#heamap-the-longitudinal-study"><i class="fas fa-link"></i></a>
 </h3>
 <p>The following heatmap illustrates that there is a tendency of higher expression levels in muscles that are more affected.</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Control<span class="op">=</span><span class="st">"#ff7f00"</span>, </span>
 <span>                    Mild<span class="op">=</span><span class="st">"#a65628"</span>, </span>
 <span>                    Moderate<span class="op">=</span><span class="st">"#f781bf"</span>, </span>
 <span>                    `IG-High`<span class="op">=</span><span class="st">"#984ea3"</span>, High<span class="op">=</span><span class="st">"#e41a1c"</span>, </span>
 <span>                   `Muscle-Low`<span class="op">=</span><span class="st">"#377eb8"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#f7f7f7"</span>, <span class="st">"#238b45"</span><span class="op">)</span></span>
-<span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">cluster</span>, <span class="va">fat_fraction</span>, <span class="va">STIR_status</span>, </span>
+<span></span>
+<span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">cluster</span>, <span class="va">fat_fraction</span>, <span class="va">STIR_status</span>, </span>
 <span>                <span class="co">#STIR_rating,</span></span>
-<span>                <span class="va">Pathology.Score</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>class<span class="op">=</span><span class="va">cluster</span>, `fat fraction`<span class="op">=</span><span class="va">fat_fraction</span>,</span>
+<span>                <span class="va">Pathology.Score</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>class<span class="op">=</span><span class="va">cluster</span>, `fat fraction`<span class="op">=</span><span class="va">fat_fraction</span>,</span>
 <span>                `STIR+/-` <span class="op">=</span> <span class="va">STIR_status</span>,</span>
-<span>                `histopathology` <span class="op">=</span> <span class="va">Pathology.Score</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>`STIR+/-` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`STIR+/-`</span><span class="op">)</span><span class="op">)</span></span>
+<span>                `histopathology` <span class="op">=</span> <span class="va">Pathology.Score</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>`STIR+/-` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`STIR+/-`</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">category_color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/wesanderson/man/wes_palette.html">wes_palette</a></span><span class="op">(</span><span class="st">"Darjeeling1"</span>, n<span class="op">=</span><span class="fl">9</span>, typ<span class="op">=</span><span class="st">"continuous"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">9</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">category_color</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Factor-class.html">levels</a></span><span class="op">(</span><span class="va">sig_blood_iris</span><span class="op">$</span><span class="va">category</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ann_cor</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>class <span class="op">=</span> <span class="va">cluster_color</span>, category <span class="op">=</span> <span class="va">category_color</span>,</span>
-<span>                 `fat fraction` <span class="op">=</span> <span class="va">col</span>, `STIR+/-` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`STIR-`<span class="op">=</span><span class="st">"#f7f7f7"</span>,</span>
-<span>                                                     `STIR+`<span class="op">=</span><span class="st">"#238b45"</span><span class="op">)</span>,</span>
+<span>                 `fat fraction` <span class="op">=</span> <span class="va">col</span>, `STIR+/-` <span class="op">=</span> <span class="va">stir_pal</span>,</span>
 <span>                 `histopathology` <span class="op">=</span> <span class="va">col</span><span class="op">)</span></span>
 <span><span class="fu">markers_heatmp_group_by_types_class</span><span class="op">(</span>markers <span class="op">=</span> <span class="va">sig_blood_iris</span>, </span>
 <span>                                    dds <span class="op">=</span> <span class="va">longitudinal_dds</span>, </span>
 <span>                                    factor <span class="op">=</span> <span class="st">"cluster"</span>, </span>
+<span>                                    border_color <span class="op">=</span> <span class="st">"transparent"</span>,</span>
 <span>                                    annotation_col <span class="op">=</span> <span class="va">annotation_col</span>,</span>
 <span>                                    ann_cor <span class="op">=</span> <span class="va">ann_cor</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -644,40 +661,42 @@ Figure 8.3: Heapmap demonstrating the expression levels (by row-wise z-score of 
 </p>
 </div>
 </div>
-<div id="bilateral-study" class="section level3" number="8.3.2">
+<div id="heatmap-bilateral-study-1" class="section level3" number="8.3.2">
 <h3>
-<span class="header-section-number">8.3.2</span> Bilateral study<a class="anchor" aria-label="anchor" href="#bilateral-study"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.3.2</span> Heatmap: Bilateral study<a class="anchor" aria-label="anchor" href="#heatmap-bilateral-study-1"><i class="fas fa-link"></i></a>
 </h3>
 <p>The heatmap for the bilateral study below incorporates the complement scoring.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">class</span>, <span class="va">Fat_Infilt_Percent</span>, <span class="va">STIR_status</span>,</span>
-<span>                <span class="va">`Cumulative Score`</span>, <span class="va">`Complement Scoring`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>`fat percent` <span class="op">=</span> <span class="va">Fat_Infilt_Percent</span>, </span>
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">class</span>, <span class="va">Fat_Infilt_Percent</span>, <span class="va">STIR_status</span>,</span>
+<span>                <span class="va">`Cumulative Score`</span>, <span class="va">`Complement Scoring`</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>`fat percent` <span class="op">=</span> <span class="va">Fat_Infilt_Percent</span>, </span>
 <span>                `STIR+/-` <span class="op">=</span> <span class="va">STIR_status</span>,</span>
-<span>                `histopathology` <span class="op">=</span> <span class="va">`Cumulative Score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">column_to_rownames</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span></span>
+<span>                `histopathology` <span class="op">=</span> <span class="va">`Cumulative Score`</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">column_to_rownames</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>`Complement Scoring` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">class_color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`Control-like`<span class="op">=</span><span class="st">"#a65628"</span>, </span>
 <span>                    `Moderate+`<span class="op">=</span><span class="st">"#984ea3"</span>, </span>
 <span>                    `Muscle-Low`<span class="op">=</span><span class="st">"#377eb8"</span><span class="op">)</span></span>
 <span><span class="va">ann_cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>class <span class="op">=</span> <span class="va">class_color</span>, category <span class="op">=</span> <span class="va">category_color</span>,</span>
 <span>                `fat percent` <span class="op">=</span> <span class="va">col</span>, </span>
-<span>                `STIR+/-` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`STIR-`<span class="op">=</span><span class="st">"#f7f7f7"</span>, `STIR+`<span class="op">=</span><span class="st">"#238b45"</span><span class="op">)</span>,</span>
+<span>                `STIR+/-` <span class="op">=</span> <span class="va">stir_pal</span>,</span>
 <span>                `histopathology` <span class="op">=</span> <span class="va">col</span>, </span>
-<span>                `Complement Scoring` <span class="op">=</span> <span class="va">col</span><span class="op">)</span></span>
+<span>                `Complement Scoring` <span class="op">=</span> <span class="va">complement_pal</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># update sig_blood_iris gene_id to gencode35_id</span></span>
-<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">sig_blood_iris</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">anno_gencode35</span>, <span class="va">ens_id</span>, <span class="va">gencode35_id</span><span class="op">)</span>, </span>
-<span>            by<span class="op">=</span><span class="st">"ens_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">gene_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode35_id</span><span class="op">)</span></span>
+<span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">sig_blood_iris</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">anno_gencode35</span>, <span class="va">ens_id</span>, <span class="va">gencode35_id</span><span class="op">)</span>, </span>
+<span>            by<span class="op">=</span><span class="st">"ens_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">gene_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode35_id</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">markers_heatmp_group_by_types_class</span><span class="op">(</span>markers <span class="op">=</span> <span class="va">tmp</span>,</span>
 <span>                                    dds <span class="op">=</span> <span class="va">bilat_dds</span>, </span>
 <span>                                    factor <span class="op">=</span> <span class="st">"class"</span>, </span>
+<span>                                    border_color <span class="op">=</span> <span class="st">"transparent"</span>,</span>
 <span>                                    annotation_col <span class="op">=</span> <span class="va">annotation_col</span>,</span>
 <span>                                    ann_cor <span class="op">=</span> <span class="va">ann_cor</span> <span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="08-immune-cell-infiltrates-signature_files/figure-html/bilat-63-sig-immune-cell-markers-heatmap-1.png" width="672"></div>
@@ -687,40 +706,40 @@ Figure 8.3: Heapmap demonstrating the expression levels (by row-wise z-score of 
 <h2>
 <span class="header-section-number">8.4</span> Complement scoring vs. immune cell infiltrates signature<a class="anchor" aria-label="anchor" href="#complement-scoring-vs.-immune-cell-infiltrates-signature"><i class="fas fa-link"></i></a>
 </h2>
-<p>The 63 immune cell markers mentioned earlier characterize the signature of immune cell infiltration. The heatmap presented in Fig. <a href="#fig:bilat-63-sig-immune-cell-markers-heatmap"><strong>??</strong></a> shows that the elevated expression levels of these markers are in line with the complement scoring. The following code chunk computes the Spearman correlation coefficient, which is equal to 0.456.</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<p>The earlier mentioned 63 immune cell markers contribute to characterizing the signature of immune cell infiltration. The heatmap depicted in Figure <a href="#fig:bilat-63-sig-immune-cell-markers-heatmap"><strong>??</strong></a> reveals that the increased expression levels of these markers align with the complement scoring. The following code calculates the Spearman correlation coefficient, which yields a value of 0.456.</p>
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">[</span><span class="va">tmp</span><span class="op">$</span><span class="va">gene_id</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
-<span><span class="va">signature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/colSums.html">colMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">tpm</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> </span>
+<span><span class="va">signature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/colSums.html">colMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">tpm</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">signature</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"avg_z_score"</span></span>
 <span></span>
-<span><span class="va">tmp_df</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">`Complement Scoring`</span>, <span class="va">`STIR_status`</span>,</span>
-<span>                <span class="va">`STIR_RATING`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">signature</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> </span>
+<span><span class="va">tmp_df</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">`Complement Scoring`</span>, <span class="va">`STIR_status`</span>,</span>
+<span>                <span class="va">`STIR_RATING`</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">signature</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> </span>
 <span>  </span>
-<span><span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">corrr</span><span class="fu">::</span><span class="fu"><a href="https://corrr.tidymodels.org/reference/correlate.html">correlate</a></span><span class="op">(</span><span class="va">.</span>, method<span class="op">=</span><span class="st">"spearman"</span><span class="op">)</span></span>
+<span><span class="va">tmp_df</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">corrr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/corrr/man/correlate.html">correlate</a></span><span class="op">(</span><span class="va">.</span>, method<span class="op">=</span><span class="st">"spearman"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
 <span><span class="co">#&gt;   term               `Complement Scoring` avg_z_score</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                             &lt;dbl&gt;       &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1 Complement Scoring               NA           0.456</span></span>
 <span><span class="co">#&gt; 2 avg_z_score                       0.456      NA</span></span>
 <span>  </span>
-<span><span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>`Complement Scoring`<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">`Complement Scoring`</span>, y<span class="op">=</span><span class="va">avg_z_score</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span>, outlier.shape <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_dotplot.html">geom_dotplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">`Complement Scoring`</span><span class="op">)</span>,</span>
+<span><span class="va">tmp_df</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>`Complement Scoring`<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">`Complement Scoring`</span>, y<span class="op">=</span><span class="va">avg_z_score</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span>, outlier.shape <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_dotplot.html">geom_dotplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">`Complement Scoring`</span><span class="op">)</span>,</span>
 <span>                 binaxis<span class="op">=</span><span class="st">'y'</span>, stackdir<span class="op">=</span><span class="st">'center'</span>,</span>
 <span>                 show.legend <span class="op">=</span> <span class="cn">FALSE</span>, alpha<span class="op">=</span><span class="fl">0.8</span>,</span>
 <span>                 stackratio<span class="op">=</span><span class="fl">1.5</span>, dotsize<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:63-blood-markers-correlated-with-complement-scoring"></span>
 <img src="08-immune-cell-infiltrates-signature_files/figure-html/63-blood-markers-correlated-with-complement-scoring-1.png" alt="Dotplot of immune cell infiltrates signature (presented by average z-score) groups by complement scoring 1, 2, and 3." width="672"><p class="caption">
@@ -732,23 +751,23 @@ Figure 8.4: Dotplot of immune cell infiltrates signature (presented by average z
 <h2>
 <span class="header-section-number">8.5</span> STIR status vs. immune cell infiltrates signature<a class="anchor" aria-label="anchor" href="#stir-status-vs.-immune-cell-infiltrates-signature"><i class="fas fa-link"></i></a>
 </h2>
-<p>The heatmap <a href="#fig:bilat-63-sig-immune-cell-markers-heatmap"><strong>??</strong></a> also suggested that elevated immune cell signatures is associated with with STIR status: wilcox test p-value = <span class="math inline">\(3e-6\)</span>.</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">`STIR_status`</span>, y<span class="op">=</span><span class="va">avg_z_score</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span>, outlier.shape <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_dotplot.html">geom_dotplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">`STIR_status`</span><span class="op">)</span>,</span>
+<p>Previously, Fig <a href="#fig:bilat-63-sig-immune-cell-markers-heatmap"><strong>??</strong></a> also suggested that elevated immune cell signatures is associated with with STIR status: Wilcox test p-value = <span class="math inline">\(3e-6\)</span>.</p>
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tmp_df</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">`STIR_status`</span>, y<span class="op">=</span><span class="va">avg_z_score</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span>, outlier.shape <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_dotplot.html">geom_dotplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">`STIR_status`</span><span class="op">)</span>,</span>
 <span>                 binaxis<span class="op">=</span><span class="st">'y'</span>, stackdir<span class="op">=</span><span class="st">'center'</span>,</span>
 <span>                 show.legend <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                 stackratio<span class="op">=</span><span class="fl">1.5</span>, dotsize<span class="op">=</span><span class="fl">1.5</span>, alpha<span class="op">=</span><span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="08-immune-cell-infiltrates-signature_files/figure-html/STIR-vs-immune-cell-infilrates-signatures-1.png" width="672" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">STIR_status</span>, value<span class="op">=</span><span class="va">avg_z_score</span><span class="op">)</span> </span>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">tmp_df</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/spread.html">spread</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">STIR_status</span>, value<span class="op">=</span><span class="va">avg_z_score</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/wilcox.test.html">wilcox.test</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">`STIR-`</span>, <span class="va">x</span><span class="op">$</span><span class="va">`STIR+`</span> <span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Wilcoxon rank sum exact test</span></span>
@@ -776,56 +795,56 @@ Figure 8.4: Dotplot of immune cell infiltrates signature (presented by average z
 </h3>
 <p>In the previous section, we identified a signature of immune cell infiltrates characterized by 63 immune cell markers in the longitudinal study. Here we compute their expression correlation between left and right muscles in the bilateral study.</p>
 <p>The code below shows the tools to compute the correlation between L and R muscles on the immune cell infiltrate markers.</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">col_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">col_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># convert gene_id to Gencode35</span></span>
-<span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="va">sig_blood_iris</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">anno_gencode35</span>, <span class="va">ens_id</span>, <span class="va">gencode35_id</span><span class="op">)</span>, </span>
-<span>            by<span class="op">=</span><span class="st">"ens_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">gene_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode35_id</span><span class="op">)</span></span>
+<span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="va">sig_blood_iris</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">anno_gencode35</span>, <span class="va">ens_id</span>, <span class="va">gencode35_id</span><span class="op">)</span>, </span>
+<span>            by<span class="op">=</span><span class="st">"ens_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">gene_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode35_id</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">.markers_bilateral_correlation</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">markers</span>, <span class="va">dds</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">tpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">dds</span><span class="op">[</span><span class="va">markers</span><span class="op">$</span><span class="va">gene_id</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/t.html">t</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>      <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>      <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">gene_id</span>, value<span class="op">=</span><span class="va">TPM</span>, <span class="op">-</span><span class="va">sample_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">col_data</span>, <span class="va">sample_id</span>, <span class="va">location</span>,</span>
-<span>                              <span class="va">Subject</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">sample_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">location</span>, value<span class="op">=</span><span class="va">TPM</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">L</span>, <span class="va">R</span><span class="op">)</span> </span>
-<span>  <span class="va">gene_cor</span> <span class="op">&lt;-</span> <span class="va">tpm</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>L_log <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">L</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span>, R_log<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">R</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">gene_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>Pearson_by_TPM<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">L</span>, <span class="va">R</span><span class="op">)</span>, </span>
-<span>              Pearson_by_log10TPM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">L_log</span>, <span class="va">R_log</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">markers</span>, by<span class="op">=</span><span class="st">"gene_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">Pearson_by_log10TPM</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html">relocate</a></span><span class="op">(</span><span class="va">gene_name</span>, .after<span class="op">=</span><span class="va">gene_id</span><span class="op">)</span></span>
+<span>  <span class="va">tpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">dds</span><span class="op">[</span><span class="va">markers</span><span class="op">$</span><span class="va">gene_id</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/t.html">t</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/tibble/man/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/gather.html">gather</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">gene_id</span>, value<span class="op">=</span><span class="va">TPM</span>, <span class="op">-</span><span class="va">sample_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="va">col_data</span>, <span class="va">sample_id</span>, <span class="va">location</span>,</span>
+<span>                              <span class="va">Subject</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">sample_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/spread.html">spread</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">location</span>, value<span class="op">=</span><span class="va">TPM</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/tidyr/man/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">L</span>, <span class="va">R</span><span class="op">)</span> </span>
+<span>  <span class="va">gene_cor</span> <span class="op">&lt;-</span> <span class="va">tpm</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate.html">mutate</a></span><span class="op">(</span>L_log <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">L</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span>, R_log<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">R</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/group_by.html">group_by</a></span><span class="op">(</span><span class="va">gene_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/summarise.html">summarise</a></span><span class="op">(</span>Pearson_by_TPM<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">L</span>, <span class="va">R</span><span class="op">)</span>, </span>
+<span>              Pearson_by_log10TPM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">L_log</span>, <span class="va">R_log</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">markers</span>, by<span class="op">=</span><span class="st">"gene_id"</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/desc.html">desc</a></span><span class="op">(</span><span class="va">Pearson_by_log10TPM</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/relocate.html">relocate</a></span><span class="op">(</span><span class="va">gene_name</span>, .after<span class="op">=</span><span class="va">gene_id</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">gene_cor</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">.avg_TPM_by_class</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">markers</span>, <span class="va">dds</span><span class="op">)</span> <span class="op">{</span></span>
-<span>   <span class="va">avg_TPM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_dfc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Factor-class.html">levels</a></span><span class="op">(</span><span class="va">dds</span><span class="op">$</span><span class="va">class</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>     <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">dds</span><span class="op">[</span><span class="va">markers</span><span class="op">$</span><span class="va">gene_id</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="va">dds</span><span class="op">$</span><span class="va">class</span> <span class="op">==</span> <span class="va">x</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>   <span class="va">avg_TPM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/purrr/man/map_dfr.html">map_dfc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Factor-class.html">levels</a></span><span class="op">(</span><span class="va">dds</span><span class="op">$</span><span class="va">class</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>     <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">dds</span><span class="op">[</span><span class="va">markers</span><span class="op">$</span><span class="va">gene_id</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="va">dds</span><span class="op">$</span><span class="va">class</span> <span class="op">==</span> <span class="va">x</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
 <span>       <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> </span>
-<span>   <span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>     <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_column.html">add_column</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">markers</span><span class="op">$</span><span class="va">gene_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>     <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename_with</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Factor-class.html">levels</a></span><span class="op">(</span><span class="va">dds</span><span class="op">$</span><span class="va">class</span><span class="op">)</span>, <span class="st">" avg TPM"</span><span class="op">)</span>, </span>
-<span>                        <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"..."</span><span class="op">)</span><span class="op">)</span></span>
+<span>   <span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>     <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tibble/man/add_column.html">add_column</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">markers</span><span class="op">$</span><span class="va">gene_id</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>     <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/rename.html">rename_with</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Factor-class.html">levels</a></span><span class="op">(</span><span class="va">dds</span><span class="op">$</span><span class="va">class</span><span class="op">)</span>, <span class="st">" avg TPM"</span><span class="op">)</span>, </span>
+<span>                        <span class="fu"><a href="https://rdrr.io/pkg/tidyselect/man/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"..."</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Display the correlation and average TPM grouped by ML-based classes.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gene_cor_63</span> <span class="op">&lt;-</span> <span class="fu">.markers_bilateral_correlation</span><span class="op">(</span>markers<span class="op">=</span><span class="va">markers</span>,</span>
-<span>                                           dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">.avg_TPM_by_class</span><span class="op">(</span>markers <span class="op">=</span> <span class="va">markers</span>, dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span>, </span>
+<span>                                           dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">.avg_TPM_by_class</span><span class="op">(</span>markers <span class="op">=</span> <span class="va">markers</span>, dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span>, </span>
 <span>                   by<span class="op">=</span><span class="st">"gene_id"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">gene_cor_63</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Pearson_by_TPM</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kbl.html">kbl</a></span><span class="op">(</span>caption<span class="op">=</span><span class="st">"Sixty-three significant immune cell markers correlation analysis between left and right biopsied muscles. The Peason correlation coefficients are compuated using the expression levels presented by Log10(TPM+1)."</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">gene_cor_63</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Pearson_by_TPM</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kbl.html">kbl</a></span><span class="op">(</span>caption<span class="op">=</span><span class="st">"Sixty-three significant immune cell markers correlation analysis between left and right biopsied muscles. The Peason correlation coefficients are compuated using the expression levels presented by Log10(TPM+1)."</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-table"><table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
@@ -2712,17 +2731,17 @@ Monocyte
 <span class="header-section-number">8.6.2</span> Top loading variables by the PLIER package<a class="anchor" aria-label="anchor" href="#top-loading-variables-by-the-plier-package"><i class="fas fa-link"></i></a>
 </h3>
 <p>Previously, we used The PLIER package to estimate the immune cell type contributions to FSHD transcriptome. The top Z, loading variables, are important in determining the relative proportion of the immune cell type contribution. Listed below are the top loading variables. Note that they are not necessary exhibiting strong expression levels.</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"plier_topZ_markers.rda"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="va">plier_topZ_markers</span><span class="op">$</span><span class="va">bilat_markers</span></span>
 <span><span class="va">gene_cor_topZ</span> <span class="op">&lt;-</span> <span class="fu">.markers_bilateral_correlation</span><span class="op">(</span>markers<span class="op">=</span><span class="va">markers</span>,</span>
-<span>                                           dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">.avg_TPM_by_class</span><span class="op">(</span>markers <span class="op">=</span> <span class="va">markers</span>, dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span>, </span>
+<span>                                           dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">.avg_TPM_by_class</span><span class="op">(</span>markers <span class="op">=</span> <span class="va">markers</span>, dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span>, </span>
 <span>                   by<span class="op">=</span><span class="st">"gene_id"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">gene_cor_topZ</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Pearson_by_TPM</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kbl.html">kbl</a></span><span class="op">(</span>caption<span class="op">=</span><span class="st">"Identified by the PLIER package, listed below are the 18 top Z markers contributed to cell type proportions in bilateral study. The Peason correlation coefficients are compuated using the expression levels presented by Log10(TPM+1)."</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">gene_cor_topZ</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/dplyr/man/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Pearson_by_TPM</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kbl.html">kbl</a></span><span class="op">(</span>caption<span class="op">=</span><span class="st">"Identified by the PLIER package, listed below are the 18 top Z markers contributed to cell type proportions in bilateral study. The Peason correlation coefficients are compuated using the expression levels presented by Log10(TPM+1)."</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/magrittr/man/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-table"><table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
@@ -3050,6 +3069,64 @@ ENSG00000174123
 </tr>
 <tr>
 <td style="text-align:left;">
+ENSG00000147454.14
+</td>
+<td style="text-align:left;">
+SLC25A37
+</td>
+<td style="text-align:right;">
+0.6618809
+</td>
+<td style="text-align:left;">
+22,IRIS_Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+ENSG00000147454
+</td>
+<td style="text-align:right;">
+6.7495459
+</td>
+<td style="text-align:right;">
+9.1052736
+</td>
+<td style="text-align:right;">
+12.1514379
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000100473.18
+</td>
+<td style="text-align:left;">
+COCH
+</td>
+<td style="text-align:right;">
+0.6310987
+</td>
+<td style="text-align:left;">
+22,IRIS_Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+ENSG00000100473
+</td>
+<td style="text-align:right;">
+0.1073993
+</td>
+<td style="text-align:right;">
+0.4540094
+</td>
+<td style="text-align:right;">
+0.9624094
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 ENSG00000128218.8
 </td>
 <td style="text-align:left;">
@@ -3166,6 +3243,35 @@ ENSG00000158477
 </tr>
 <tr>
 <td style="text-align:left;">
+ENSG00000244734.4
+</td>
+<td style="text-align:left;">
+HBB
+</td>
+<td style="text-align:right;">
+0.4277861
+</td>
+<td style="text-align:left;">
+22,IRIS_Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+ENSG00000244734
+</td>
+<td style="text-align:right;">
+468.3524397
+</td>
+<td style="text-align:right;">
+1290.3398086
+</td>
+<td style="text-align:right;">
+720.0911969
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 ENSG00000163534.15
 </td>
 <td style="text-align:left;">
@@ -3191,6 +3297,35 @@ ENSG00000163534
 </td>
 <td style="text-align:right;">
 0.0216181
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000143546.10
+</td>
+<td style="text-align:left;">
+S100A8
+</td>
+<td style="text-align:right;">
+0.3275266
+</td>
+<td style="text-align:left;">
+22,IRIS_Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+ENSG00000143546
+</td>
+<td style="text-align:right;">
+4.3832407
+</td>
+<td style="text-align:right;">
+7.8536112
+</td>
+<td style="text-align:right;">
+3.5999534
 </td>
 </tr>
 <tr>
@@ -3222,6 +3357,93 @@ ENSG00000196092
 0.0370464
 </td>
 </tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000140932.10
+</td>
+<td style="text-align:left;">
+CMTM2
+</td>
+<td style="text-align:right;">
+0.2400213
+</td>
+<td style="text-align:left;">
+22,IRIS_Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+ENSG00000140932
+</td>
+<td style="text-align:right;">
+0.1152954
+</td>
+<td style="text-align:right;">
+0.2188711
+</td>
+<td style="text-align:right;">
+0.2500067
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000163221.9
+</td>
+<td style="text-align:left;">
+S100A12
+</td>
+<td style="text-align:right;">
+0.2350988
+</td>
+<td style="text-align:left;">
+22,IRIS_Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+ENSG00000163221
+</td>
+<td style="text-align:right;">
+0.6872278
+</td>
+<td style="text-align:right;">
+1.6299728
+</td>
+<td style="text-align:right;">
+0.6324510
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000100721.11
+</td>
+<td style="text-align:left;">
+TCL1A
+</td>
+<td style="text-align:right;">
+0.2112394
+</td>
+<td style="text-align:left;">
+22,IRIS_Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+Neutrophil-Resting
+</td>
+<td style="text-align:left;">
+ENSG00000100721
+</td>
+<td style="text-align:right;">
+0.0296388
+</td>
+<td style="text-align:right;">
+0.0680252
+</td>
+<td style="text-align:right;">
+0.0049452
+</td>
+</tr>
 </tbody>
 </table></div>
 <p>Check the scatter plot: TPM on x and y coordinates are displayed in log10 scale.</p>
@@ -3232,7 +3454,7 @@ ENSG00000196092
 </div>
   <div class="chapter-nav">
 <div class="prev"><a href="bilateral-comparison.html"><span class="header-section-number">7</span> Bilateral comparison</a></div>
-<div class="next"><a href="complement-scoring.html"><span class="header-section-number">9</span> Complement scoring</a></div>
+<div class="next"><a href="plier.html"><span class="header-section-number">9</span> Immune cell type proportion by PLIER</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
@@ -3246,8 +3468,8 @@ ENSG00000196092
 </li>
 <li>
 <a class="nav-link" href="#immune-cell-infiltrate-signature"><span class="header-section-number">8.3</span> Immune cell infiltrate signature</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#viz-the-immune-cell-infiltrate-siganiture-from-the-longitudinal-study"><span class="header-section-number">8.3.1</span> Viz the immune cell infiltrate siganiture from the longitudinal study</a></li>
-<li><a class="nav-link" href="#bilateral-study"><span class="header-section-number">8.3.2</span> Bilateral study</a></li>
+<li><a class="nav-link" href="#heamap-the-longitudinal-study"><span class="header-section-number">8.3.1</span> Heamap: the longitudinal study</a></li>
+<li><a class="nav-link" href="#heatmap-bilateral-study-1"><span class="header-section-number">8.3.2</span> Heatmap: Bilateral study</a></li>
 </ul>
 </li>
 <li><a class="nav-link" href="#complement-scoring-vs.-immune-cell-infiltrates-signature"><span class="header-section-number">8.4</span> Complement scoring vs. immune cell infiltrates signature</a></li>
@@ -3275,7 +3497,7 @@ ENSG00000196092
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-04-10.</p>
+    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-05-19.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -1,9 +1,9 @@
 # Immune cell infiltrates signature {#immune-cell-infiltrates}
 
 ```{r setup-8, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message=FALSE)
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
 ```
-Based on the longitudinal study, we have discovered that T cell proliferation, migration, and B cell-mediated immunity response are more prevalent in severely affected muscles, such as "IG-high" and "High." The objective of this chapter is as follows:
+Please note that in the longitudinal study, we employed K-means clustering to identify five distinct clusters labeled as Mild, Moderate, IG-High, High, and Muscle-Low. Through this study, we have found that T cell proliferation, migration, and B cell-mediated immune responses are more prominent in severely affected muscles, specifically those labelled as "IG-high" and "High".  The objective of this chapter is as follows:
 
 1. Identify the enriched GO terms (biological processes) directly linked to T/B cells and circulating immunoglobulins in the longitudinal study (High or IG0high vs. control).
 2. Determine the differentially expressed genes (High vs. control) associated with the enriched GO terms (from step 1), and use heatmap visualization to observe the trend of an increase in gene expression across all longitudinal and bilateral samples, associated with the severity of FSHD (characterised by STIR status, fat fraction/infiltration percent) and/or complement scoring.
@@ -48,7 +48,6 @@ col_data <- colData(bilat_dds) %>% as.data.frame() %>%
 bilat_dds$class <- col_data$class
 
 longitudinal_dds$STIR_status <- if_else(longitudinal_dds$STIR_rating > 0, "STIR+", "STIR-")
-                                        
 ```
 
 ## Enriched biological processes directly associated with T/B cells
@@ -76,12 +75,9 @@ infiltrates_go %>%
   dplyr::rename(pvalue = over_represented_pvalue) %>%
   dplyr::mutate(pvalue = format(pvalue, scientific = TRUE)) %>%
   dplyr::arrange(category) %>%
-  kbl(caption="Enriched biological process GO terms (n=20)  related to T/B cells, humoral immune response, and immunoglobulin domains.") %>%
+  kbl(caption="Enriched biological process GO terms (n=20)  related to T/B cells, humoral immune response, and immunoglobulin domains. Identified using the longitudinal IG-High and High samples (vs. controls).") %>%
   kable_paper("hover", full_width = F)
   
-
-#lymphocyte_go <- high_enriched %>%
-#   dplyr::filter(str_detect(term, "lymphocyte"))
 ```
 
 Display the p-values yielded by GSEA:
@@ -119,6 +115,8 @@ ggsave(file.path(fig_dir, "longitudinal-enriched-immunity-GO.pdf"),
 ## Significant genes associated with the T/B-associated enriched GO terms
 The code chunk below aim to identify significantly expressed genes in High or IG-High (vs. contls) that are involved in the enriched GO terms obtained previously.
 
+__Results:__ Total 95 B/T cell immunity response significant markers are identified. 
+
 ```{r cat-gene-in-enriched-GO, message=FALSE}
 high_sig <- readxl::read_xlsx(file.path(pkg_dir, "extdata", 
     "suppl_table_5_Candidate_Biomarkers_and_Enriched_Go.xlsx"),
@@ -155,11 +153,10 @@ infiltrates_act <- map_dfr(cat2gene, function(cat_gene) {
   arrange(category, gene_name)
 ```
 
-Total 95 B/T cell immunity response significant markers are identified. 
-
 ### Heatmap: Longitudinal study
- Now we visualized the trend of the increased expression levels on the longitidunal samples, arranges by ML-defined classes: Control, Mild, Moderate, IG-High, High, and Muscle-low.
-```{r heatmap-immune-infiltrate-longi, fig.cap="Heatmap demonstrating the increased expression trend on more affected muscle. Color presented the row-wised z-score of expression levels.", fig.height=10, fig.width=8}
+We have employed a heatmap to visualize the trend of increased expression levels for the 95 significant genes previously identified to be associated with enriched T/B and IG Gene Ontology (GO) terms. The order of the samples in the heatmap is arranged as Control, Mild, Moderate, IG-High, High, and Muscle-low. 
+
+```{r heatmap-immune-infiltrate-longi, fig.cap="Heatmap demonstrating the increased expression trend for 95 previously identifed T/B and IG domain related genes on more affected muscle. Color presented the row-wised z-score of expression levels.", fig.height=10, fig.width=8}
 cluster_color <- c(Control="#ff7f00", 
                     Mild="#a65628", 
                     Moderate="#f781bf", 
@@ -167,22 +164,23 @@ cluster_color <- c(Control="#ff7f00",
                    `Muscle-Low`="#377eb8")
 category_color <- wes_palette("Darjeeling2", n=4)[c(1,3,4)]
 names(category_color) <- levels(factor(infiltrates_act$category))
-ann_cor <- list(class = cluster_color, category = category_color)
+col <- c("#ccece6", "#006d2c")
+stir_pal <- c("STIR+" = "#006d2c", "STIR-" = "#ccece6")
+complement_pal = c("3" = "#006d2c", "2" = "#66c2a4", "1" = "#ccece6")
+# column annotation: class, fat fraction, STIR rating, and histophatology
 
-# include column annotaion: class, fat fraction, STIR rating, and histophatology
-col <- c("#f7f7f7", "#238b45")
 annotation_col <- colData(longitudinal_dds) %>% as.data.frame() %>%
   dplyr::select(cluster, fat_fraction, STIR_status, 
                 #STIR_rating,
                 Pathology.Score) %>%
-  dplyr::rename(class=cluster, `fat fraction`=fat_fraction,
-                `STIR+/-` = STIR_status,
+  dplyr::rename(class=cluster, `STIR+/-` = STIR_status,
+                `fat fraction`=fat_fraction,
                 `histopathology` = Pathology.Score) %>%
   dplyr::mutate(`STIR+/-` = factor(`STIR+/-`))
-
+# column annotation color
 ann_cor <-  list(class = cluster_color, category = category_color,
-                 `fat fraction` = col, `STIR+/-` = c(`STIR-`="#f7f7f7",
-                                                     `STIR+`="#238b45"),
+                 `STIR+/-` = stir_pal,
+                 `fat fraction` = col, 
                  `histopathology` = col)
 markers_heatmp_group_by_types_class(markers = infiltrates_act, 
                                     dds = longitudinal_dds, 
@@ -191,26 +189,29 @@ markers_heatmp_group_by_types_class(markers = infiltrates_act,
                                     ann_cor = ann_cor, 
                                     annotation_legend=TRUE)
 ```
+
 ```{r longitudinal-infitrate-markers-heatmap, eval=FALSE, echo=FALSE}
-# output figures for manuscript: with and without the annotaiton legend
+# output figures for manuscript: with and without the annotation legend
 markers_heatmp_group_by_types_class(markers = infiltrates_act, 
                                     dds = longitudinal_dds, 
                                     factor = "cluster", 
                                     annotation_col = annotation_col,
-                                    file_name = file.path(fig_dir, "longitudinalenriched-BTcells-IG-involved-sig-genes.pdf"),
+                                    filename = file.path(fig_dir, "longitudinalenriched-BTcells-IG-involved-sig-genes.pdf"),
                                     ann_cor = ann_cor )
 
 markers_heatmp_group_by_types_class(markers = infiltrates_act, 
                                     dds = longitudinal_dds, 
                                     factor = "cluster", 
-                                    file_name = file.path(fig_dir, "longitudinalenriched-BTcells-IG-involved-sig-genes-no-legend.pdf"),
+                                    filename = file.path(fig_dir, "longitudinalenriched-BTcells-IG-involved-sig-genes-no-legend.pdf"),
                                     annotation_col = annotation_col,
                                     ann_cor = ann_cor, 
+                                    border_color = "transparent",
                                     annotation_legend=FALSE )
 ```
 
 ### Heatmap:  bilateral study
-Heatmap of the expression levels of 95 genes on the bilateral samples.
+The code chunk provided below generates a heatmap that visualizes the expression levels of the 95 genes from the bilateral samples. The samples are ordered based on their classification into Control-like and Moderate+, determined by ML-based classification, and Muscle-Low based on the low expression levels of muscle markers.
+
 ```{r heatmap-immune-infiltrate-bilat, fig.height=10, fig.width=8}
 annotation_col <- comprehensive_df %>% 
   drop_na(class) %>%
@@ -219,16 +220,18 @@ annotation_col <- comprehensive_df %>%
   dplyr::rename(`fat percent` = Fat_Infilt_Percent, 
                 `STIR+/-` = STIR_status,
                 `histopathology` = `Cumulative Score`) %>%
-  column_to_rownames(var="sample_id")
-
+  column_to_rownames(var="sample_id") %>%
+  dplyr::mutate(`Complement Scoring` = factor(`Complement Scoring`, 
+                                              levels=c("3", "2", "1")))
+                
 class_color <- c(`Control-like`="#a65628", 
                     `Moderate+`="#984ea3", 
                     `Muscle-Low`="#377eb8")
 ann_cor <- list(class = class_color, category = category_color,
                 `fat percent` = col, 
-                `STIR+/-` = c(`STIR-`="#f7f7f7", `STIR+`="#238b45"),
+                `STIR+/-` = stir_pal,
                 `histopathology` = col, 
-                `Complement Scoring` = col)
+                `Complement Scoring` = complement_pal)
 
 markers <- infiltrates_act %>%
   left_join(dplyr::select(anno_gencode35, ens_id, gencode35_id),
@@ -242,6 +245,7 @@ markers_heatmp_group_by_types_class(markers = markers,
                                     factor = "class", 
                                     annotation_legend=TRUE,
                                     annotation_col = annotation_col,
+                                    border_color = "transparent",
                                     ann_cor = ann_cor)
 ```
 ```{r print-out-heatmap-immune-infiltrate-bilat, eval=FALSE, echo=FALSE}
@@ -249,10 +253,20 @@ markers_heatmp_group_by_types_class(markers = markers,
 markers_heatmp_group_by_types_class(markers = markers, 
                                     dds = bilat_dds, 
                                     factor = "class", 
-                                    file_name = file.path(fig_dir, "bilateral-enriched-BTcells-IG-involved-sig-genes-no-legend.pdf"),
+                                    filename = file.path(fig_dir, "bilateral-enriched-BTcells-IG-involved-sig-genes-no-legend.pdf"),
                                     annotation_legend=FALSE,
+                                    border_color="transparent", 
                                     annotation_col = annotation_col,
-                                    ann_cor = ann_cor )
+                                    ann_cor = ann_cor, silent=TRUE )
+
+markers_heatmp_group_by_types_class(markers = markers, 
+                                    dds = bilat_dds, 
+                                    factor = "class", 
+                                    filename = file.path(fig_dir, "bilateral-enriched-BTcells-IG-involved-sig-genes.pdf"),
+                                    annotation_legend=TRUE,
+                                    border_color="transparent", 
+                                    annotation_col = annotation_col,
+                                    ann_cor = ann_cor, silent=TRUE )
 ```
 
 ## Immune cell infiltrate signature
@@ -304,7 +318,7 @@ sig_blood_iris <- bind_rows(sig_blood_iris, others) %>%
                                              "Others")))
 ```
 
-### Viz the immune cell infiltrate siganiture from the longitudinal study
+### Heamap: the longitudinal study
 The following heatmap illustrates that there is a tendency of higher expression levels in muscles that are more affected.
 
 ```{r longitudinal-63-sig-immune-cell-markers-heatmap, fig.height=8, fig.cap="Heapmap demonstrating the expression levels (by row-wise z-score of log10(TPM++1) in the longitudinal study."}
@@ -314,7 +328,7 @@ cluster_color <- c(Control="#ff7f00",
                     `IG-High`="#984ea3", High="#e41a1c", 
                    `Muscle-Low`="#377eb8")
 
-col <- c("#f7f7f7", "#238b45")
+
 annotation_col <- colData(longitudinal_dds) %>% as.data.frame() %>%
   dplyr::select(cluster, fat_fraction, STIR_status, 
                 #STIR_rating,
@@ -328,12 +342,12 @@ category_color <- wes_palette("Darjeeling1", n=9, typ="continuous")[1:9]
 names(category_color) <- levels(sig_blood_iris$category)
 
 ann_cor <-  list(class = cluster_color, category = category_color,
-                 `fat fraction` = col, `STIR+/-` = c(`STIR-`="#f7f7f7",
-                                                     `STIR+`="#238b45"),
+                 `fat fraction` = col, `STIR+/-` = stir_pal,
                  `histopathology` = col)
 markers_heatmp_group_by_types_class(markers = sig_blood_iris, 
                                     dds = longitudinal_dds, 
                                     factor = "cluster", 
+                                    border_color = "transparent",
                                     annotation_col = annotation_col,
                                     ann_cor = ann_cor)
 ```
@@ -342,11 +356,12 @@ markers_heatmp_group_by_types_class(markers = sig_blood_iris,
                                     dds = longitudinal_dds, 
                                     factor = "cluster", 
                                     annotation_col = annotation_col,
+                                    border_color="transparent",
                                     filename = file.path(fig_dir, "longitudinal-63-sig-blood-markers-sig-genes.pdf"),
                                     ann_cor = ann_cor )
 ```
 
-### Bilateral study
+### Heatmap: Bilateral study
 The heatmap for the bilateral study below incorporates the complement scoring.
 ```{r bilat-63-sig-immune-cell-markers-heatmap, fig.height=8}
 annotation_col <- comprehensive_df %>% 
@@ -356,16 +371,17 @@ annotation_col <- comprehensive_df %>%
   dplyr::rename(`fat percent` = Fat_Infilt_Percent, 
                 `STIR+/-` = STIR_status,
                 `histopathology` = `Cumulative Score`) %>%
-  column_to_rownames(var="sample_id")
+  column_to_rownames(var="sample_id") %>%
+  dplyr::mutate(`Complement Scoring` = factor(`Complement Scoring`))
 
 class_color <- c(`Control-like`="#a65628", 
                     `Moderate+`="#984ea3", 
                     `Muscle-Low`="#377eb8")
 ann_cor <- list(class = class_color, category = category_color,
                 `fat percent` = col, 
-                `STIR+/-` = c(`STIR-`="#f7f7f7", `STIR+`="#238b45"),
+                `STIR+/-` = stir_pal,
                 `histopathology` = col, 
-                `Complement Scoring` = col)
+                `Complement Scoring` = complement_pal)
 
 # update sig_blood_iris gene_id to gencode35_id
 tmp <- sig_blood_iris %>%
@@ -377,6 +393,7 @@ tmp <- sig_blood_iris %>%
 markers_heatmp_group_by_types_class(markers = tmp,
                                     dds = bilat_dds, 
                                     factor = "class", 
+                                    border_color = "transparent",
                                     annotation_col = annotation_col,
                                     ann_cor = ann_cor )
 
@@ -386,12 +403,15 @@ markers_heatmp_group_by_types_class(markers = tmp,
                                     dds = bilat_dds, 
                                     factor = "class", 
                                     annotation_col = annotation_col,
+                                    border_color = "transparent", 
                                     filename = file.path(fig_dir, "bilateral-63-sig-blood-markers-sig-genes.pdf"),
                                     ann_cor = ann_cor )
 ```
 
+
+
 ## Complement scoring vs. immune cell infiltrates signature
-The 63 immune cell markers mentioned earlier characterize the signature of immune cell infiltration. The heatmap presented in Fig. \@ref(fig:bilat-63-sig-immune-cell-markers-heatmap) shows that the elevated expression levels of these markers are in line with the complement scoring. The following code chunk computes the Spearman correlation coefficient, which is equal to 0.456.
+The earlier mentioned 63 immune cell markers contribute to characterizing the signature of immune cell infiltration. The heatmap depicted in Figure \@ref(fig:bilat-63-sig-immune-cell-markers-heatmap) reveals that the increased expression levels of these markers align with the complement scoring. The following code calculates the Spearman correlation coefficient, which yields a value of 0.456.
 
 ```{r 63-blood-markers-correlated-with-complement-scoring, message=FALSE, fig.align='center', fig.cap="Dotplot of immune cell infiltrates signature (presented by average z-score) groups by complement scoring 1, 2, and 3."}
 tpm <- assays(bilat_dds[tmp$gene_id])[["TPM"]]
@@ -424,7 +444,7 @@ tmp_df %>%
 ```
 
 ## STIR status vs. immune cell infiltrates signature
-The heatmap \@ref(fig:bilat-63-sig-immune-cell-markers-heatmap) also suggested that elevated immune cell signatures is associated with with STIR status: wilcox test p-value = $3e-6$. 
+Previously, Fig \@ref(fig:bilat-63-sig-immune-cell-markers-heatmap) also suggested that elevated immune cell signatures is associated with with STIR status: Wilcox test p-value = $3e-6$. 
 
 ```{r STIR-vs-immune-cell-infilrates-signatures, fig.align='center', message=FALSE}
 tmp_df %>% 
