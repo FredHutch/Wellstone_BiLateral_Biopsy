@@ -1,0 +1,557 @@
+# Immune cell type proportion by PLIER {#plier}
+
+
+```{r setup-8A, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+```
+
+
+The _PLIER_ package [@plier] provides an alternative to examine the immune cell infiltration, without involving in GO or differential analysis as we have investigated in \@ref{immune-cell-infiltrates}. PLIER employes eigenvalue-like decomposition to estimate the immune cell contribution to the FSHD transcriptome. The top loading variables from the resulting eigenvalue-like latent variables (LV) are potential indicators of immune infiltrate signatures. We utilized the PLIER algorithm for analyzing both longitudinal and bilateral samples. The expression levels of the most influential loading variables are depicted in this chapter.
+
+
+```{r load-datasets, message=FALSE}
+# define parameters and load datasets: bilat_dds and longitudinal_dds
+pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
+fig_dir <- file.path(pkg_dir, "figures", "immune-infiltration")
+source(file.path(pkg_dir, "scripts", "load_variables_and_datasets.R"))
+# returns bilat_dds and longitudinal_dds
+```
+
+We ultitized the _IRIS_ dataset [@iris] from _PLIER_ as the baseline of immnune cell types and markers. 
+```{r blood-cell-markers-IRISDMAP}
+library(PLIER)
+data(bloodCellMarkersIRISDMAP)
+# Extract the IRIS dataset from `bloodCellMarkersIRISDMAP`
+blood_iris <- as.data.frame(bloodCellMarkersIRISDMAP) %>%
+  rownames_to_column(var="gene_name") %>%
+  dplyr::select(gene_name, starts_with("IRIS")) %>%
+  dplyr::filter(rowSums(across(where(is.numeric))) > 0) 
+
+bilat_coldata <- colData(bilat_dds) %>% as.data.frame()
+longi_coldata <- colData(longitudinal_dds) %>% as.data.frame()
+```
+
+## PLIER Longitudinal samples
+In this section, we applied PLIER to estimate the immune cell type proportion for the longitudiname samples. 
+
+### Steps
+
+1. run PLIER, the `priorMat` only includes the IRIS dataset (`blood_iris`)
+2. Select top LVs with AUC > 0.8 and FDR < 0.05
+3. Verify the top LVs of elevated proportion in FSHD and filter out the false positives
+4. Identify top loading varibles associated with the selected top LVs
+
+```{r longitudinal-prepare-for-plier, fig.cap="Significant LVs with AUC > 0.8 and FDR < 0.05."}
+# use RPKM as suggested by the PLIER authers; TPM yields similar results
+longitudinal_rpkm <- assays(longitudinal_dds)[["RPKM"]]
+longitudinal_tpm <- assays(longitudinal_dds)[["TPM"]]
+rownames(longitudinal_rpkm) <- 
+  rownames(longitudinal_tpm) <- rowData(longitudinal_dds)$gene_name
+
+priorMat <- 
+  bloodCellMarkersIRISDMAP[, names(blood_iris)[-1]] # remove col "gene_name" 
+plier_longi <- PLIER(longitudinal_rpkm, # or longitudinal_rpkm
+                     priorMat=priorMat,
+                     scale = TRUE)
+mat_u <- plotU(plier_longi, auc.cutoff = 0.70, fdr.cutoff = 0.05, top = 3)
+sig_sets <- names(mat_u$iirow)[mat_u$iirow]
+```
+
+Displayed below is the visualization of eight latent variables (LVs) that potentially capture the immune cell infiltrate signatures in the more affected muscles. It is important to note that there may be some false positives among them.
+
+```{r plier-B-and-Z, fig.width=8, fig.height=10, fig.cap="The cell type proportion of all significant LVs"}
+# proportion boxplots of all the sig LVs 
+sig_proportion_longi <- plier_longi$B[mat_u$iicol, ] %>% as.data.frame() %>%
+  rownames_to_column(var="LV_index") %>%
+  tidyr::gather(key=sample_id, value=proportion, -LV_index) %>%
+  left_join(dplyr::select(longi_coldata, sample_id, cluster), by="sample_id")
+  
+outliers <- sig_proportion_longi %>% dplyr::filter(proportion > 3)
+
+sig_proportion_longi %>%
+    dplyr::filter(proportion < 3) %>%
+ggplot(aes(x=cluster, y=proportion)) +
+  geom_boxplot(width=0.3, outlier.shape = NA) +
+  geom_jitter(width=0.3, size=0.3, color="grey50") +
+  facet_wrap(~LV_index, scale="free_y", ncol=3) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        axis.title.x = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+```
+
+### Five best LVs showing immune cell infiltrat signatures
+Based on the information extracted from the U, top Z, and B matrices, it can be concluded that LV30, LV4, LV5, LV12, and LV46 are the most reliable latent variables indicating heightened immune cell infiltration. Consequently, we have generated plots for our publication showcasing the following latent variables: LV30 (CD4 Tcell-Th1), LV4 and LV12 (Neutrophil resting), LV40 (IgG and IgA B memory cell), and LV5 (dendritic cell).
+
+NOTE: I hide the code chuck for they are tidious, but the reader cand find them in the original Rmd files.
+
+#### LV30,IRIS_CD4Tcell-Th1-restimulated48hour
+
+```{r LV30-longitudinal-proportion, message=FALSE, echo=FALSE}
+# scale_y_break
+library(ggbreak)
+sig_proportion_longi %>%
+  dplyr::filter(LV_index=="30,IRIS_CD4Tcell-Th1-restimulated48hour") %>%
+  ggplot(aes(x=cluster, y=proportion)) +
+    geom_boxplot(width=0.5, outlier.shape=NA) +
+    geom_jitter(width=0.3, color="grey25",  alpha=0.5, size=0.5) +
+    theme_minimal() +
+    theme(panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+          axis.title.x = element_blank(),
+          axis.title.y = element_text(size=9),
+          plot.title = element_text(size=10, hjust = 0.5),
+          plot.subtitle = element_text(size=9, hjust = 0.5)) +
+    labs(title="LV30, CD4 Tcell Th1", 
+         subtitle="Longitudinal cohort",
+         y="Relative proportion") +
+    scale_y_break(breaks=c(2.5, 4), ticklabels = c(4, 5))
+    #scale_y_cut(breaks=2.5, which=2, scales=0.8) + ylim(c(-0.6, 5.2))
+
+ggsave(file.path(pkg_dir, "figures", "immune-infiltration",
+                 "longitudinal-LV30-CD4Tcell-proportion.pdf"),
+       width=2, height=3)
+```
+
+#### LV4,IRIS_Neutrophil-Resting
+```{r L4-proportion-IRIS_Neutrophil-Resting, echo=FALSE}
+sig_proportion_longi %>%
+  dplyr::filter(LV_index=="4,IRIS_Neutrophil-Resting") %>%
+  ggplot(aes(x=cluster, y=proportion)) +
+    geom_boxplot(width=0.5, outlier.shape=NA) +
+    geom_jitter(width=0.3, color="grey25",  alpha=0.5, size=0.5) +
+    theme_minimal() +
+    theme(panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+          axis.title.x = element_blank(),
+          axis.title.y = element_text(size=9),
+          plot.title = element_text(size=10, hjust = 0.5),
+          plot.subtitle = element_text(size=9, hjust = 0.5)) +
+    labs(title="LV4, Neutrophil-Resting", 
+         subtitle="Longitudinal cohort",
+         y="Relative proportion") +
+    scale_y_break(breaks=c(2.5, 9), ticklabels = c(9, 10))
+    
+
+ggsave(file.path(pkg_dir, "figures", "immune-infiltration",
+                 "longitudinal-LV4-Neutrophil-Resting.pdf"),
+       width=2, height=3)
+```
+
+#### LV12,IRIS_Neutrophil-Resting
+```{r L12-proportion-IRIS_Neutrophil-Resting, echo=FALSE}
+sig_proportion_longi %>%
+  dplyr::filter(LV_index=="12,IRIS_Neutrophil-Resting") %>%
+  ggplot(aes(x=cluster, y=proportion)) +
+    geom_boxplot(width=0.5, outlier.shape=NA) +
+    geom_jitter(width=0.3, color="grey25",  alpha=0.5, size=0.5) +
+    theme_minimal() +
+    theme(panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+          axis.title.x = element_blank(),
+          axis.title.y = element_text(size=9),
+          plot.title = element_text(size=10, hjust = 0.5),
+          plot.subtitle = element_text(size=9, hjust = 0.5)) +
+    labs(title="LV12, Neutrophil-Resting", 
+         subtitle="Longitudinal cohort",
+         y="Relative proportion") +
+    scale_y_break(breaks=c(2, 7), ticklabels = c(7, 8))
+    
+
+ggsave(file.path(pkg_dir, "figures", "immune-infiltration",
+                 "longitudinal-LV12-Neutrophil-Resting.pdf"),
+       width=2, height=3)
+```
+
+#### LV5,IRIS_DendriticCell-LPSstimulated
+
+```{r LV5-proportion-IRIS_DendrticCell, echo=FALSE}
+sig_proportion_longi %>%
+  dplyr::filter(LV_index=="5,IRIS_DendriticCell-LPSstimulated") %>%
+  ggplot(aes(x=cluster, y=proportion)) +
+    geom_boxplot(width=0.5, outlier.shape=NA) +
+    geom_jitter(width=0.3, color="grey25",  alpha=0.5, size=0.5) +
+    theme_minimal() +
+    theme(panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+          axis.title.x = element_blank(),
+          axis.title.y = element_text(size=9),
+          plot.title = element_text(size=10, hjust = 0.5),
+          plot.subtitle = element_text(size=9, hjust = 0.5)) +
+    labs(title="LV5, Dendritic cell", 
+         subtitle="Longitudinal cohort",
+         y="Relative proportion") +
+    scale_y_break(breaks=c(2.5, 5.5), ticklabels = c(5.5, 6.5))
+    
+
+ggsave(file.path(pkg_dir, "figures", "immune-infiltration",
+                 "longitudinal-5-DendriticCell-LPSstimulated.pdf"),
+       width=2, height=3)
+```
+
+#### LV40,IRIS_Bcell-Memory_IgG_IgA
+```{r LV40-Bcell-Memory_IgG_IgA, echo=FALSE}
+sig_proportion_longi %>%
+  dplyr::filter(LV_index=="40,IRIS_Bcell-Memory_IgG_IgA") %>%
+  ggplot(aes(x=cluster, y=proportion)) +
+    geom_boxplot(width=0.5, outlier.shape=NA) +
+    geom_jitter(width=0.3, color="grey25",  alpha=0.5, size=0.5) +
+    theme_minimal() +
+    theme(panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+          axis.title.x = element_blank(),
+          axis.title.y = element_text(size=9),
+          plot.title = element_text(size=10, hjust = 0.5),
+          plot.subtitle = element_text(size=9, hjust = 0.5)) +
+    labs(title="LV40, B cell memory ", 
+         subtitle="Longitudinal cohort",
+         y="Relative proportion") +
+    scale_y_break(breaks=c(3, 8), ticklabels = c(8, 9))
+    
+
+ggsave(file.path(pkg_dir, "figures", "immune-infiltration",
+                 "longitudinal-Bcell-Memory-IgG-IgA-proportion.pdf"),
+       width=2, height=3)
+```
+
+### Top loading variables Z of selected LVs
+```{r longi-top-Z, message=FALSE}
+LV_index<- c(4, 5, 12, 30, 40)
+names(LV_index) <- rownames(plier_longi$B[LV_index, ])
+priorMat <- bloodCellMarkersIRISDMAP[, names(blood_iris)[-1]]
+
+top = 15
+sub_iris <- blood_iris %>% 
+  dplyr::select(gene_name, `IRIS_CD4Tcell-Th1-restimulated48hour`,
+                `IRIS_CD4Tcell-Th2-restimulated48hour`, 
+                `IRIS_DendriticCell-Control`,
+                `IRIS_DendriticCell-LPSstimulated`,
+                `IRIS_CD4Tcell-Th2-restimulated12hour`,
+                `IRIS_Bcell-Memory_IgG_IgA`,
+                `IRIS_Neutrophil-Resting`)
+
+longi_topZ <- map_dfr(LV_index, function(index) {
+  plier_longi$Z[, index, drop=FALSE] %>% as.data.frame() %>%
+    arrange(-V1) %>% top_n(top) %>%
+    dplyr::select(-V1) %>%
+    #dplyr::rename_with(~paste0("LV", as.character(index))) %>%
+    rownames_to_column(var="gene_name") %>%
+    left_join(sub_iris, by="gene_name") %>% # turn NA to 0
+    replace(is.na(.), 0) %>%
+    dplyr::mutate(in_markerSet = 
+                    if_else(rowSums(across(where(is.numeric))) > 0,
+                                    TRUE, FALSE), .after=gene_name)
+    # which pathway?
+}, .id="LV_index") %>% # append gene_id
+  left_join(anno_ens88, by="gene_name") %>%
+  left_join(dplyr::select(anno_gencode35, gencode35_id, gene_name), 
+            by="gene_name")
+longi_topZ %>% group_by(LV_index) %>% 
+  summarize(n=sum(in_markerSet)) %>%
+  knitr::kable(format = "html", 
+               caption="The five most reliable LVs and the number of top loading variables associated with the LVs.")
+```
+The code chunk below tidied up the top loading variables and attached annotation.
+```{r tidy-up-longi-markers}
+longi_topZ <- longi_topZ %>%
+  dplyr::mutate(cell_type = str_replace(LV_index, "[0-9]*,IRIS_", ""))
+
+longi_markers <- map_dfr(names(LV_index), function(lv) {
+  longi_topZ %>% dplyr::filter(LV_index == lv, in_markerSet) %>%
+    dplyr::select(LV_index, cell_type, ens_id)
+}) %>% dplyr::arrange(cell_type) %>%
+  left_join(dplyr::select(anno_ens88, ens88_id, ens_id, gene_name), 
+            by="ens_id") %>%
+  dplyr::rename(gene_id = ens88_id)
+```
+
+#### Heatmap of top loading variables
+Below is the heatmap illustrating the z-scores of the log TPM (transcripts per million) values for the top loading variables associated with the five latent variables (LVs).
+```{r longitudinal-topZ-of-top-LVs, echo=FALSE, fig.height=8, fig.cap="Heatmap of the top loading variables associated with the five LVs for longitudinal samples."}
+file_name <- file.path(pkg_dir, "figures", "immune-infiltration",
+                       "longitudinal-topZ-heatmap.pdf")
+# annotation color
+cluster_color <- c(Control="#ff7f00", 
+                    Mild="#a65628", 
+                    Moderate="#f781bf", 
+                    `IG-High`="#984ea3", 
+                   High="#e41a1c", 
+                    `Muscle-Low`="#377eb8")
+type_color <- wes_palette("Darjeeling2", n=4)[1:4]
+names(type_color) <- levels(factor(longi_markers$cell_type))
+
+col <- c("#ccece6", "#006d2c")
+stir_pal <- c("STIR+" = "#006d2c", "STIR-" = "#ccece6")
+complement_pal = c("3" = "#006d2c", "2" = "#66c2a4", "1" = "#ccece6")
+annotation_col <- colData(longitudinal_dds) %>% as.data.frame() %>%
+  dplyr::select(cluster, fat_fraction, STIR_status, 
+                #STIR_rating,
+                Pathology.Score) %>%
+  dplyr::rename(class=cluster, `STIR+/-` = STIR_status,
+                `fat fraction`=fat_fraction,
+                `histopathology` = Pathology.Score) %>%
+  dplyr::mutate(`STIR+/-` = factor(`STIR+/-`))
+
+# column annotation color
+ann_cor <-  list(class = cluster_color, 
+                 cell_type = type_color,
+                 `STIR+/-` = stir_pal,
+                 `fat fraction` = col, 
+                 `histopathology` = col)
+
+topZ_heatmp_group_by_types_class(dds=longitudinal_dds,
+                                 factor="cluster",
+                                 markers_topZ = longi_markers,
+                                 annotation_col = annotation_col,
+                                 ann_cor=ann_cor,
+                                 #filename = file_name,
+                                 border_color = "transparent",
+                                 silent = FALSE, width = 8)
+```
+```{r print-out-topZ-longitudinal, echo=FALSE}
+topZ_heatmp_group_by_types_class(dds=longitudinal_dds,
+                                 factor="cluster",
+                                 markers_topZ = longi_markers,
+                                 annotation_col = annotation_col,
+                                 ann_cor=ann_cor,
+                                 filename = file_name,
+                                 border_color = "transparent",
+                                 silent = TRUE, width = 8)
+```
+
+
+
+## PLIER to the bilateral samples
+We applied PLIER to the bilateral samples in the same matter. The cut off values for LVs are : AUC = 0.7 and FDR = 0.05
+
+```{r plier-bilateral}
+bilat_rpkm <- assays(bilat_dds)[["RPKM"]]
+bilat_tpm <- assays(bilat_dds)[["TPM"]]
+
+rownames(bilat_rpkm) <- rownames(bilat_tpm) <- rowData(bilat_dds)$gene_name
+plier_bilat <- PLIER(bilat_rpkm, # or longitudinal_rpkm
+                     priorMat=priorMat,
+                     scale = TRUE)
+save(plier_bilat, file=file.path(pkg_dir, "data", "plier_bliat.rda"))
+mat_u <- plotU(plier_bilat, auc.cutoff = 0.7, fdr.cutoff = 0.05, top = 3)
+```
+
+
+```{r plier-bilat-proportion, fig.width=8, fig.height=8}
+bilat_col_data <- colData(bilat_dds) %>% as.data.frame()
+
+# define sig LV_index: 
+LV_index <- c(2, 14, 18, 20, 26, 22)
+names(LV_index) <- rownames(plier_bilat$B[LV_index, ])
+
+#plier_bilat$B[LV_index, ] %>% as.data.frame() %>%
+#  rownames_to_column(var="LV_index") %>%
+#  tidyr::gather(key=sample_id, value=proportion, -LV_index) %>%
+#  left_join(dplyr::select(bilat_col_data, sample_id, class), by="sample_id") %>%
+#  dplyr::filter(proportion >= 3) %>%
+#  knitr::kable(caption="Samples with extreme proportions. Remov ed from the #figure below.")
+
+# boxplot for proportion of potential LVs
+plier_bilat$B[mat_u$iicol, ] %>% as.data.frame() %>%
+  rownames_to_column(var="LV_index") %>%
+  tidyr::gather(key=sample_id, value=proportion, -LV_index) %>%
+  left_join(dplyr::select(bilat_col_data, sample_id, class), by="sample_id") %>%
+  dplyr::filter(proportion < 3) %>%
+  ggplot(aes(x=class, y=proportion)) +
+    geom_boxplot(width=0.3, outlier.shape = NA) +
+    geom_jitter(width=0.3, size=0.3) +
+    facet_wrap(~LV_index, scale="free_y", nrow=3) +
+    #labs(title="Remove outliers with proportion > 3 ") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+          axis.title.x = element_blank())
+```
+
+### Three base LVs demonstrating elevated immune cell proportion
+The significant LVs that show elevated immune cell type contribution in FSHD are LV2 (Bcell-Memory_IgG_IgA), LV22 (Neutrophil-resting)  and LV20 (DendriticCell-LPSstimulated). LV18 and LV26 do have elevated proportion in moderatedly-affected muscles.
+
+```{r tidy-plier-bilat-proportion}
+bilat_proportion <- plier_bilat$B[LV_index, ] %>% as.data.frame() %>%
+  rownames_to_column(var="LV_index") %>%
+  tidyr::gather(key=sample_id, value=proportion, -LV_index) %>%
+  left_join(dplyr::select(bilat_col_data, sample_id, class), by="sample_id") 
+```
+
+#### LV2, IRIS_Bcell-Memory_IgG_IgA
+```{r LV2-Bcll-memory, echo=FALSE}
+bilat_proportion %>%
+  dplyr::filter(LV_index=="2,IRIS_Bcell-Memory_IgG_IgA") %>%
+  ggplot(aes(x=class, y=proportion)) +
+    geom_boxplot(width=0.5, outlier.shape=NA) +
+    geom_jitter(width=0.3, color="grey25",  alpha=0.5, size=0.5) +
+    theme_minimal() +
+    theme(panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+          axis.title.x = element_blank(),
+          axis.title.y = element_text(size=9),
+          plot.title = element_text(size=10, hjust = 0.5),
+          plot.subtitle = element_text(size=9, hjust = 0.5)) +
+    labs(title="LV2, B cell memory", 
+         subtitle="Bilateral cohort",
+         y="Relatitive proportion") +
+    scale_y_break(breaks=c(1.5, 7.5), ticklabels = c(7.5, 7.7)) + ylim(c(-0.45, 7.8))
+ggsave(file=file.path(pkg_dir, "figures", "immune-infiltration",
+                      "bilateral-LV2-Bcell-memory.pdf"),
+       width=1.6, height=3)
+```
+
+#### LV22,IRIS_Neutrophil-Resting
+```{r bilat-LV22-neutrophil-resting, echo=FALSE}
+bilat_proportion %>%
+  dplyr::filter(LV_index=="22,IRIS_Neutrophil-Resting") %>%
+  ggplot(aes(x=class, y=proportion)) +
+    geom_boxplot(width=0.5, outlier.shape=NA) +
+    geom_jitter(width=0.3, color="grey25",  alpha=0.5, size=0.5) +
+    theme_minimal() +
+    theme(panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+          axis.title.x = element_blank(),
+          axis.title.y = element_text(size=9),
+          plot.title = element_text(size=10, hjust = 0.5),
+          plot.subtitle = element_text(size=9, hjust = 0.5)) +
+    labs(title="LV22, Neutrophil-Resting", 
+         subtitle="Bilateral cohort",
+         y="Relatitive proportion") +
+    scale_y_break(breaks=c(2.2, 6.2), ticklabels = c(6.2, 6.6)) + ylim(c(-0.45, 6.7))
+ggsave(file=file.path(pkg_dir, "figures", "immune-infiltration",
+                      "bilateral-LV22-Neutrophil-Resting.pdf"),
+       width=1.6, height=3)
+```
+
+#### LV20,IRIS_DendriticCell-LPSstimulated
+```{r LV20-dendritic, echo=FALSE}
+bilat_proportion %>%
+  dplyr::filter(LV_index=="20,IRIS_DendriticCell-LPSstimulated") %>%
+  ggplot(aes(x=class, y=proportion)) +
+    geom_boxplot(width=0.5, outlier.shape=NA) +
+    geom_jitter(width=0.3, color="grey25",  alpha=0.5, size=0.5) +
+    theme_minimal() +
+    theme(panel.grid.minor = element_blank(),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+          axis.title.x = element_blank(),
+          axis.title.y = element_text(size=9),
+          plot.title = element_text(size=10, hjust = 0.5),
+          plot.subtitle = element_text(size=9, hjust = 0.5)) +
+    labs(title="LV20, Dendritic cell", 
+         subtitle="Bilateral cohort",
+         y="Relatitive proportion") +
+    scale_y_break(breaks=c(2, 4), ticklabels = c(4, 5, 6))
+ggsave(file=file.path(pkg_dir, "figures", "immune-infiltration",
+                      "bilateral-LV20-dendritic-cell.pdf"),
+       width=1.6, height=3)
+```
+
+#### Top loading variables (Z) of selected LVs
+
+```{r plier-bilat-top-z, message=FALSE, warning=FALSE}
+bilat_LV <- c(2, 20, 22)
+names(bilat_LV) <- rownames(plier_bilat$B[bilat_LV, ])
+priorMat <- bloodCellMarkersIRISDMAP[, names(blood_iris)[-1]]
+
+top = 15
+sub_iris <- blood_iris %>% 
+  dplyr::select(gene_name, `IRIS_CD4Tcell-Th1-restimulated48hour`,
+                `IRIS_CD4Tcell-Th2-restimulated48hour`, 
+                `IRIS_Bcell-Memory_IgG_IgA`, `IRIS_Bcell-naive`,
+                `IRIS_Bcell-naive`, `IRIS_Bcell-Memory_IgM`,
+                `IRIS_Neutrophil-Resting`,
+                `IRIS_DendriticCell-Control`,
+                `IRIS_DendriticCell-LPSstimulated`)
+
+bilat_topZ <- map_dfr(bilat_LV, function(index) {
+  plier_bilat$Z[, index, drop=FALSE] %>% as.data.frame() %>%
+    arrange(-V1) %>% top_n(top) %>%
+    dplyr::select(-V1) %>%
+    #dplyr::rename_with(~paste0("LV", as.character(index))) %>%
+    rownames_to_column(var="gene_name") %>%
+    left_join(sub_iris, by="gene_name") %>% # turn NA to 0
+    replace(is.na(.), 0) %>%
+    dplyr::mutate(in_markerSet = 
+                    if_else(rowSums(across(where(is.numeric))) > 0,
+                                    TRUE, FALSE), .after=gene_name)
+}, .id="LV_index") %>% # append gene_id
+  left_join(anno_ens88, by="gene_name") %>%
+  left_join(dplyr::select(anno_gencode35, gencode35_id, gene_name), 
+            by="gene_name")
+#top_z <- bilat_topZ
+bilat_topZ %>% group_by(LV_index) %>% 
+  summarize(n=sum(in_markerSet)) %>%
+  knitr::kable(caption="The three best LVs and the number of associated makers.")
+```
+
+```{r tidy-up-bilat_topZ}
+#bilat_LV <- c(2, 20, 22)
+#names(bilat_LV) <- rownames(plier_bilat$B[bilat_LV, ])
+bilat_topZ <- bilat_topZ %>%
+    dplyr::mutate(cell_type = str_replace(LV_index, "[0-9]*,IRIS_", ""))
+
+bilat_markers <-  map_dfr(names(bilat_LV), function(lv) {
+  bilat_topZ %>% dplyr::filter(LV_index == lv, in_markerSet) %>%
+    dplyr::select(LV_index, cell_type, ens_id)
+}) %>% dplyr::arrange(cell_type) %>%
+   left_join(dplyr::select(anno_gencode35, gencode35_id, ens_id, gene_name), 
+            by="ens_id") %>%
+    dplyr::rename(gene_id = gencode35_id)
+```
+
+```{r save-bilat-and-longi-makers, echo=FALSE}
+plier_topZ_markers <- list(bilat_markers=bilat_markers,
+                           longitudinal_markers = longi_markers)
+save(plier_topZ_markers, file=file.path(pkg_dir, "data",
+                                        "plier_topZ_markers.rda"))
+```
+
+#### Heatmap
+Figure below is a heatmap depicted the row-wise z-score of the $\log_{10} TPM$ of the top loading variables associated with the three LVs.
+
+```{r bilat-topz-heatmap, echo=FALSE, fig.cap="Heatmap of 18 top Z (loading variables) in the bilateral samples.", fig.width = 8}
+file_name <- file.path(pkg_dir, "figures", "immune-infiltration", 
+                       "bilat-topZ-heatmap.pdf")
+
+annotation_col <- comprehensive_df %>% 
+  drop_na(class) %>%
+  dplyr::select(sample_id, class, Fat_Infilt_Percent, STIR_status,
+                `Cumulative Score`, `Complement Scoring`) %>%
+  dplyr::rename(`fat percent` = Fat_Infilt_Percent, 
+                `STIR+/-` = STIR_status,
+                `histopathology` = `Cumulative Score`) %>%
+  column_to_rownames(var="sample_id") %>%
+  dplyr::mutate(`Complement Scoring` = factor(`Complement Scoring`, 
+                                              levels=c("3", "2", "1")))
+type_color <- wes_palette("Darjeeling2", n=4)[c(1, 3, 4)]
+names(type_color) <- levels(factor(bilat_markers$cell_type))
+
+class_color <- c(`Control-like`="#a65628", 
+                  `Moderate+`="#984ea3", 
+                  `Muscle-Low`="#377eb8")
+
+ann_cor <- list(class = class_color, 
+                cell_type = type_color, 
+                `fat percent` = col, 
+                `STIR+/-` = stir_pal,
+                `histopathology` = col, 
+                `Complement Scoring` = complement_pal)
+
+topZ_heatmp_group_by_types_class(dds=bilat_dds,
+                                 factor="class",
+                                 markers_topZ = bilat_markers,
+                                 border_color = "transparent",
+                                 ann_cor = ann_cor,
+                                 annotation_col = annotation_col)
+```
+```{r print-heatmap-biolat-topZ, echo=FALSE}
+topZ_heatmp_group_by_types_class(dds=bilat_dds,
+                                 factor="class",
+                                 markers_topZ = bilat_markers,
+                                 border_color = "transparent",
+                                 ann_cor = ann_cor,
+                                 annotation_col = annotation_col,
+                                 silent = TRUE,
+                                 filename = file_name, width=8, height=7)
+```
+
