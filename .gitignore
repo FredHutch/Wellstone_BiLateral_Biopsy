@@ -1,6 +1,9 @@
 .DS_Store
 .Rhistory
 data
+data/sanitized.dds.rda
+data/sanitized.rlg.rda
+data/dds.rda
 figures
 gitbook_old
 manuscript

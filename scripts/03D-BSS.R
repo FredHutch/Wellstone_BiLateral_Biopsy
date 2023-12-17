@@ -8,8 +8,9 @@ library(corrr)
 pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
 load(file.path(pkg_dir, "data", "bs_methyl.rda"))
 load(file.path(pkg_dir, "data", "comprehensive_df.rda"))
+comprehensive_df <- comprehensive_df %>%
+  dplyr::rename_with(~str_remove(., '-logSum'), ends_with('-logSum'))
 
-#
 # which one has 4A161S and 4A161L? exclude 01-0022
 #
 bss <- bs_methyl %>% 
@@ -30,7 +31,7 @@ bss %>%
 
 
 #
-# boxplot (violin) with dots group by 161S and 161L; no 01-0022
+# boxplot with dots group by 161S and 161L; no 01-0022
 #
 bss %>% dplyr::filter(!Subject=="01-0022") %>%
   dplyr::mutate(allele=if_else(`use BSSL`, "4qA161L", "4qA161S")) %>%
@@ -41,7 +42,7 @@ bss %>% dplyr::filter(!Subject=="01-0022") %>%
     theme_minimal() +
     labs(x="", y="% methylation") +
     theme(axis.text.x = element_text(angle = 25, vjust = 1, hjust=1))
-ggsave(file=file.path(pkg_dir, "figures", "BSS-boxplot-group-by-161L.pdf"),
+ggsave(file=file.path(pkg_dir, "manuscript", "figures", "BSS-boxplot-group-by-161L.pdf"),
        height=2.2, width=1.5)
 
 #
@@ -56,8 +57,6 @@ bss %>% dplyr::select(Subject, location, `BSS Value`) %>%
   spread(key=location, value=`BSS Value`) %>%
   ggplot(aes(x=L, y=R)) +
     geom_point() +
-    #geom_abline(intercept=0, slope=1, color="grey50", 
-    #            alpha=0.5, linetype="dashed") +
     geom_smooth(method="lm", se=FALSE, linewidth=0.7, color="grey75", alpha=0.3) +
     annotate("text", x=Inf, y=-Inf, color="gray25",
              size=3, hjust=1, vjust=-2,
@@ -81,10 +80,12 @@ bss %>% dplyr::select(-Subject) %>%
     facet_wrap(~allele) +
     theme_bw() +
     labs(x="", y="% methylation")
-ggsave(file=file.path(pkg_dir, "figures", "BSS-STIR-by-allele.pdf"), 
+ggsave(file=file.path(pkg_dir, "manuscript", "figures", "BSS-STIR-by-allele.pdf"), 
        width=2.5, height=2)  
 
 # 2. Dux4 and other, seperate two allele
+
+## 4qA161S
 bss %>% dplyr::select(-Subject) %>%
   dplyr::filter(`allele`=="4qA161S") %>%
   left_join(comprehensive_df, by="sample_id") %>% 
@@ -94,6 +95,7 @@ bss %>% dplyr::select(-Subject) %>%
                  label_size = 3, size=2, hjust=0.9, 
                  legend.position="none", layout.exp=3)
 
+# 4qA161L
 bss %>% dplyr::select(-Subject) %>%
   dplyr::filter(`allele`=="4qA161L") %>%
   left_join(comprehensive_df, by="sample_id") %>% 
@@ -102,6 +104,7 @@ bss %>% dplyr::select(-Subject) %>%
   GGally::ggcorr(label = TRUE, label_round=1, 
                  label_size = 3, size=2, hjust=0.9, 
                  legend.position="none", layout.exp=3)  
+
 # 161S
 cor_161S <- bss %>% dplyr::select(-Subject) %>%
   dplyr::filter(`allele`=="4qA161S") %>%
@@ -129,9 +132,9 @@ cor_161S %>%
     scale_fill_steps2(low="grey75", mid="grey95", high="grey75", 
                      breaks=seq(-1, 1, length.out=10)) +
     theme_minimal() +
-    labs(x="", y="") +
+    labs(x="", y="", title="Pearson correlation") +
     theme(legend.position = "none", 
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank())
-ggsave(file.path(pkg_dir, "figures", "BSS-correlation.pdf"), 
+ggsave(file.path(pkg_dir, "manuscript", "figures", "BSS-correlation.pdf"), 
        width=2.8, height=2)

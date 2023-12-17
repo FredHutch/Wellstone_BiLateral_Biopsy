@@ -21,15 +21,14 @@ suppressPackageStartupMessages(library(ggrepel))
 pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
 
 load(file.path(pkg_dir, "data", "mri.rda"))
-load(file.path(pkg_dir, "data", "DUX4_positive.rda"))
-load(file.path(pkg_dir, "data", "dds.rda"))
+load(file.path(pkg_dir, "data", "bilat_dds.rda"))
 load(file.path(pkg_dir, "data", "all_baskets.rda"))
 load(file.path(pkg_dir, "data", "blood_fat_muscle_content.rda"))
 
 #
 # tidy-up some data frames
 #
-anno_gencode36 <- as.data.frame(rowData(dds)) %>%
+anno_gencode36 <- as.data.frame(rowData(bilat_dds)) %>%
   rownames_to_column(var="gene_id") %>% # BiLat study using Gencode 36
   dplyr::mutate(ens_id=str_replace(gene_id, "\\..*", ""))
 
@@ -48,6 +47,7 @@ muscle_strength <- get(load(file.path(pkg_dir, "data", "muscle_strength.rda"))) 
   gather(key=`location`, value=`Foot Dorsiflexors`, -Subject) %>%
   dplyr::mutate(sample_id = paste0(Subject, 
                                    str_sub(location, start=1L, end=1L)))
+
 #
 # blood_fat_muscle_content (sum(log10(TPM+1)))
 #
@@ -134,15 +134,10 @@ save(comprehensive_df, file = file.path(pkg_dir, "data", "comprehensive_df.rda")
 writexl::write_xlsx(comprehensive_df, path=file.path(pkg_dir, "stats", "comprehensive_metadata.xlsx"))
 
 #
-# Need to include RIN number
-# 
-
-#
 # control baskets
 #
-
-load(file.path(pkg_dir, "data", "sanitized.dds.rda"))
-controls_dds <- sanitized.dds[, sanitized.dds$pheno_type == "Control"]
+load(file.path(pkg_dir, "data", "longitudinal_dds.rda"))
+controls_dds <- longitudinal_dds[, longitudinal_dds$pheno_type == "Control"]
 control_baskets <- map_dfr(names(all_baskets), function(name) {
   id <- all_baskets[[name]]$gene_id_v88
   assays(controls_dds[id])[["TPM"]] %>% as.data.frame() %>%

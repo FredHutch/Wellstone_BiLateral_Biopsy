@@ -14,7 +14,9 @@ library(tidyverse)
 library(readxl)
 pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
 ext_dir <- file.path(pkg_dir, "extdata")
-bs_methyl_filename <- file.path(ext_dir, "Wellstone BiLat_Muscle Biopsy_Jones MethylSeq Data.v2.xlsx")
+#bs_methyl_filename <- file.path(ext_dir, "Wellstone BiLat_Muscle Biopsy_Jones MethylSeq Data.v2.xlsx")
+# note that 13-0003R BSS has changed to 12% on 10/15/2023 by Takako; V3 correspond to the correction
+bs_methyl_filename <- file.path(ext_dir, "Wellstone BiLat_Muscle Biopsy_Jones MethylSeq Data.v3.xlsx")
 histology_filename <- file.path(ext_dir, "BiLAT Biopsy Data 1.14.2022.csv")
 # muscle strength: Left/Right Food Dorsiflexors - EX and EY by volume 
 baseline_filename <- file.path(ext_dir, "BILLATStudy_Baseline_29March2022.xlsx")

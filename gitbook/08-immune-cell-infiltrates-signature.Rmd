@@ -48,6 +48,11 @@ col_data <- colData(bilat_dds) %>% as.data.frame() %>%
 bilat_dds$class <- col_data$class
 
 longitudinal_dds$STIR_status <- if_else(longitudinal_dds$STIR_rating > 0, "STIR+", "STIR-")
+
+# color pal
+col <- c("#ccece6", "#006d2c") # control vs. FSHD?
+stir_pal <- c("STIR+" = "#006d2c", "STIR-" = "#ccece6")
+complement_pal = c("3" = "#006d2c", "2" = "#66c2a4", "1" = "#ccece6")
 ```
 
 ## Enriched biological processes directly associated with T/B cells
@@ -225,8 +230,8 @@ annotation_col <- comprehensive_df %>%
                                               levels=c("3", "2", "1")))
                 
 class_color <- c(`Control-like`="#a65628", 
-                    `Moderate+`="#984ea3", 
-                    `Muscle-Low`="#377eb8")
+                 `Moderate+`="#984ea3", 
+                 `Muscle-Low`="#377eb8")
 ann_cor <- list(class = class_color, category = category_color,
                 `fat percent` = col, 
                 `STIR+/-` = stir_pal,
@@ -270,7 +275,7 @@ markers_heatmp_group_by_types_class(markers = markers,
 ```
 
 ## Immune cell infiltrate signature
-Using a generic cell-type marker dataset from the immune response in silico (IRIS) (Abbas 2009), we detected 63 immune cell markers whose expression levels are signficiantly elevated in more affected muscles. With additonal significant immunity-related markers, including such as cytokine receptors in B cells (IL-4R, IL-21R), STAT6, Leukocyte immunoglobulin-like receptor B family (LILRB4, LILRB5), T cell surface antigens (CD2 and CD4), T and B cell interaction and migration (CCL19), and STAT6, we demonstrated a immune cell infiltrate signatures in both longitudinal and bilateral samples.
+Using a generic cell-type marker dataset from the immune response in silico (IRIS) (Abbas 2009) and longitudinal cohort, we detected 63 immune cell markers whose expression levels are significantly elevated in more affected muscles. With additional significant immunity-related markers, including such as cytokine receptors in B cells (IL-4R, IL-21R), STAT6, Leukocyte immunoglobulin-like receptor B family (LILRB4, LILRB5), T cell surface antigens (CD2 and CD4), T and B cell interaction and migration (CCL19), and STAT6, we demonstrated a immune cell infiltrate signatures in both longitudinal and bilateral samples.
                                    
 Code chunk below identified 63 immune cell markers as a subset of the IRIS database (Abbas 2009).
 ```{r iris-diff-in-high, message=FALSE}
@@ -282,7 +287,7 @@ blood_iris <- as.data.frame(bloodCellMarkersIRISDMAP) %>%
   dplyr::select(gene_name, starts_with("IRIS")) %>%
   dplyr::filter(rowSums(across(where(is.numeric))) > 0) 
 
-# 63 are DE in High
+# 63 are DE in High, longitudinal cohort
 sig_blood_iris <- high_sig %>%
   inner_join(blood_iris, by="gene_name") 
 category <- names(sig_blood_iris)[4:ncol(sig_blood_iris)]
@@ -298,24 +303,22 @@ sig_blood_iris  <- sig_blood_iris %>%
   dplyr::rename(gene_id = gencode_id) %>%
   dplyr::mutate(category = str_replace(category, "IRIS_", "")) %>%
   dplyr::mutate(category = str_replace(category, "\\-.*", "")) %>%
-  arrange(category, gene_name) 
-
-# add others: IL-4R, IL-21R, LILRB4, LILRB5, CD2, CD4, CCL19
-others <- data.frame(gene_name = c("IL4R", "IL21R", "LILRB4",
-                                   "LILRB5",
-                                   "CD2", "CD4", "CCL19", "STAT6")) %>%
-  left_join(anno_ens88, by="gene_name") %>% 
-  dplyr::rename(gene_id = ens88_id) %>%
-  add_column(category="Others") %>%
-  arrange(gene_name)
-
-sig_blood_iris <- bind_rows(sig_blood_iris, others) %>%
+  arrange(category, gene_name) %>%
   dplyr::mutate(category = factor(category, 
                                   levels = c("Bcell", "CD4Tcell", "CD8Tcell",
                                              "DendriticCell",
                                              "Monocyte", "Neutrophil",
-                                             "NKcell", "PlasmaCell",
-                                             "Others")))
+                                             "NKcell", "PlasmaCell")))
+
+# modification: do not consider those "other" markers
+# add others: IL-4R, IL-21R, LILRB4, LILRB5, CD2, CD4, CCL19
+#others <- data.frame(gene_name = c("IL4R", "IL21R", "LILRB4",
+#                                   "LILRB5",
+#                                   "CD2", "CD4", "CCL19", "STAT6")) %>%
+#  left_join(anno_ens88, by="gene_name") %>% 
+#  dplyr::rename(gene_id = ens88_id) %>%
+#  add_column(category="Others") %>%
+#  arrange(gene_name)
 ```
 
 ### Heamap: the longitudinal study
@@ -338,7 +341,7 @@ annotation_col <- colData(longitudinal_dds) %>% as.data.frame() %>%
                 `histopathology` = Pathology.Score) %>%
   dplyr::mutate(`STIR+/-` = factor(`STIR+/-`))
 
-category_color <- wes_palette("Darjeeling1", n=9, typ="continuous")[1:9]
+category_color <- wes_palette("Darjeeling1", n=8, typ="continuous")[1:8]
 names(category_color) <- levels(sig_blood_iris$category)
 
 ann_cor <-  list(class = cluster_color, category = category_color,
@@ -408,7 +411,29 @@ markers_heatmp_group_by_types_class(markers = tmp,
                                     ann_cor = ann_cor )
 ```
 
+### DE immune marker in the Bilat corhort
+We compared the Control-like and Moderate+ samples in the Bilat corhort to determine which the immune cell-type genes in the IRIS dataset are differentially expressed. 
 
+```{r deseq2-contol-like-vs-moderate-bilat, echo=FALSE, eval=FALSE, message=FALSE, warning=FALSE}
+sub_dds <- bilat_dds[, bilat_dds$class %in% c("Control-like", "Moderate+")]
+sub_dds$class <- factor(sub_dds$class)
+design(sub_dds) <- ~ class
+sub_dds <- DESeq(sub_dds)
+```
+
+```{r sig-blood-iris-in-bilat, echo=FALSE, eval=FALSE}
+tmp <- sig_blood_iris %>%
+  left_join(dplyr::select(anno_gencode35, ens_id, gencode35_id), 
+            by="ens_id") %>%
+  dplyr::select(-gene_id) %>%
+  dplyr::rename(gene_id = gencode35_id)
+
+res <- results(sub_dds, lfcThreshold = 0.5) %>% 
+  as.data.frame() %>%
+  rownames_to_column(var="gene_id") %>%
+  dplyr::filter(padj < 0.05, log2FoldChange > 0) %>%
+  inner_join(tmp, by="gene_id")
+```
 
 ## Complement scoring vs. immune cell infiltrates signature
 The earlier mentioned 63 immune cell markers contribute to characterizing the signature of immune cell infiltration. The heatmap depicted in Figure \@ref(fig:bilat-63-sig-immune-cell-markers-heatmap) reveals that the increased expression levels of these markers align with the complement scoring. The following code calculates the Spearman correlation coefficient, which yields a value of 0.456.
@@ -525,20 +550,50 @@ Display the correlation and average TPM grouped by ML-based classes.
 gene_cor_63 <- .markers_bilateral_correlation(markers=markers,
                                            dds=bilat_dds) %>%
   dplyr::left_join(.avg_TPM_by_class(markers = markers, dds=bilat_dds), 
-                   by="gene_id")
+                   by="gene_id") %>%
+  arrange(category) 
 
 gene_cor_63 %>% 
   dplyr::select(-Pearson_by_TPM) %>%
   kbl(caption="Sixty-three significant immune cell markers correlation analysis between left and right biopsied muscles. The Peason correlation coefficients are compuated using the expression levels presented by Log10(TPM+1).") %>%
   kable_styling()
+```
 
+__Scatter plot__
+```{r bcell-plasma-markers-scatter-plot-TPM}
+x <- gene_cor_63 %>%
+  dplyr::filter(category %in% c("Bcell", "PlasmaCell"))
+
+tpm <- assays(bilat_dds[x$gene_id])[["TPM"]] %>% t(.) %>% 
+      as.data.frame() %>%
+      rownames_to_column(var="sample_id") %>%
+      gather(key=gene_id, value=TPM, -sample_id) %>% 
+      left_join(dplyr::select(col_data, sample_id, location,
+                              Subject), by="sample_id") %>%
+      dplyr::select(-sample_id) %>%
+      spread(key=location, value=TPM) %>% 
+      drop_na(L, R) %>%
+      dplyr::left_join(x, by="gene_id") %>%
+      dplyr::mutate(log10L = log10(L+1)) %>%
+      dplyr::mutate(log10R = log10(R+1))
+
+ggplot(tpm, aes(x=log10L, y=log10R)) +
+    geom_point(size=1, alpha=0.7) +
+    geom_smooth(method="lm", linewidth=0.5, se=FALSE, alpha=0.5) +
+    facet_wrap(~gene_name, nrow = 2, scales="free") +
+    theme_classic() +
+    theme(plot.title=element_text(hjust=0.5, size=10)) +
+    labs(x="L (log10(TPM+1))", y="R (log10(TPM+1))")
+ggsave(file.path(pkg_dir, "figures", "immune-infiltration",
+                 "bilat-sig-Bcell-Plasma-in-Longitudinal.pdf"),
+       width=6, height=3)
 
 ```
 
 ### Top loading variables by the PLIER package
 Previously, we used The PLIER package to estimate the immune cell type contributions to FSHD transcriptome. The top Z, loading variables, are important in determining the relative proportion of the immune cell type contribution. Listed below are the top loading variables. Note that they are not necessary exhibiting strong expression levels.
 
-```{r plier-markers, message=FALSE}
+```{r plier-topz-markers-bilateral, message=FALSE}
 load(file.path(pkg_dir, "data", "plier_topZ_markers.rda"))
 markers <- plier_topZ_markers$bilat_markers
 gene_cor_topZ <- .markers_bilateral_correlation(markers=markers,
@@ -552,11 +607,11 @@ gene_cor_topZ %>%
   kable_styling()
 ```
 
-```{r write-markers-correlation-to-xlsx, warning=FALSE, echo=FALSE, eval=FALSE}
+```{r write-markers-correlation-to-xlsx, warning=FALSE, echo=TRUE, eval=TRUE}
 write_xlsx(list(`63 immune-cell-markers`= gene_cor_63,
-                `18 top loading variables (PLIER)`=gene_cor_topZ),
+                `23 top loading variables (PLIER)`=gene_cor_topZ),
            path=file.path(pkg_dir, "stats",
-          "Bilateral-correlation-63-immune-cell-markers-and-18-topZ-by-PLIER.xlsx")) 
+          "Bilateral-correlation-63-immune-cell-markers-and-23-topZ-by-PLIER.xlsx")) 
 ```
 
 Check the scatter plot: TPM on x and y coordinates are displayed in log10 scale.
@@ -585,7 +640,8 @@ ggplot(tpm, aes(x=L, y=R)) +
     theme(plot.title=element_text(hjust=0.5, size=10)) +
       scale_y_continuous(trans="log10") + 
     scale_x_continuous(trans="log10") 
-ggsave(file.path(pkg_dir, "figures", "immune-infiltration", "test.pdf"),
+ggsave(file.path(pkg_dir, "figures", "immune-infiltration",
+                 "bilat-comp-plier-topz-loading-var-.pdf"),
        width=6, height=6)
 
 ``` 

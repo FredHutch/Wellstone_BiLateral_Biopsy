@@ -8,18 +8,16 @@ bibliography: [book.bib, packages.bib]
 cover-image: images/cover.jpeg
 url: https://fredHutch.github.io/Wellstone_BiLateral_Biopsy
 description: |
-  This book is written to support computational transparency and reproducibility for our publication titled "Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression".
+  This book supports computational transparency and reproducibility for our publication titled "Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression".
 biblio-style: apalike
 csl: chicago-fullnote-bibliography.csl
 ---
 
 # About
 
-The primary objective of this book is to advocate for computational transparency and reproducibility in conjunction with our manuscript entitled ["Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression."](https://www.biorxiv.org/content/biorxiv/early/2023/02/20/2023.02.20.529303.full.pdf) By offering detailed explanations of our decision-making processes grounded in machine learning and statistical inferences, we provide readers with a comprehensive comprehension of our computational methods and coding. Furthermore, the book includes reproducible codes that generate real-time results, enhancing the accessibility and usability of our research.
+The objective of this book is to advocate for computational transparency and reproducibility of our FSHD bilateral cohort study, titled ["Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression."](https://www.biorxiv.org/content/biorxiv/early/2023/02/20/2023.02.20.529303.full.pdf) This book includes detailed explanations of our decision-making processes grounded in bioinformatics analysis, machine learning, and statistical inferences along with reproducible codes (in R) that generate results and figures on the fly. 
 
-In this study, we obtained bilateral tibialis anterior (TA) biopsied muscles from 34 subjects. The muscle biopsies (n=68) were processed for MRI characterization, histopathological scoring, RNA extraction for RNA sequencing , and DNA extraction for bisulfite sequencing of the 4qA permissive allele in the region of exon 2-3. Through the metrics yield by these processes, we were able to validate the association of MRI and RNA molecular signatures, and identify immune cell markers associated with immune cell infiltrates and symmetric trends in the disease. Additionally, we curated and proposed panels of genes as post-therapeutic targets for clinical trial designs.
-
-This book discusses the following topics:
+In this FSHD bilateral cohort study, we recruited 34 FSHD patients and obtained their left and right tibialis anteria (TA) muscle biopsies. On the biopsies, we performed MRI characterization, histopathological scoring, RNA extraction for RNA sequencing, and DNA extraction for bisulfite sequencing of the 4qA permissive allele in the region of exon 2-3. Through the metrics yield by these processes, we studied the following topics:
 
 1. Transcript-based assessment of muscle cell type content of the FSHD biopsied muscle
 2. FSHD molecular signatures, including DUX4, extracurricular matrix, inflammatory, complement activation, and immunoglobulins
@@ -56,12 +54,12 @@ The section outlines the structure of our repository, which is available at [her
 \extdata: *.xlsx; extra files and supplemental tables
 ```
 
-## Annotation package
-To conducto our RNA-seq analysis, used annotations from Gencode v35 and built a customized `TxDB` package, which we named `hg38.HomoSapiens.Gencode.v35`. For instructions on building Bioconductor `TxDB` or `EsbDB` annotation packages, please refer to Appendix A.
+## Annotation and TxDB package
+The gene annotation for our RNA-seq analysis is based on Gencode version 35. We built a Bioconductor `TxDB` package named `hg38.HomoSapiens.Gencode.v35` to facilitate gene counts. See Appendix A on how to build Bioconductor `TxDB` or `EsbDB` annotation packages (add cross-reference here).
 
 
 ## RNA-seq preprocessing and gene counts
-To pre-preprocess the RNA-seq data, we filtered out unqualified raw reads, trimmed the Illumina universal adapters using _Trimmomatic_, and aligned the remaining reads to GRCh38.p13 with _Rsubread_.
+The pre-preprocessing of RNA-seq data, we filtered out unqualified raw reads, trimmed the Illumina universal adapters using _Trimmomatic_, and aligned the remaining reads to GRCh38.p13 with _Rsubread_.
 
 The code chunk below provides an example of how we used `GenomicAlignments`, `BiocParallel`, and a customized `TxDB` package (`hg38.HomoSapiens.Gencode.v35`) to count reads and generate an `RangedSummarizedExperiment` object. Note that the `sort_files` parameter indicates the location of the sorted, indexed BAM files used in our analysis. In the `summarizOverlaps()` function, I chose to use `Intersectionstrict` mode that only count reads that are completely contained within the range of exons, and ignore any ambiguous reads that straddle different gene features. 
 

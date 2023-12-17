@@ -94,6 +94,8 @@ bilat_dds$sizeFactors
 colnames(bilat_dds) <- bilat_dds$sample_id <- str_replace(bilat_dds$sample_name, "[b]*_.*", "")
 save(bilat_dds, file=file.path(pkg_dir, "data", "bilat_dds.rda"))
 
+bilat_rlog <- rlog(bilat_dds)
+save(bilat_rlog, file=file.path(pkg_dir, "data", "bilat_rlog.rda"))
 
 sub <- dds[rowSums(counts(dds)) >= 30]
 rlog <- rlog(sub)

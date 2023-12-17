@@ -6,16 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 6 Inflammatory, ECM, complement activation and immunoglobulins signatures | Wellstone bilateral tibialis anterior FSHD biopsied muscle study</title>
 <meta name="author" content="Chao-Jen Wong">
-<meta name="description" content="Update soon.">
+<meta name="description" content="Describe how the basket genes were curated and their association to each other and to STIR status. Finally show the comprehensive correlation test  6.1 Basket genes representing FSHD signatures...">
 <meta name="generator" content="bookdown 0.32 with bs4_book()">
 <meta property="og:title" content="Chapter 6 Inflammatory, ECM, complement activation and immunoglobulins signatures | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/other-baskets.html">
 <meta property="og:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
-<meta property="og:description" content="Update soon.">
+<meta property="og:description" content="Describe how the basket genes were curated and their association to each other and to STIR status. Finally show the comprehensive correlation test  6.1 Basket genes representing FSHD signatures...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 6 Inflammatory, ECM, complement activation and immunoglobulins signatures | Wellstone bilateral tibialis anterior FSHD biopsied muscle study">
-<meta name="twitter:description" content="Update soon.">
+<meta name="twitter:description" content="Describe how the basket genes were curated and their association to each other and to STIR status. Finally show the comprehensive correlation test  6.1 Basket genes representing FSHD signatures...">
 <meta name="twitter:image" content="https://fredHutch.github.io/Wellstone_BiLateral_Biopsy/images/cover.jpeg">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
@@ -82,6 +82,7 @@
 <li><a class="" href="immune-cell-infiltrates.html"><span class="header-section-number">8</span> Immune cell infiltrates signature</a></li>
 <li><a class="" href="plier.html"><span class="header-section-number">9</span> Immune cell type proportion by PLIER</a></li>
 <li><a class="" href="complement-scoring.html"><span class="header-section-number">10</span> Complement scoring</a></li>
+<li><a class="" href="dna-methylation.html"><span class="header-section-number">11</span> DNA methylation of FSHD D4Z4 allele</a></li>
 <li><a class="" href="references.html">References</a></li>
 <li class="book-part">Appendix</li>
 <li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build TxDB package from GTF</a></li>
@@ -96,15 +97,142 @@
 <h1>
 <span class="header-section-number">6</span> Inflammatory, ECM, complement activation and immunoglobulins signatures<a class="anchor" aria-label="anchor" href="#other-baskets"><i class="fas fa-link"></i></a>
 </h1>
-<p>Update soon.</p>
+<p>Describe how the basket genes were curated and their association to each other and to STIR status. Finally show the comprehensive correlation test</p>
+<div id="basket-genes-representing-fshd-signatures" class="section level2" number="6.1">
+<h2>
+<span class="header-section-number">6.1</span> Basket genes representing FSHD signatures<a class="anchor" aria-label="anchor" href="#basket-genes-representing-fshd-signatures"><i class="fas fa-link"></i></a>
+</h2>
+<ul>
+<li>Extracellular matrix (ECM)</li>
+<li>Inflammatory</li>
+<li>Complement pathway activation</li>
+<li>Immunoglobulins (IG)</li>
+</ul>
+<p>Load the datasets and parameters</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># define parameters and load datasets: bilat_dds and longitudinal_dds</span></span>
+<span><span class="va">pkg_dir</span> <span class="op">&lt;-</span> <span class="st">"/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"</span></span>
+<span><span class="va">fig_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"figures"</span>, <span class="st">"immune-infiltration"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"scripts"</span>, <span class="st">"load_variables_and_datasets.R"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"scripts"</span>, <span class="st">"viz_tools.R"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"all_baskets.rda"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"control_baskets.rda"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"comprehensive_df.rda"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div id="association-with-stir-status" class="section level2" number="6.2">
+<h2>
+<span class="header-section-number">6.2</span> Association with STIR status<a class="anchor" aria-label="anchor" href="#association-with-stir-status"><i class="fas fa-link"></i></a>
+</h2>
+<div id="bilateral-samples" class="section level3" number="6.2.1">
+<h3>
+<span class="header-section-number">6.2.1</span> Bilateral samples<a class="anchor" aria-label="anchor" href="#bilateral-samples"><i class="fas fa-link"></i></a>
+</h3>
+<p>basket genes that have very low counts in the bilat samples</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">all_baskets</span><span class="op">[[</span><span class="st">"DUX4-M"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">gencode_v35</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ENSG00000277862.1"</span>, <span class="st">"ENSG00000280267.4"</span>, <span class="st">"ENSG00000182330.10"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] gene_id_v88 ens_id      gencode_v35 gene_name  </span></span>
+<span><span class="co">#&gt; [5] gene_type  </span></span>
+<span><span class="co">#&gt; &lt;0 rows&gt; (or 0-length row.names)</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">basket_name</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">all_baskets</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">all_baskets_TPM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_dfr</a></span><span class="op">(</span><span class="va">all_baskets</span><span class="op">[</span><span class="va">basket_name</span><span class="op">]</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">id</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">gencode_v35</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html">rownames</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">gencode_v35</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">[</span><span class="va">id</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/t.html">t</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"sample_name"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="co">#add_column(basket = name) %&gt;%</span></span>
+<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>TPM <span class="op">=</span> <span class="va">V1</span><span class="op">)</span></span>
+<span><span class="op">}</span>, .id<span class="op">=</span><span class="st">"basket"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>basket <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">basket</span>, levels<span class="op">=</span><span class="va">basket_name</span><span class="op">)</span>,</span>
+<span>                sample_id <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">sample_name</span>, <span class="st">"[b]*_.*"</span>, <span class="st">""</span><span class="op">)</span>, .before<span class="op">=</span><span class="st">"sample_name"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">sample_name</span><span class="op">)</span>   </span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">all_baskets_TPM</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">comprehensive_df</span>, <span class="va">sample_id</span>, <span class="va">STIR_status</span><span class="op">)</span>,</span>
+<span>            by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/add_row.html">add_row</a></span><span class="op">(</span><span class="va">control_baskets</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/add_column.html">add_column</a></span><span class="op">(</span>STIR_status <span class="op">=</span> <span class="st">"Control"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>STIR_status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">STIR_status</span>, levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Control"</span>, <span class="st">"STIR-"</span>, <span class="st">"STIR+"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">sample_id</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"13-0009R"</span>, <span class="st">"13-0007R"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span> <span class="va">basket</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"DUX4-M12"</span>, <span class="st">"DUX4-M"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">STIR_status</span>, y<span class="op">=</span><span class="va">TPM</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.7</span>, outlier.shape<span class="op">=</span><span class="cn">NA</span>, fill<span class="op">=</span><span class="st">"grey75"</span>, alpha<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html">geom_jitter</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">0.3</span>, size<span class="op">=</span><span class="fl">0.5</span>, alpha<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">basket</span>, scales<span class="op">=</span><span class="st">"free_y"</span>, nrow<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">""</span>, y<span class="op">=</span><span class="st">"basket scores (TPM)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span>trans<span class="op">=</span><span class="st">'log10'</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust <span class="op">=</span> <span class="fl">0.5</span>, hjust<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
+<div class="inline-figure"><img src="06-other-baskets_files/figure-html/five-basket-vs-STIR-status-1.png" width="576"></div>
+</div>
+</div>
+<div id="visualization-of-five-baskets-along-with-other-mri-and-pathological-data" class="section level2" number="6.3">
+<h2>
+<span class="header-section-number">6.3</span> Visualization of five baskets along with other MRI and pathological data<a class="anchor" aria-label="anchor" href="#visualization-of-five-baskets-along-with-other-mri-and-pathological-data"><i class="fas fa-link"></i></a>
+</h2>
+<p>The following heatmap displays the expression levels of five basket genes, along with MRI characteristics, histopathology, and compliment scores. The colors represent the row-wise z-score of log10 TPM values. We have included the Muscle-Low samples in this visualization to highlight their distinct characteristics, such as low expression levels in DUX4 baskets and high expression in inflammatory/ECM factors.</p>
+<div id="longitudinal-samples" class="section level3" number="6.3.1">
+<h3>
+<span class="header-section-number">6.3.1</span> Longitudinal samples<a class="anchor" aria-label="anchor" href="#longitudinal-samples"><i class="fas fa-link"></i></a>
+</h3>
+<div class="figure">
+<span style="display:block;" id="fig:heatmap-longitudinal-all-baskets"></span>
+<img src="06-other-baskets_files/figure-html/heatmap-longitudinal-all-baskets-1.png" alt="Heatmap of the row-wise z-score of the log10 TPM of all five basekts of genes for the longitudinal samples." width="576"><p class="caption">
+Figure 6.1: Heatmap of the row-wise z-score of the log10 TPM of all five basekts of genes for the longitudinal samples.
+</p>
+</div>
+</div>
+<div id="bilat-samples" class="section level3" number="6.3.2">
+<h3>
+<span class="header-section-number">6.3.2</span> Bilat samples<a class="anchor" aria-label="anchor" href="#bilat-samples"><i class="fas fa-link"></i></a>
+</h3>
+<div class="figure">
+<span style="display:block;" id="fig:heatmap-bilateral-all-baskets"></span>
+<img src="06-other-baskets_files/figure-html/heatmap-bilateral-all-baskets-1.png" alt="Heatmap of the row-wise z-score of the log10 TPM of all five basekts of genes for the bilateral samples." width="576"><p class="caption">
+Figure 6.2: Heatmap of the row-wise z-score of the log10 TPM of all five basekts of genes for the bilateral samples.
+</p>
+</div>
+</div>
+</div>
+<div id="correlation-among-the-baskets-expression-levels" class="section level2" number="6.4">
+<h2>
+<span class="header-section-number">6.4</span> Correlation among the baskets expression levels<a class="anchor" aria-label="anchor" href="#correlation-among-the-baskets-expression-levels"><i class="fas fa-link"></i></a>
+</h2>
+</div>
+<div id="complemensive-correlation-analysis" class="section level2" number="6.5">
+<h2>
+<span class="header-section-number">6.5</span> Complemensive correlation analysis<a class="anchor" aria-label="anchor" href="#complemensive-correlation-analysis"><i class="fas fa-link"></i></a>
+</h2>
 
+</div>
 </div>
   <div class="chapter-nav">
 <div class="prev"><a href="DUX4-basket.html"><span class="header-section-number">5</span> DUX4 basket</a></div>
 <div class="next"><a href="bilateral-comparison.html"><span class="header-section-number">7</span> Bilateral comparison</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <ul class="nav navbar-nav"><li><a class="nav-link" href="#other-baskets"><span class="header-section-number">6</span> Inflammatory, ECM, complement activation and immunoglobulins signatures</a></li></ul>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#other-baskets"><span class="header-section-number">6</span> Inflammatory, ECM, complement activation and immunoglobulins signatures</a></li>
+<li><a class="nav-link" href="#basket-genes-representing-fshd-signatures"><span class="header-section-number">6.1</span> Basket genes representing FSHD signatures</a></li>
+<li>
+<a class="nav-link" href="#association-with-stir-status"><span class="header-section-number">6.2</span> Association with STIR status</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#bilateral-samples"><span class="header-section-number">6.2.1</span> Bilateral samples</a></li></ul>
+</li>
+<li>
+<a class="nav-link" href="#visualization-of-five-baskets-along-with-other-mri-and-pathological-data"><span class="header-section-number">6.3</span> Visualization of five baskets along with other MRI and pathological data</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#longitudinal-samples"><span class="header-section-number">6.3.1</span> Longitudinal samples</a></li>
+<li><a class="nav-link" href="#bilat-samples"><span class="header-section-number">6.3.2</span> Bilat samples</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#correlation-among-the-baskets-expression-levels"><span class="header-section-number">6.4</span> Correlation among the baskets expression levels</a></li>
+<li><a class="nav-link" href="#complemensive-correlation-analysis"><span class="header-section-number">6.5</span> Complemensive correlation analysis</a></li>
+</ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
@@ -121,7 +249,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-05-19.</p>
+    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-12-16.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

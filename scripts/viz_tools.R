@@ -122,3 +122,48 @@ markers_heatmp_group_by_types_class <-
              cluster_rows=FALSE, cluster_cols=FALSE,  ...)
 }
 
+basket_heatmp_group_by_types_class <- 
+  # markers: data.frame with gene_id and gene_name
+  # row gaps based on cell types
+  # column gaps based on cluster
+  function(markers, dds, factor, 
+           annotation_col, ann_cor, ...) {
+    class <- colData(dds)[, factor]
+    tpm <- lapply(levels(class), function(x) {
+      s <- colnames(dds)[class == x]
+      data <- assays(dds[markers$gene_id, s])[["TPM"]] 
+      data <- log10(data+1)
+      # re-arrange by the colmeans (look heatmap)
+      Colv <- colMeans(data, na.rm = TRUE)
+      data <- data[, order(Colv)]
+    })
+    tpm <- do.call(cbind, tpm)
+    rownames(tpm) <- markers$gene_name
+    zscore_tpm <- (tpm - rowMeans(tpm)) / rowSds(tpm)
+    gaps_col <- cumsum(table(class))
+    
+    # column annotation
+    annotation_col <- annotation_col[colnames(tpm), ]
+    
+    # rows
+    annotation_row <- markers[, "baskets", drop=FALSE] %>% as.data.frame()
+    rownames(annotation_row) <- markers$gene_name
+    gaps_row <- cumsum(table(markers$baskets))
+    
+    breaks <- c(seq(-2, 2, length.out=98), 3, 4)
+    pheatmap(zscore_tpm,
+             breaks = breaks,
+             gaps_col = gaps_col,
+             gaps_row = gaps_row,
+             show_colnames = FALSE,
+             fontsize_row=6,
+             cellheight=6.5,
+             annotation_col = annotation_col,
+             annotation_row = annotation_row,
+             scale="none",
+             annotation_colors=ann_cor,
+             angle_col = 90,
+             #annotation_legend = FALSE,
+             cluster_rows=FALSE, cluster_cols=FALSE,  ...)
+  }
+

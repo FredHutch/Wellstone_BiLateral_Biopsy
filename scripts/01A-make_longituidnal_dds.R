@@ -2,9 +2,6 @@
 # main added feature: (1) add class to metadata, and (2) perform DESeq based on cluster
 
 library(DESeq2)
-library(BiocParallel)
-bp_param <- MulticoreParam(workers=4L)
-register(bp_param)
 
 pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
 load(file.path(pkg_dir, "data", "sanitized.dds.rda"))
@@ -27,6 +24,4 @@ colnames(longitudinal_dds)==longitudinal_dds$sample_id
 # conform colnames and sample_id
 colnames(longitudinal_dds) <- longitudinal_dds$sample_id
 
-# DESeq
-longitudinal_dds <- DESeq(longitudinal_dds, BPPARAM=bp_param)
 save(longitudinal_dds, file=file.path(pkg_dir, "data", "longitudinal_dds.rda"))

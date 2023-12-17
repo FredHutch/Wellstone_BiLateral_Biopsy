@@ -1,6 +1,196 @@
 # Inflammatory, ECM, complement activation and immunoglobulins signatures {#other-baskets}
 
-Update soon.
+```{r setup-6, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+```
+Describe how the basket genes were curated and their association to each other and to STIR status. Finally show the comprehensive correlation test
+
+## Basket genes representing FSHD signatures
+- Extracellular matrix (ECM) 
+- Inflammatory 
+- Complement pathway activation
+- Immunoglobulins (IG)
+
+
+Load the datasets and parameters
+```{r load-datasets-6, message=FALSE}
+# define parameters and load datasets: bilat_dds and longitudinal_dds
+pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
+fig_dir <- file.path(pkg_dir, "figures", "immune-infiltration")
+source(file.path(pkg_dir, "scripts", "load_variables_and_datasets.R"))
+source(file.path(pkg_dir, "scripts", "viz_tools.R"))
+load(file.path(pkg_dir, "data", "all_baskets.rda"))
+load(file.path(pkg_dir, "data", "control_baskets.rda"))
+load(file.path(pkg_dir, "data", "comprehensive_df.rda"))
+```
+
+## Association with STIR status
+
+### Bilateral samples
+
+basket genes that have very low counts in the bilat samples
+```{r low-count-basket-genes}
+all_baskets[["DUX4-M"]] %>% 
+  dplyr::filter(gencode_v35 %in% c("ENSG00000277862.1", "ENSG00000280267.4", "ENSG00000182330.10"))
+
+```
+
+```{r get-five-basket-gene-TPM}
+basket_name = names(all_baskets)[c(2, 4, 5, 6, 7)]
+
+all_baskets_TPM <- map_dfr(all_baskets[basket_name], function(x) {
+  id <- x %>% 
+    dplyr::filter(gencode_v35 %in% rownames(bilat_dds)) %>%
+    pull(gencode_v35)
+  
+  assays(bilat_dds[id])[["TPM"]] %>% 
+    as.data.frame() %>%
+    summarise(across(where(is.numeric), mean)) %>% 
+    t(.) %>% 
+    as.data.frame() %>%
+    rownames_to_column(var="sample_name") %>%
+    #add_column(basket = name) %>%
+    dplyr::rename(TPM = V1)
+}, .id="basket") %>% 
+  dplyr::mutate(basket = factor(basket, levels=basket_name),
+                sample_id = str_replace(sample_name, "[b]*_.*", ""), .before="sample_name") %>%
+  dplyr::select(-sample_name)   
+```
+
+```{r five-basket-vs-STIR-status, warning=FALSE, fig.width=6, fig.height=4}
+all_baskets_TPM %>% 
+  left_join(dplyr::select(comprehensive_df, sample_id, STIR_status),
+            by="sample_id") %>%
+  add_row(control_baskets %>% add_column(STIR_status = "Control")) %>%
+  dplyr::mutate(STIR_status = factor(STIR_status, levels=c("Control", "STIR-", "STIR+"))) %>%
+  dplyr::filter(!sample_id %in% c("13-0009R", "13-0007R")) %>%
+  dplyr::filter(! basket %in% c("DUX4-M12", "DUX4-M")) %>%
+  ggplot(aes(x=STIR_status, y=TPM)) +
+    geom_boxplot(width=0.7, outlier.shape=NA, fill="grey75", alpha=0.5) +
+    geom_jitter(width = 0.3, size=0.5, alpha=0.5) +
+    facet_wrap(~ basket, scales="free_y", nrow=1) +
+    theme_bw() +
+    labs(x="", y="basket scores (TPM)") +
+    scale_y_continuous(trans='log10') +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+```
+```{r print-baskets-vs-STIR-status, echo=FALSE, eval=FALSE}
+ggsave(file=file.path(pkg_dir, "manuscript", "figures",
+                      "Bilat-STIR-vs-all-baskets.pdf"), 
+       width=6.2, height=2.8)  
+```
+
+## Visualization of five baskets along with other MRI and pathological data
+The following heatmap displays the expression levels of five basket genes,  along with MRI characteristics, histopathology, and compliment scores. The colors represent the row-wise z-score of log10 TPM values. We have included the Muscle-Low samples in this visualization to highlight their distinct characteristics, such as low expression levels in DUX4 baskets and high expression in inflammatory/ECM factors.
+
+### Longitudinal samples
+```{r heatmap-longitudinal-all-baskets, fig.height=8, fig.width=6, fig.cap="Heatmap of the row-wise z-score of the log10 TPM of all five basekts of genes for the longitudinal samples.", echo=FALSE}
+basket_name = names(all_baskets)[c(2, 4, 5, 6, 7)]
+df = map_dfr(all_baskets[basket_name], function(x) x, .id="baskets") %>%
+  dplyr::rename(gene_id = gene_id_v88) %>%
+  dplyr::mutate(baskets = factor(baskets,
+                                 levels = basket_name))
+cluster_color <- c(Control="#ff7f00", 
+                    Mild="#a65628", 
+                    Moderate="#f781bf", 
+                    `IG-High`="#984ea3", 
+                   High="#e41a1c", 
+                    `Muscle-Low`="#377eb8")
+basket_color <- wes_palette("Darjeeling2", n=5)[1:5]
+names(basket_color) <- levels(factor(df$baskets))
+
+col <- c("#ccece6", "#006d2c")
+stir_pal <- c("STIR+" = "#006d2c", "STIR-" = "#ccece6")
+complement_pal = c("3" = "#006d2c", "2" = "#66c2a4", "1" = "#ccece6")
+annotation_col <- colData(longitudinal_dds) %>% as.data.frame() %>%
+  dplyr::select(cluster, fat_fraction, STIR_status, 
+                #STIR_rating,
+                Pathology.Score) %>%
+  dplyr::rename(class=cluster, `STIR+/-` = STIR_status,
+                `fat fraction`=fat_fraction,
+                `histopathology` = Pathology.Score) %>%
+  dplyr::mutate(`STIR+/-` = factor(`STIR+/-`))
+
+# column annotation color
+ann_cor <-  list(class = cluster_color, 
+                 baskets = basket_color,
+                 `STIR+/-` = stir_pal,
+                 `fat fraction` = col, 
+                 `histopathology` = col)
+basket_heatmp_group_by_types_class(dds=longitudinal_dds,
+                                 factor="cluster",
+                                 markers = df,
+                                 annotation_col = annotation_col,
+                                 ann_cor=ann_cor,
+                                 border_color = "transparent")
+```
+```{r print-heatmap-longitudinal-all-baskets, echo=FALSE}
+file_name = file.path(pkg_dir, "manuscript", "figures",
+                      "longi-basket-heatmap.pdf")
+basket_heatmp_group_by_types_class(dds=longitudinal_dds,
+                                 factor="cluster",
+                                 markers = df,
+                                 annotation_col = annotation_col,
+                                 ann_cor=ann_cor,
+                                 filename=file_name,
+                                 border_color = "transparent", 
+                                 silent=TRUE, width=8, height=8)
+```
+
+### Bilat samples
+```{r heatmap-bilateral-all-baskets, fig.height=8, fig.width=6, fig.cap="Heatmap of the row-wise z-score of the log10 TPM of all five basekts of genes for the bilateral samples.", echo=FALSE}
+basket_name = names(all_baskets)[c(2, 4, 5, 6, 7)]
+df = map_dfr(all_baskets[basket_name], function(x) x, .id="baskets") %>%
+  dplyr::rename(gene_id = gencode_v35) %>%
+  dplyr::mutate(baskets = factor(baskets,
+                                 levels = basket_name))
+
+annotation_col <- comprehensive_df %>% 
+  drop_na(class) %>%
+  dplyr::select(sample_id, class, Fat_Infilt_Percent, STIR_status,
+                `Cumulative Score`, `Complement Scoring`) %>%
+  dplyr::rename(`fat percent` = Fat_Infilt_Percent, 
+                `STIR+/-` = STIR_status,
+                `histopathology` = `Cumulative Score`) %>%
+  column_to_rownames(var="sample_id") %>%
+  dplyr::mutate(`Complement Scoring` = factor(`Complement Scoring`, 
+                                              levels=c("3", "2", "1")))
+basket_color <- wes_palette("Darjeeling2", n=5)[c(1:5)]
+names(basket_color) <- levels(factor(df$baskets))
+
+class_color <- c(`Control-like`="#a65628", 
+                  `Moderate+`="#984ea3", 
+                  `Muscle-Low`="#377eb8")
+
+ann_cor <- list(class = class_color, 
+                baskets = basket_color, 
+                `fat percent` = col, 
+                `STIR+/-` = stir_pal,
+                `histopathology` = col, 
+                `Complement Scoring` = complement_pal)
+
+basket_heatmp_group_by_types_class(dds=bilat_dds,
+                                 factor="class",
+                                 markers = df,
+                                 border_color = "transparent",
+                                 ann_cor = ann_cor,
+                                 annotation_col = annotation_col)
+```
+```{r print-heatmap-bilat-baskets-expression, echo=FALSE}
+file_name = file.path(pkg_dir, "manuscript", "figures",
+                      "bilat-basket-heatmap.pdf")
+basket_heatmp_group_by_types_class(dds=bilat_dds,
+                                 factor="class",
+                                 markers = df,
+                                 border_color = "transparent",
+                                 ann_cor = ann_cor,
+                                 annotation_col = annotation_col,
+                                 filename = file_name,
+                                 silent=TRUE, width=8, height=8)
+```
+
+## Correlation among the baskets expression levels
 
 
 
+## Complemensive correlation analysis

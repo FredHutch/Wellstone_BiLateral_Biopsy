@@ -1,7 +1,7 @@
 # Immune cell type proportion by PLIER {#plier}
 
 
-```{r setup-8A, include=FALSE}
+```{r setup-9, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
 ```
 
@@ -304,9 +304,7 @@ topZ_heatmp_group_by_types_class(dds=longitudinal_dds,
                                  markers_topZ = longi_markers,
                                  annotation_col = annotation_col,
                                  ann_cor=ann_cor,
-                                 #filename = file_name,
-                                 border_color = "transparent",
-                                 silent = FALSE, width = 8)
+                                 border_color = "transparent")
 ```
 ```{r print-out-topZ-longitudinal, echo=FALSE}
 topZ_heatmp_group_by_types_class(dds=longitudinal_dds,
@@ -499,7 +497,7 @@ bilat_markers <-  map_dfr(names(bilat_LV), function(lv) {
     dplyr::rename(gene_id = gencode35_id)
 ```
 
-```{r save-bilat-and-longi-makers, echo=FALSE}
+```{r save-bilat-and-longi-makers}
 plier_topZ_markers <- list(bilat_markers=bilat_markers,
                            longitudinal_markers = longi_markers)
 save(plier_topZ_markers, file=file.path(pkg_dir, "data",
