@@ -1,0 +1,3 @@
+1. comprehensive_df: a data.frame containing all the clinical data, histopathological data, bisulfite sequencing data, classification by machine learning, and basket scores that represent the disease signatures. 
+
+This data.frame is made by 09B-make-comprehensive-df.R
