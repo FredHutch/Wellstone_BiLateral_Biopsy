@@ -1,5 +1,6 @@
 .DS_Store
 .Rhistory
+data_list.txt
 data/DUX4_baskets.rda
 data/DUX4_positive.rda
 data/FSHD_markers.rda
@@ -11,7 +12,6 @@ data/blood_fat_muscle_content.rda
 data/bogus_id.rda
 data/bs_methyl.rda
 data/candidates.rda
-data/cluster_df.rda
 data/comb_dds.rda
 data/complement_df.rda
 data/control_baskets.rda
@@ -26,6 +26,12 @@ data/rlog_w_outlier.rda
 data/rna_score.rda
 data/sanitized.dds.rda
 data/sanitized.rlg.rda
+data/histology.rda
+data/methyl_clinic.rda
+data/moderate_fit.rda
+data/mri.rda
+data/muscle_strength.rda
+data/plier_bliat.rda
 figures
 gitbook_old
 manuscript
