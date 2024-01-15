@@ -85,7 +85,9 @@
 <li><a class="active" href="dna-methylation.html"><span class="header-section-number">11</span> DNA methylation of FSHD D4Z4 allele</a></li>
 <li><a class="" href="references.html">References</a></li>
 <li class="book-part">Appendix</li>
-<li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build TxDB package from GTF</a></li>
+<li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build Ensembl-based annotation packages</a></li>
+<li><a class="" href="appendixB-DUX4-baskets-curation.html"><span class="header-section-number">B</span> DUX4 basket genes curation</a></li>
+<li><a class="" href="appendixC-other-baskets.html"><span class="header-section-number">C</span> Baskets of other FSHD signatures</a></li>
 </ul>
 
         <div class="book-extra">
@@ -112,7 +114,7 @@
 <p>We load two data sets from the data directory:
 1. <code>comprehensive_df.rda</code>: clinical and MRI characteristic data
 2. <code>bs_methyl.rda</code>: DNA methylation data</p>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/corrr">corrr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/">kableExtra</a></span><span class="op">)</span></span>
@@ -123,7 +125,7 @@
 <span><span class="va">comprehensive_df</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename_with</a></span><span class="op">(</span><span class="op">~</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html">str_remove</a></span><span class="op">(</span><span class="va">.</span>, <span class="st">'-logSum'</span><span class="op">)</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">ends_with</a></span><span class="op">(</span><span class="st">'-logSum'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Tidy up the bisulfite sequencing data.</p>
-<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bss</span> <span class="op">&lt;-</span> <span class="va">bs_methyl</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>`4A161S` <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/grep.html">grepl</a></span><span class="op">(</span><span class="st">"4A161S"</span>, <span class="va">`haplotype_chr4`</span><span class="op">)</span>,</span>
 <span>                                   <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
@@ -1465,7 +1467,7 @@ L
 <span class="header-section-number">11.2</span> 4qA161S and 4qA161L allele<a class="anchor" aria-label="anchor" href="#qa161s-and-4qa161l-allele"><i class="fas fa-link"></i></a>
 </h2>
 <p><strong>Mean values</strong> of 4qA161S and 4qA161L allele:</p>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bss</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">`use BSSL`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/mean.html">mean</a></span><span class="op">(</span><span class="va">`BSS Value`</span><span class="op">)</span>,  min<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">`BSS Value`</span><span class="op">)</span>, max<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">`BSS Value`</span><span class="op">)</span><span class="op">)</span></span>
@@ -1474,7 +1476,7 @@ L
 <span><span class="co">#&gt;   &lt;lgl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1 FALSE       6.96  0     24  </span></span>
 <span><span class="co">#&gt; 2 TRUE       16.2   4.76  42.9</span></span></code></pre></div>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">bss</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="va">Subject</span><span class="op">==</span><span class="st">"01-0022"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>allele<span class="op">=</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html">if_else</a></span><span class="op">(</span><span class="va">`use BSSL`</span>, <span class="st">"4qA161L"</span>, <span class="st">"4qA161S"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1496,7 +1498,7 @@ Figure 11.1: The CpG methylation percentage of subjects with 4qA161S and 4qA161L
 <h2>
 <span class="header-section-number">11.3</span> Left and right TA biopsies correlation<a class="anchor" aria-label="anchor" href="#left-and-right-ta-biopsies-correlation"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bss_cor</span> <span class="op">&lt;-</span> <span class="va">bss</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Subject</span>, <span class="va">location</span>, <span class="va">`BSS Value`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">location</span>, value<span class="op">=</span><span class="va">`BSS Value`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Subject</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -1531,7 +1533,7 @@ Figure 11.2: Methylation correlation between left and right TA biopsies: Pearson
 <h2>
 <span class="header-section-number">11.4</span> Methylation and STIR status<a class="anchor" aria-label="anchor" href="#methylation-and-stir-status"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bss</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Subject</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">comprehensive_df</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">STIR_status</span>, y<span class="op">=</span><span class="va">`BSS Value`</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1552,7 +1554,7 @@ Figure 11.3: The methylation levels are not associated with STIR status.
 <span class="header-section-number">11.5</span> Methylation and other variables<a class="anchor" aria-label="anchor" href="#methylation-and-other-variables"><i class="fas fa-link"></i></a>
 </h2>
 <p>In the figure below we demonstrated that there is no association between CpG methylation and other variables—whole muscle fat, CSS, and muscle strength—and mRNA levels of disease signatures.</p>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cor_161S</span> <span class="op">&lt;-</span> <span class="va">bss</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Subject</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">`allele`</span><span class="op">==</span><span class="st">"4qA161S"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">comprehensive_df</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
@@ -1621,7 +1623,7 @@ Figure 11.4: Pearson correlation between methylation levels and other variables 
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-12-16.</p>
+    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2024-01-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

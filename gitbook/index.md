@@ -1,7 +1,7 @@
 --- 
 title: "Wellstone bilateral tibialis anterior FSHD biopsied muscle study"
 author: "Chao-Jen Wong"
-date: "`r Sys.Date()`"
+date: "2024-01-13"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
@@ -77,7 +77,8 @@ The code chunk below provides an example of how we used `GenomicAlignments`, `Bi
 
 - `sort_files` parameter below indicates the location of the sorted, indexed BAM files used in our analysis
 
-```{r make-se, eval=FALSE}
+
+```r
 # sort_files gives the location of our bam files
 sort_files <- list.files(scratch_dir, full.name=TRUE, pattern="\\.bam$")
 

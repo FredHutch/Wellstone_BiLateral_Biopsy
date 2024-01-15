@@ -1,0 +1,146 @@
+# DNA methylation of FSHD D4Z4 allele {#dna-methylation}
+
+We conducted bisulfite sequencing on bilateral TA muscle biopsies from 34 subjects. In this chapter, we present the following:
+
+- The CpG methylation percentages for subjects with the 4qA161S and 4qA161L alleles.
+- The correlation of methylation levels between left and right TA biopsies.
+- The association between methylation and STIR status.
+- Correlations with other variables, including muscle strength, disease molecular signatures, whole muscle fat percentage, and clinical severity score (CSS).
+
+Note: We excluded subject 01-0022 in this analysis due to its duplication in D4Z4 repeat regions.
+
+## Loading and cleaning data
+We load two data sets from the data directory:
+1. `comprehensive_df.rda`: clinical and MRI characteristic data
+2. `bs_methyl.rda`: DNA methylation data
+
+
+```{r loading-bss-data, message=FALSE}
+library(tidyverse)
+library(corrr)
+library(kableExtra)
+
+pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
+load(file.path(pkg_dir, "data", "bs_methyl.rda"))
+load(file.path(pkg_dir, "data", "comprehensive_df.rda"))
+comprehensive_df <- comprehensive_df %>%
+  dplyr::rename_with(~str_remove(., '-logSum'), ends_with('-logSum'))
+```
+
+Tidy up the bisulfite sequencing data.
+```{r tidy-bss}
+bss <- bs_methyl %>% 
+  dplyr::mutate(`4A161S` = if_else(grepl("4A161S", `haplotype_chr4`),
+                                   TRUE, FALSE)) %>% 
+  dplyr::mutate(`4A161L` = if_else(grepl("4A161L", `haplotype_chr4`),
+                                   TRUE, FALSE)) %>%
+  dplyr::filter(! Subject == "01-0022") %>%
+  dplyr::mutate(allele=if_else(`use BSSL`, "4qA161L", "4qA161S")) %>%
+  dplyr::mutate(allele=factor(allele, levels=c("4qA161S", "4qA161L")))
+```
+
+```{r bss-table, echo=FALSE, message=FALSE}
+bss %>% dplyr::select(Subject, location, `sample_id`, 
+                      `allele`, `BSS Value`, `Predicted Haplotype`) %>%
+  knitr::kable(caption="Tidy table of CpG methylation percentage and allele.")
+```
+
+
+## 4qA161S and 4qA161L allele
+
+__Mean values__ of 4qA161S and 4qA161L allele:
+```{r bss-mean-value}
+bss %>%
+  group_by(`use BSSL`) %>%
+  summarise(mean=mean(`BSS Value`),  min=min(`BSS Value`), max=max(`BSS Value`))
+```
+
+```{r methylation-value, fig.align='center', fig.cap='The CpG methylation percentage of subjects with 4qA161S and 4qA161L allele.', warning=FALSE}
+
+bss %>% dplyr::filter(!Subject=="01-0022") %>%
+  dplyr::mutate(allele=if_else(`use BSSL`, "4qA161L", "4qA161S")) %>%
+  dplyr::mutate(allele=factor(allele, levels=c("4qA161S", "4qA161L"))) %>%
+  ggplot(aes(x=allele, y=`BSS Value`)) +
+    geom_boxplot(width=0.5, outlier.shape=NA) +
+    geom_jitter(width=0.2, alpha=0.3, size=1, color="grey50") +
+    theme_minimal() +
+    labs(x="", y="% methylation") +
+    theme(axis.text.x = element_text(angle = 25, vjust = 1, hjust=1))
+```
+
+```{r save-methylation-value, echo=FALSE, message=FALSE, warning=FALSE}
+ggsave(file=file.path(pkg_dir, "manuscript", "figures",
+                      "BSS-boxplot-group-by-161L.pdf"),
+       height=2.2, width=1.5)
+```
+
+## Left and right TA biopsies correlation
+```{r bs-bilateral-corr, fig.align='center', fig.cap="Methylation correlation between left and right TA biopsies: Pearson correlation = 0.84.", message=FALSE}
+bss_cor <- bss %>% dplyr::select(Subject, location, `BSS Value`) %>%
+  spread(key=location, value=`BSS Value`) %>%
+  dplyr::select(-Subject) %>%
+  corrr::correlate() %>% dplyr::filter(!is.na(L)) %>% pull(L) 
+
+bss %>% dplyr::select(Subject, location, `BSS Value`) %>%
+  spread(key=location, value=`BSS Value`) %>%
+  ggplot(aes(x=L, y=R)) +
+    geom_point() +
+    geom_smooth(method="lm", se=FALSE, linewidth=0.7, color="grey75", alpha=0.3) +
+    annotate("text", x=Inf, y=-Inf, color="gray25",
+             size=3, hjust=1, vjust=-2,
+             label=paste0("Pearson=", format(bss_cor, digit=2))) +
+    theme_minimal() +
+    labs(x="L (% methylation)", y="R (% methylation)")
+```
+```{r save-bss-left-and-right, echo=FALSE, message=FALSE}
+ggsave(file=file.path(pkg_dir, "manuscript", "figures",
+                      "BSS-left-and-right.pdf"), 
+       width=2.5, height=2)  
+```
+
+## Methylation and STIR status
+```{r methylation-vs-stir, fig.align='center', fig.cap='The methylation levels are not associated with STIR status.'}
+bss %>% dplyr::select(-Subject) %>%
+  left_join(comprehensive_df, by="sample_id") %>% 
+  ggplot(aes(x=STIR_status, y=`BSS Value`)) +
+    geom_boxplot(width=0.5, outlier.shape=NA) +
+    geom_jitter(width=0.3, alpha=0.3, size=1, color="grey50") +
+    facet_wrap(~allele) +
+    theme_bw() +
+    labs(x="", y="% methylation")
+```
+
+## Methylation and other variables
+In the figure below we demonstrated that there is no association between CpG methylation and other variables—whole muscle fat, CSS, and muscle strength—and mRNA levels of disease signatures.
+```{r bss-and-other-variables-pearson, fig.align='center', message=FALSE, fig.cap='Pearson correlation between methylation levels and other variables including mRNA levels of disease signatures, whole muscle fat, CSS, and muscle strengh.'}
+cor_161S <- bss %>% dplyr::select(-Subject) %>%
+  dplyr::filter(`allele`=="4qA161S") %>%
+  left_join(comprehensive_df, by="sample_id") %>% 
+  dplyr::select(`BSS Value`, `DUX4-M6`, `Foot Dorsiflexors`,
+                `CSS`, `Fat_Infilt_Percent`, `Cumulative Score`) %>%
+  corrr::correlate() %>% 
+  select(term, `BSS Value`)
+cor_161L <- bss %>% dplyr::select(-Subject) %>%
+  dplyr::filter(`allele`=="4qA161L") %>%
+  left_join(comprehensive_df, by="sample_id") %>% 
+  dplyr::select(`BSS Value`, `DUX4-M6`, `Foot Dorsiflexors`,
+                `CSS`, `Fat_Infilt_Percent`, `Cumulative Score`) %>%
+  corrr::correlate() %>% 
+  select(term, `BSS Value`) 
+
+cor_161S %>% 
+  full_join(cor_161L, by="term", suffix=c("4qA161S", "4qA161L")) %>%
+  drop_na() %>%
+  rename(`4qA161S`=`BSS Value4qA161S`, `4qA161L`=`BSS Value4qA161L`) %>%
+  gather(key=allele, value=cor, -term) %>%
+  ggplot(aes(x=allele, y=term)) +
+    geom_tile(aes(fill=cor), colour = "grey50") +
+    geom_text(aes(label=format(cor, digit=1)), size=3) +
+    scale_fill_steps2(low="grey75", mid="grey95", high="grey75", 
+                     breaks=seq(-1, 1, length.out=10)) +
+    theme_minimal() +
+    labs(x="", y="", title="Pearson correlation") +
+    theme(legend.position = "none", 
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())
+```

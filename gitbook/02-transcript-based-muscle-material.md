@@ -1,7 +1,5 @@
 # Transcript-based accessment for muscle content {#muscle-content}
-```{r setup-muscle-content, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
-```
+
 
 Characterizing muscle, blood and fat markers expression levels is an important aspect in subsequent analysis of RNA-seq experiments conducted on muscle biopsies. The previous longitudinal and current biolateral studied identified a strong correlation between DUX4 and inflammatory/complement/IG signatures. However, low muscle content biopsies exhibit non-coherent correlation—undetectable-to-low DUX4-targeted expression and elevated inflammatory/ECM complement/IG signatures. We proposed that low muscle biopsies may not primarily reflect the expression of muscle cells but could originated from fat or immune infiltrates cells (see Chapter \@ref(immune-cell-infiltrates)). Hereby we suggested to incorporate three key characteristics to help identify the outlier muscle biopsies lacking muscle content:
 
@@ -15,7 +13,8 @@ Characterizing muscle, blood and fat markers expression levels is an important a
 
 Before performing downstream analysis, we proposed a checkpoint on muscle properties on three transcript-based contents: blood (HBA1, HBA2, and HBB), fat (FASN, LEP, and SCD), and muscle (ACTA1, TNNT3, MYH1), each of which was characterized by a score of average scaled transcripts per million (TPM) —  $\frac{1}{n} \Sigma_{i=1}^{n} \log_{10}(TPM+1)$.
 
-```{r load-lib-and-data-sets, message=FALSE}
+
+```r
 library(DESeq2)
 library(tidyverse)
 library(ggrepel)
@@ -28,7 +27,8 @@ fig_dir <- file.path(pkg_dir, "figures")
 source(file.path(pkg_dir, "scripts", "load_variables_and_datasets.R"))
 ```
 
-```{r marker-tpm}
+
+```r
 markers <- tibble(cell_type=c(rep("blood", 3), 
                               rep("fat", 3), 
                               rep("muscle", 3)),
@@ -52,7 +52,8 @@ blood_fat_muscle_content <- celltype_tpm
 ### Bilateral cohort
 Figure \@ref(fig:viz-muscle-content-density) displays the density and quantile plots of the blood, fat and muscle scores. The gray area present 0 - 97% quantile in fat and blood and 3 - 100% in muscle. Sample 13-0009R and 13-0007R are in the lower 3% quantile in the muscle scores and upper 97% quantile in fat. 
 
-```{r viz-muscle-content-density, fig.align='center', fig.cap='Density plot of blood, fat, and muscle marker expression levels. Grey areas present the 0 - 97% (fat and blood) or 3 - 100% (muscle) quantile regions', fig.width=4, fig.height=2}
+
+```r
 data <- blood_fat_muscle_content  %>% 
   gather(key=cell_type, value=TPM, -sample_name)  %>%
   dplyr::mutate(cell_type = factor(cell_type))
@@ -86,13 +87,22 @@ ggplot(data, aes(x=TPM)) +
   geom_rect(data = df_rect, fill="grey50", alpha=0.2,
             aes(xmin = x1, xmax = x2, ymin = -Inf, ymax = Inf), inherit.aes = FALSE) +                  
   labs(x=latex2exp::TeX("RNA-seq cell type content ($\\Sigma \\log_{10}( TPM+1)$"), y="density") 
+```
+
+<div class="figure" style="text-align: center">
+<img src="02-transcript-based-muscle-material_files/figure-html/viz-muscle-content-density-1.png" alt="Density plot of blood, fat, and muscle marker expression levels. Grey areas present the 0 - 97% (fat and blood) or 3 - 100% (muscle) quantile regions" width="384" />
+<p class="caption">(\#fig:viz-muscle-content-density)Density plot of blood, fat, and muscle marker expression levels. Grey areas present the 0 - 97% (fat and blood) or 3 - 100% (muscle) quantile regions</p>
+</div>
+
+```r
 
 ggsave(file.path(fig_dir, "biopsy-fat-blood-muscle-density.pdf"), 
        height=1.8, width=4.8)
 ```
 
 ### Muscle content in the bilateral and longitudinal cohorts
-```{r muscle-content-longi-and-bilat, fig.height=1.8, fig.width=4.8, fig.cap='Boxplot displaying the muscle scores distribution of the bilateral, longitudinal and historical control samples.  The dots present the outliers of low muscle content samples.'}
+
+```r
 markers_ens88 <- tibble(marker_type=c(rep("blood", 3), rep("fat", 3),
                                       rep("muscle", 3)),
                   gene_name=c("HBA1", "HBA2", "HBB",
@@ -145,6 +155,14 @@ ggplot(tmp_rbind, aes(x=study, y=TPM)) +
        y=latex2exp::TeX("RNA-seq muscle cell content: $\\Sigma \\log_{10}( TPM+1)") )+
   theme(plot.title=element_text(hjust=0.5, size=10), 
         axis.title.x=element_text(size=10))
+```
+
+<div class="figure">
+<img src="02-transcript-based-muscle-material_files/figure-html/muscle-content-longi-and-bilat-1.png" alt="Boxplot displaying the muscle scores distribution of the bilateral, longitudinal and historical control samples.  The dots present the outliers of low muscle content samples." width="460.8" />
+<p class="caption">(\#fig:muscle-content-longi-and-bilat)Boxplot displaying the muscle scores distribution of the bilateral, longitudinal and historical control samples.  The dots present the outliers of low muscle content samples.</p>
+</div>
+
+```r
   
 ggsave(file.path(fig_dir, "longitudinal-bilat-muscle-boxplot.pdf"),
         width=4, height=1.5)
@@ -156,7 +174,8 @@ In Figure \@ref(fig:muscle-content-longi-and-bilat) and \@ref(fig:viz-muscle-con
 
 __NOTE:__ Refer to Appendix B for FSHD biopsies classification (categorized by Control-like and Moderate+) by the supervised machine learning algorithm.
 
-```{r bilat-logsum-of-baskets, echo=TRUE, fig.cap='Average FSHD-disease signature scores across individual classes.', fig.align='center', fig.width=3, fig.height=4}
+
+```r
 load(file.path(pkg_dir, "data", "comprehensive_df.rda"))
 pal <- wes_palette("Darjeeling1", n = 5)
 names(pal) <- c('DUX4', 'ECM', 'Inflamm', 'IG', 'Complement')
@@ -183,10 +202,16 @@ comprehensive_df %>%
           axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
 
+<div class="figure" style="text-align: center">
+<img src="02-transcript-based-muscle-material_files/figure-html/bilat-logsum-of-baskets-1.png" alt="Average FSHD-disease signature scores across individual classes." width="288" />
+<p class="caption">(\#fig:bilat-logsum-of-baskets)Average FSHD-disease signature scores across individual classes.</p>
+</div>
+
 ## PCA and outlier confirmation
 PCA reveals that biopsies exhibiting low muscle content, 13-0009R and 13-0007R, form a distinct cluster and are separated from the rest of the samples. Note that the class refers to the classification carried out by the supervise machine learning model, as detailed in Appendix B. 
 
-```{r pca-rlog, echo=TRUE, message=FALSE, fig.cap="Biolat: PCA of regularized log transformation of the gene counts. "}
+
+```r
 library(ggrepel)
 load(file.path(pkg_dir, "data", "bilat_rlog.rda"))
 
@@ -202,3 +227,8 @@ ggplot(data, aes(PC1, PC2, color=class)) +
   theme(legend.position="top",
         panel.grid.minor = element_blank())
 ```
+
+<div class="figure">
+<img src="02-transcript-based-muscle-material_files/figure-html/pca-rlog-1.png" alt="Biolat: PCA of regularized log transformation of the gene counts. " width="672" />
+<p class="caption">(\#fig:pca-rlog)Biolat: PCA of regularized log transformation of the gene counts. </p>
+</div>

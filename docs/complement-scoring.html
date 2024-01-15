@@ -85,7 +85,9 @@
 <li><a class="" href="dna-methylation.html"><span class="header-section-number">11</span> DNA methylation of FSHD D4Z4 allele</a></li>
 <li><a class="" href="references.html">References</a></li>
 <li class="book-part">Appendix</li>
-<li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build TxDB package from GTF</a></li>
+<li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build Ensembl-based annotation packages</a></li>
+<li><a class="" href="appendixB-DUX4-baskets-curation.html"><span class="header-section-number">B</span> DUX4 basket genes curation</a></li>
+<li><a class="" href="appendixC-other-baskets.html"><span class="header-section-number">C</span> Baskets of other FSHD signatures</a></li>
 </ul>
 
         <div class="book-extra">
@@ -105,7 +107,7 @@
 <li>Prominent level of MAC staining</li>
 </ol>
 <p>Note that no bilateral sample was identified as level 4</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/corrr">corrr</a></span><span class="op">)</span></span>
 <span><span class="va">pkg_dir</span> <span class="op">&lt;-</span> <span class="st">"/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"</span></span>
@@ -125,7 +127,7 @@
 <span class="header-section-number">10.1.1</span> Correlation with basekt scores<a class="anchor" aria-label="anchor" href="#correlation-with-basekt-scores"><i class="fas fa-link"></i></a>
 </h3>
 <p>The complement scoring has moderate correlation with basket scores. The code chunk below calculates the Spearman correlation coefficients.</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get complement scoring and basekt scores from  `comprehensive_df`</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`IG-logSum`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -134,7 +136,7 @@
 <span>                <span class="va">`Inflamm-logSum`</span>, <span class="va">`ECM-logSum`</span><span class="op">)</span> </span>
 <span>  </span>
 <span>  <span class="co">#dplyr::mutate(`Complement Scoring` = factor(`Complement Scoring`)) </span></span></code></pre></div>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">corrr</span><span class="fu">::</span><span class="fu"><a href="https://corrr.tidymodels.org/reference/correlate.html">correlate</a></span><span class="op">(</span><span class="va">.</span>, method<span class="op">=</span><span class="st">"spearman"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">`Complement Scoring`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -154,7 +156,7 @@
 <h3>
 <span class="header-section-number">10.1.2</span> Visualize the relationship with basket scores<a class="anchor" aria-label="anchor" href="#visualize-the-relationship-with-basket-scores"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># tidy up the data.frame for visualization</span></span>
 <span><span class="va">tidy_df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>`Complement Scoring` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -166,7 +168,7 @@
 <span>                                levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"DUX4-M6"</span>, <span class="st">"ECM"</span>, <span class="st">"Inflamm"</span>,</span>
 <span>                                         <span class="st">"Complement"</span>, <span class="st">"IG"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
 <p>Display dotplot with color:</p>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">tidy_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">`Complement Scoring`</span>, y<span class="op">=</span><span class="va">`basket score`</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_dotplot.html">geom_dotplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">`Complement Scoring`</span>,</span>
 <span>                     color<span class="op">=</span><span class="va">`Complement Scoring`</span><span class="op">)</span>, </span>
@@ -182,7 +184,7 @@
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_classic</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"complement scoring"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-complement-scoring_files/figure-html/dotplot-with-color-1.png" width="672"></div>
 <p><strong>ANOVA p-values</strong> of the mean value differences of basket scores among three leves of complemnt scoring.</p>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tm</span> <span class="op">&lt;-</span> <span class="va">tidy_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">basket</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/do.html">do</a></span><span class="op">(</span>aov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/aov.html">aov</a></span><span class="op">(</span><span class="va">`basket score`</span> <span class="op">~</span> <span class="va">`Complement Scoring`</span>, </span>
 <span>                             data <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -234,7 +236,7 @@
 <span class="header-section-number">10.2</span> Complement Scoring correlation between left and right biopsies<a class="anchor" aria-label="anchor" href="#complement-scoring-correlation-between-left-and-right-biopsies"><i class="fas fa-link"></i></a>
 </h2>
 <p>Out of 34 subject 29 have complement scoring on both left and right biopsies. We aim to evalulate the correlation between left and right.</p>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">`Subject`</span>, <span class="va">`Complement Scoring`</span>, <span class="va">`location`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">location</span>, <span class="va">`Complement Scoring`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -249,7 +251,7 @@
 <span class="header-section-number">10.3</span> Complement Scoring vs. STIR status<a class="anchor" aria-label="anchor" href="#complement-scoring-vs.-stir-status"><i class="fas fa-link"></i></a>
 </h2>
 <p>The average complement scoring for STIR- and STIR+ samples are 1.38 (+/-0.63SD) and 2.08 (+/-0.929SD), respectively.</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`STIR_status`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">STIR_status</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -265,7 +267,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>panel.grid.major <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>y<span class="op">=</span><span class="st">"Complement Scoring"</span>, x<span class="op">=</span><span class="st">""</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-complement-scoring_files/figure-html/complement-scoring-vs-STIR-1.png" width="672" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"manuscript"</span>, <span class="st">"figures"</span>,</span>
 <span>                 <span class="st">"ComplementScoring-vs-STIR-status.pdf"</span><span class="op">)</span>,</span>
 <span>       width<span class="op">=</span><span class="fl">2</span>, height<span class="op">=</span><span class="fl">3</span><span class="op">)</span>  </span></code></pre></div>
@@ -275,7 +277,7 @@
 <span class="header-section-number">10.4</span> Complement scoring vs. class<a class="anchor" aria-label="anchor" href="#complement-scoring-vs.-class"><i class="fas fa-link"></i></a>
 </h2>
 <p>The average complement scoring for Control-like, Moderate+, and Muscle-Low samples are 1.15 (+- 0.376SD), 1.8 (+/- 0.894SD), and 1, respectively.</p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`class`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`class`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -292,7 +294,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>panel.grid.major <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>y<span class="op">=</span><span class="st">"Complement Scoring"</span>, x<span class="op">=</span><span class="st">""</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="10-complement-scoring_files/figure-html/complement-scoring-vs-class-1.png" width="672" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"figures"</span>, <span class="st">"ComplementScoring-vs-FSHD-class.pdf"</span><span class="op">)</span>,</span>
 <span>       width<span class="op">=</span><span class="fl">3</span>, height<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 
@@ -331,7 +333,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-12-16.</p>
+    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2024-01-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

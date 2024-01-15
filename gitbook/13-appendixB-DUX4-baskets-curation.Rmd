@@ -1,0 +1,604 @@
+# DUX4 basket genes curation {#appendixB-DUX4-baskets-curation}
+
+```{r setup-appendxB, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE) 
+```
+
+## Aims and flowchard
+Our aim here is to create a curated list of DUX4 basket genes that best represent the DUX4 signature of FSHD. @yao2014 et al. identified 67 DUX4 robust genes significantly up-regulated in DUX4-target-positive FSHD biopsy samples, FSHD myotubes, and DUX4-transduced cells. The complete list of these genes can be found in Yao's supplementary table 3 or the `ddu251supp_table3.xls` excel sheet saved [here](https://github.com/FredHutch/Wellstone_BiLateral_Biopsy/extdata/). 
+Out the 67 candidates, we selected the genes that better distinguish moderately affected FSHDs from the controls. These genes would help us in detecting DUX4-targeted muscle, building a better prediction model based on MRI characteristics, and establishing standards for post-therapeutic measurements. This process involves three major steps:
+
+1. Converted the coordinates/annotation of the genes to GRCh38 (hg38) and more modern versions of Ensembl or Gencode since in Yao's study, the alignments and annotation of the RNA-seq data were done based upon genome build hg19. Filtered un-annotated, duplicated genes and variants.
+2. Validated the significance of this set of genes using the muscle biopsy RNA-seq data from the Wellstone longitudinal study (@wang2019, @wong2020). This study used k-mean clustering to identify five distinctive groups of samples, based on their RNA expression levels, and labelled them as Mild, Moderate, IG-High, High, and Muscle-Low.
+3. Ultimately, curated baskets of genes whose expression levels are best in discriminating between the Mild/Moderated FSHD biopsies and the controls ranked by both classification-based (ROC) and hypothesis-based (DESeq2) methods. This subsequent genes will be helpful for therapeutic or post-therapeutic measures. 
+
+__Note:__ all the results and figures are generated on the fly.
+
+
+## Flowchart
+
+```{r basket-flowchart, fig.align="center", fig.cap="Flowchart of basket selections"}
+knitr::include_graphics("images/flowchart-DUX4-baskets.png")
+```
+
+## Convert to GRCh38/Ensembl
+First, load libraries and data sets.
+```{r load-library-datsets-appB}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(DESeq2))
+suppressPackageStartupMessages(library(writexl))
+suppressPackageStartupMessages(library(kableExtra))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(kableExtra))
+library(BiocParallel)
+bp_param = MulticoreParam(workers=4L)
+register(bp_param)
+
+pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
+source(file.path(pkg_dir, "scripts", "load_variables_and_datasets.R"))
+# returns bilat_dds, longitudinal_dds, and annotation dataframe in ens88 (anno_gencode35) and gencode35 (anno_gencode35)
+
+# sanity check
+colnames(longitudinal_dds)  = longitudinal_dds$sample_name
+```
+
+Second, upload Yao's 2014 suppl. table 3:
+```{r load-DUX4-targets}
+# load xls and tidy it
+targets <- readxl::read_xls(file.path(pkg_dir, "extdata",
+                                      "ddu251supp_table3.xls"), 
+                            skip = 1, sheet=1) %>%
+  dplyr::select(ENSEMBL, gene.name) %>%
+  dplyr::rename(gene_name = gene.name)
+```
+
+__About the original 67:__
+
+1. KHDC1L appeared twice (suppl_table3) with different identifiers, ENSG00000243501 and ENSG00000256980 in hg19's Esembl annotation. But in GRCh38, ENSG00000243501 is annotated as KHDC1. 
+2. PRAMEF3 and WI2-2994D6.1 cannot be `liftOver` to GRCh38 - regions are deleted and are not converted 
+3. XX-FW84067D5.1 `liftOver` to PRAMEF8 and WI2-3308P17.2 `liftOver` to PRAMEF11. But both PRAMEF8 and PRAMEF11 are already on the original 67 gene list. So we consider XX-FW84067D5.1 and WI2-3308P17.2 duplicated and therefore drop them from the list.
+4. There are some variants whose expression levels are highly correlated. They added no extra values for classification performance. So we might exclude them from the final selection of best performed baskets. 
+
+__Steps to convert to GRCh38/Ensembl (v88):__
+
+1. Match gene names first
+2. Change ENSG00000243501's gene name (KHDC1L) in hg38 to KHDC1 (note that in Gencode 40 or above, this might be annotated as KHDC1L-AS)
+3. If gene names are not matched, use UCSC genome browser `liftOver` to find the converted annotation and position in GRCh38
+4. __Column keep__ of the data frame flags (`FALSE`) the un-annotated, duplicated (XX-FW84067D5.1 and WI2-3308P17.2), and variants genes whose expression and differential statistics are highly correlated to each other
+
+__Unmatched genes and used UCSC genome browser to `liftOver`:__ 
+
+- _WI2-2994D6.2_: PRAMEF 26 (PRAMEF25 variant)
+- _PRAMEF3_: unable to `liftOver`; the region was deleted from GRCh38
+- _RP13-221M14.1_: PRAMEF25, maybe also HNRNPCL4?
+- _WI2-3308P17.2_: PRAMEF11 (PRAMEF27), a PRAMEF9/15 variants
+- _RP13-221M14.3_: PRAMEF34P (PRAMEF36P psudogenes)
+- _RP13-221M14.5_: HNRNPCL2, might be a PRAMEF9 variant in GRCh38/Ensembl v88
+- _TRIM49DP_: TRIM49D1
+- _TRIM49L1_: TRIM49D2 (TRIM49D1 and TRIM49D2 are variants of TRIM49)
+- _WI2-2994D6.1_: Unable to `liftOver`
+- _XX-FW84067D5.1_: PRAMEF8
+- _AC010606.1_: MBD3L2B. Alternative name CTB-25J19.1.
+
+### Match and `liftOver`
+
+Code chunks below perform the steps above - match gene names and edit the `liftOver` annotation and tidy the results.
+```{r match-name}
+# tools
+get_id_by_name = function(g_name) {
+  if (g_name=="no identifier") return(NA)
+  anno_ens88 %>% dplyr::filter(gene_name %in% g_name) %>% pull(ens88_id) 
+  #annotation %>% dplyr::filter(gene_name %in% g_name) %>% pull(gene_id) 
+}
+
+# 1. matche name
+# 2. if names are not matched, use liftOver results
+DUX4_targets_GRCh38 = targets %>% left_join(anno_ens88, by="gene_name", 
+                                   suffix=c(".hg19", ".hg38")) %>%
+    dplyr::mutate(match_name = !is.na(ens88_id)) %>%
+    dplyr::mutate(gene_name.hg38 = case_when(
+      ENSEMBL == "ENSG00000243501" ~ "KHDC1",
+      gene_name == "WI2-2994D6.2" ~ "PRAMEF26",
+      gene_name == "PRAMEF3" ~ "no identifier",
+      gene_name == "RP13-221M14.1" ~ "PRAMEF25",
+      gene_name == "WI2-3308P17.2" ~ "PRAMEF11",
+      gene_name == "RP13-221M14.5" ~ "HNRNPCL2",
+      gene_name == "RP13-221M14.3" ~ "PRAMEF34P",
+      gene_name == "TRIM49DP" ~ "TRIM49D1",
+      gene_name == "TRIM49L1" ~ "TRIM49D2",
+      gene_name == "WI2-2994D6.1" ~ "no identifier", 
+      gene_name == "XX-FW84067D5.1" ~ "PRAMEF8",
+      gene_name == "AC010606.1" ~ "CTB-25J19.1",
+    TRUE ~ gene_name
+  )) %>% # 3. fixed gene_id and ENSEMBL.hg38
+  dplyr::mutate(ens88_id = if_else(is.na(ens88_id), 
+                                  map_chr(gene_name.hg38, get_id_by_name), 
+                                  ens88_id)) %>%
+  dplyr::mutate(ens88_id = if_else(gene_name.hg38 == "KHDC1", 
+                                  map_chr(gene_name.hg38, get_id_by_name), ens88_id)) %>%
+  dplyr::rename(ENSEMBL.hg19 = ENSEMBL, gene_name.hg19 = gene_name,
+                gene_id.hg38 = ens88_id) %>%
+  dplyr::mutate(ENSEMBL.hg38 = str_replace(gene_id.hg38, "\\..*", "")) # remove ensembl version
+```
+
+### Exclude unannotated, duplicated, and variant genes
+We excluded the following genes for the candidates of DUX4 baskets.
+1. two un-annotated (PRAMEF3, WI2-2994D6.1) genes
+2. two (XX-FW84067D5.1-> PRAMEF8, WI2-3308P17.2 -> PRAMEF11) duplicated genes
+3. ten variants of TRIM49, TRIM51, TRIM43 whose gene expression levels are highly correlated with TRIM49, TRIM51, and TRIM43. 
+
+Those are marked as __FALSE__ in Column `keep` of our `data.frame`. We might not consider these genes when selecting the baskets of genes. Now, total 53 genes are retained as candidates for the DUX4 signature basket.
+
+__Variants__
+
+- __TRIM49D1__: variant of TRIM49; both have similar gene counts (longitudinal biopsy study)
+- __TRIM49D2__: variant of TRIM49; both have similar gene counts
+- __TRIM49C__: variant of TRIM49; both have similar gene counts
+- __TRIM49B__: variant of TRIM49; both have similar gene counts
+- __TRIM53AP__: might share the promoter of TRIM49; both have similar gene counts
+- __TRIM51EP__: variant of TRIM51
+- __TRIM51BP__: variant of TIRM51
+- __TRIM51CP__: variant of TRIM51
+- __TRIM43B__: variant of TRIM43
+- __TRIM43CP__: variant of TRIM43
+
+```{r check-variants-counts, include=FALSE, message=FALSE}
+# PRAMEF9 and PRAMEF27 have similar counts
+# CTB-25J19.1 and  MBD3- exclude CTB-25J19.1 - no similar counts
+.check_variant_counts <- function(vrn_names) {
+  vrn <- DUX4_targets_GRCh38 %>% 
+    dplyr::filter(gene_name.hg38 %in% vrn_names) %>%
+    dplyr::distinct(gene_id.hg38) %>% pull(gene_id.hg38)
+  counts(longitudinal_dds[vrn, ], normalized=TRUE)
+}
+
+# PRAMEF9 and PRAMEF15 have similar counts
+.check_variant_counts(c("TRIM53AP", "TRIM49C"))
+.check_variant_counts(c("TRIM49", "TRIM49C"))
+.check_variant_counts(c("TRIM49", "TRIM49C"))
+.check_variant_counts(c("TRIM51BP", "TRIM51EP"))
+.check_variant_counts(c("TRIM51", "TRIM51EP"))
+```
+
+```{r correct-DUX4_targets_GRCh38, echo=FALSE}
+# exclude un-annotated, duplicates and variants of TRIM43/49/53/51
+# create "keep" column
+variants <- c("TRIM49D1", "TRIM49D2", "TRIM49C", "TRIM49B", "TRIM53AP",
+              "TRIM51EP", "TRIM51BP", "TRIM51CP", "TRIM43B", "TRIM43CP")
+DUX4_targets_GRCh38 <- DUX4_targets_GRCh38 %>%
+  dplyr::mutate(keep = !gene_name.hg38 %in% variants) %>% # variants with similar statistics and expression
+  dplyr::mutate(keep = if_else(gene_name.hg19 %in% c("XX-FW84067D5.1", "WI2-3308P17.2"), FALSE, keep)) %>% 
+  dplyr::mutate(keep = if_else(is.na(gene_id.hg38), FALSE, keep)) # not annotated in hg38/Ensembl/Genocode
+```
+
+ display the table.
+```{r original-liftover-table}
+#save(DUX4_targets_GRCh38, file=file.path(pkg_dir, "data", "DUX4_targets_GRCh38.rda"))
+
+# color genes in basket blue, o/w green
+tb <- DUX4_targets_GRCh38 %>% 
+  dplyr::mutate(gene_name.hg38 = kableExtra::cell_spec(gene_name.hg38, 
+                                                       color = if_else(keep, "blue", "green")))
+
+knitr::kable(tb, format="html", escape = F,
+             caption="LiftOver annotation of the original 67 DUX4 robust genes. Column keep: FALSE indicates the genes are unannotated in hg38/Ensembl, duplicated, or variants of similar statistics and expression within the family. Blue color (gene_name.hg38) indicates keep=TRUE, 53 genes retained as candidates for the selection of baskets.") %>%
+  kableExtra::kable_styling(font_size = 12) %>%
+  kableExtra::kable_paper() %>%
+  kableExtra::scroll_box(width = "800px", height="100%")
+```
+
+## Rank significance by DESeq2 and ROC curves
+Out of the 53 retained candidates, we aim to select the genes that are best in in distinguishing mildly affected muscle from the controls. We ranked their performance in both hypothesis-based and classification-based approached:
+ 
+__Steps:__ 
+
+Use longitudinal RNA-seq data in which FSHD biopsies were classified as Mild, Moderate, IG-High and High groups (based upon the gene expression levels).
+
+1. __Hypothesis testing approach__ - used _DESeq2_ to estimate the fold changes and adjusted p-values by comparing different groups of FHSD (Mild, Moderate, Mild+Moderate, IG-High, High) to the controls. We used the statistics from the Mild+Moderate vs. controls comparison.
+2. __Classification-based approach__ - used _ROC_ curves to evaluate the performance whose expression levels (`rlog`), individually, is able to discriminate between Mold+Moderate and control groups. The partial area under curve (pAUC) criterion is set to 0.2 (1 - specificity).
+3. Combine ranks yielded by DESeq (adjusted p-value) and ROC curves (pAUC).
+4. Consider average expression level (TPM) threshold in IG-High and High group: avg. TPM > 2.
+5. Retain significant genes in the Mild+Moderate samples relative to the controls (34)
+6. Select smaller baskets (6 and 12) of best performed genes from Step 5.
+
+### DESeq2: Differential analysis
+Chunk below performs DESeq2 differential analysis comparing Mild, Moderate, Mild+Moderate, IG-High, and High groups to the controls. Out of 53, 40 candidates are significant in comparing Mild+Moderate samples with the controls.
+
+__Criteria for significance:__ adjusted p-value < 0.0.5 corresponding to $H_0:|logFC(\frac{FSHD}{control})| \leq 1$.
+
+```{r deseq2-control-vs-classes, message=FALSE, results="hide"}
+#sanity check
+colnames(longitudinal_dds) == longitudinal_dds$sample_name
+dds <- longitudinal_dds
+DESeq2::design(dds) <- formula(~ cluster)
+dds <- DESeq(dds, BPPARAM=bp_param)
+```
+
+Tidy up the statistics from all five comparisons:
+```{r extract-logFC-all-contrast}
+# get logFC for all five comparison against controls
+basket <- DUX4_targets_GRCh38 %>% dplyr::filter(keep) #53
+
+logFC <- map_dfr(resultsNames(dds)[c(2:5)], function(rname) {
+  res <- as.data.frame(results(dds, name=rname, alpha=0.05, lfcThreshold=1)) %>%
+    rownames_to_column(var="ens88_id") %>%
+    dplyr::select(ens88_id, log2FoldChange, padj) %>%
+    dplyr::mutate(sig = padj < 0.05, contrast=rname) %>%
+    dplyr::filter(ens88_id %in% basket$gene_id.hg38) %>%
+    dplyr::mutate(contrast=rname)
+}) %>% dplyr::left_join(anno_ens88, by="ens88_id") %>%
+  dplyr::mutate(sig = if_else(is.na(padj), FALSE, sig)) %>%
+  dplyr::mutate(contrast = sapply(str_split(contrast, "_"), "[[", 2)) 
+```
+
+Chunk below performs Mild+Moderate vs. Controls:
+```{r mild-plus-moderate, message=FALSE, results="hide"}
+# mild+moderate
+sub_dds <- dds[, dds$cluster %in% c("Control", "Mild", "Moderate")]
+design(sub_dds) <- formula(~ pheno_type)
+sub_dds <- DESeq(sub_dds)
+sub_res <- as.data.frame(results(sub_dds)) %>%
+  rownames_to_column(var="ens88_id") %>% 
+  dplyr::select(ens88_id, log2FoldChange, padj) %>%
+  dplyr::mutate(sig = padj < 0.05, contrast="Mild+Moderate") %>%
+  dplyr::filter(ens88_id %in% basket$gene_id.hg38) %>%
+  dplyr::left_join(anno_ens88, by="ens88_id") %>%
+  dplyr::mutate(sig = if_else(is.na(padj), FALSE, sig)) 
+```
+
+__Visualize__ the log2 fold change and significance (adjusted p-value):
+```{r viz-sig, fig.height=12, fig.width=8, echo=FALSE, fig.cap="Differential analysis results in comparing mild, moderate, mild+moderate, IG-high, and High groups to the controls. Size of the dots indicate fold changes and color the significance (adjusted p-value < 0.05). Note that 40 out of 53 are significant in Mild+Moderate."}
+# include statistics of Mild+Moderate vs. Control
+logFC <- logFC %>% bind_rows(sub_res) %>% 
+  dplyr::mutate(contrast = factor(contrast, 
+                levels=c("Mild", "Moderate", "Mild+Moderate", "IG.High", "High")))
+# plot logFC (size) and significance by adj. p-value
+ggplot(logFC, aes(x=contrast, y=gene_name)) +
+  geom_point(aes(size=log2FoldChange, color=sig)) +
+  theme_minimal() +
+  scale_color_manual(values=c('#999999','#E69F00'))
+```
+
+```{r sig-in-moderate-and-mild}
+# tidy up the statistics of the 40 significant genes in mild+moderate; give rank 1 to 40
+df_sig <- sub_res %>% 
+  dplyr::filter(ens88_id %in% basket$gene_id.hg38) %>%
+  dplyr::filter(!is.na(padj)) %>%
+  dplyr::filter(padj < 0.05) %>%
+  arrange(padj) %>%
+  dplyr::mutate(rank_deseq = 1:nrow(.))
+```
+
+
+### Receiver Operator Characteristic (ROC) curve
+We used the ROC curve to evaluate the performance of a logistic regression model (Mild+Moderate vs Controls) using regularized log transformation of the gene counts. We ranked the 40 candidates by their ROC partial AUC (p=0.2, 1-specificity).
+
+```{r ROC-candidates}
+# In retrospect, I would use the `caret` package instead of `genefilter` to perform roc/auc tests
+library(genefilter)
+tmp = rlog(sub_dds)
+sub_rlog <- tmp[df_sig$ens88_id, ]
+# row-wise pAUC (0.2)
+eset <- ExpressionSet(assay(sub_rlog))
+eset$pheno_type <- sub_rlog$pheno_type
+rocs <- genefilter::rowpAUCs(eset, "pheno_type", p=0.2)
+
+# ROC results
+df_roc <- data.frame(ens88_id = featureNames(eset), pAUC=genefilter::area(rocs)) %>%
+  dplyr::left_join(anno_ens88, by="ens88_id") %>%
+  dplyr::arrange(desc(pAUC)) %>%
+  dplyr::mutate(rank_pAUC = 1:nrow(.))
+```
+
+## Selections of the DUX4 baskets
+
+__Basket-M:__ basket of genes that are able to discriminate mild and moderate muscle biopsies from the controls
+
+- Started with the 40 significant genes in the Mild+Moderate group with adjusted p-value < 0.05 (Mild+Moderate vs. controls)
+- Exclude genes that have undetectable expression in the bilateral cohort (4)
+- Exclude genes whose expression in the IG-High and High groups are less then 2 TPM
+- 30 out of 40 meet the criteria
+
+### Validation using the Bilateral cohort
+
+
+__Basket-M12:__
+
+- A subset `Basekt-M` 
+- Considered combined ranks of DEseq2's adjusted p-value and ROC's pAUC in which p=0.2 (1-specificity)
+- Get the top 12 based on combined rank, subject to: two or three from PRAMEF-family, TRIM-family, and MBD3L-family
+- Result: <span style="color: red;">PRAMEF4, PRAMEF15, CCNA1, PRAMEF5, ZSCAN4, KHDC1L, TRIM49, MBD3L2, RP11-432M8.17 (__H3Y1__), TRIM51, MBD3L3, HNRNPCL2, and TRIM43</span>
+
+__Basket-M6:__
+
+- A subset of `Basekt-M12`
+- Select by rank and average TPM in Mild+Moderate (>0.25 TPM)
+- One out of four PRAMEFs: select PRAMEF5 among the PRAMEF candidates (2, 4, 5, 15, 11) because of the highest TPM in the Mild+Moderate group
+- Result:  <span style="color: red;">ZSCAN4, CCNA1, PRAMEF5, KHDC1L, MDB3L2, H3Y1 (RP11-432M8.17)</span>
+
+__Basket-H4:__ <span style="color: red;">LEUTX, PRAMEF2, TRAM43, and KHDC1L</span> are the original top DUX4 biomarkers in discriminating "hot" FSHD from the controls (@yao2014)
+
+Code chunk below tidies up the table and generates excel sheets.
+```{r basket-statistics-and-selection}
+candidates <- df_sig %>% 
+  # exclude genes with undetectable expression in the Bilat samples
+  dplyr::inner_join(anno_gencode35, by="ens_id", suffix=c(".ens88", ".gencode35")) %>%
+  dplyr::left_join(df_roc %>% dplyr::select(-gene_name, -ens_id), by="ens88_id")  %>%
+  dplyr::mutate(combined_rank = (rank_pAUC + rank_deseq)/2) %>%
+  dplyr::arrange(combined_rank) %>%
+  dplyr::select(ens_id, ens88_id, gencode35_id, gene_name.ens88, gene_name.gencode35,
+                log2FoldChange, padj, pAUC, rank_pAUC, rank_deseq, combined_rank) 
+
+tmp_high <- dds[candidates$ens88_id, dds$cluster %in% c("IG-High", "High")] 
+tmp_m <- sub_dds[candidates$ens88_id, sub_dds$pheno_type == "FSHD"] 
+tmp_bilat <- bilat_dds[candidates$gencode35_id]
+
+DUX4_baskets <- candidates %>% 
+  dplyr::mutate(avgTPM_M = rowMeans(assays(tmp_m)[["TPM"]])) %>%
+  dplyr::mutate(avgTPM_H = rowMeans(assays(tmp_high)[["TPM"]])) %>%
+  dplyr::mutate(avgTPM_Bilat = rowMeans(assays(tmp_bilat)[["TPM"]])) %>%
+  dplyr::mutate(`DUX4-M` = avgTPM_H >= 2) %>%
+  dplyr::filter(`DUX4-M`) %>%
+  dplyr::mutate(`DUX4-M12` = gene_name.ens88 %in% 
+                  c("PRAMEF4", "PRAMEF15", "CCNA1", "ZSCAN4", "PRAMEF5",
+                    "KHDC1L", "TRIM49", "MBD3L2", "RP11-432M8.17", "MBD3L3", 
+                    "HNRNPCL2", "TRIM43")) %>%
+  dplyr::mutate(`DUX4-M6` = gene_name.ens88 %in% c("ZSCAN4", "CCNA1", "PRAMEF5", "KHDC1L",
+                                               "MBD3L2", "RP11-432M8.17")) %>%
+  dplyr::mutate(`DUX4-H4` = gene_name.ens88 %in% c("PRAMEF2", "TRIM43", "KHDC1L", "LEUTX"))
+```
+
+```{r generate-xlsx-rda, echo=FALSE}
+save(DUX4_baskets, file=file.path(pkg_dir, "data", "DUX4_baskets.rda"))
+writexl::write_xlsx(list(`DUX4-M`   = DUX4_baskets %>% dplyr::filter(`DUX4-M`),
+                         `DUX4-M12` = DUX4_baskets %>% dplyr::filter(`DUX4-M12`),
+                         `DUX4-M6`  = DUX4_baskets %>% dplyr::filter(`DUX4-M6`),
+                         `DUX4-H4`  = DUX4_baskets %>% dplyr::filter(`DUX4-H4`)),
+                    path=file.path(pkg_dir, "stats",   "DUX4_baskets.xlsx"))
+```
+
+Code chuck below displays the final curated basket genes.
+```{r display-candidates}
+tb <- DUX4_baskets %>% 
+  dplyr::select(-ens88_id, -gencode35_id, -gene_name.ens88 ) %>%
+  dplyr::rename(gene_name = gene_name.gencode35) %>%
+  dplyr::mutate(gene_name = kableExtra::cell_spec(gene_name, 
+                            color = if_else(`DUX4-M12`, "blue", "green")))
+
+knitr::kable(tb, format="html", escape = F,
+             caption="Proposed DUX4 basket genes that best represent DUX4 signature in FSHD muscle and with best performance in distinguish mildly to moderately affected muscles (Mild_Moderate) from the controls. The order is arranged by the combined ranks of pAUC and DESeq's adjusted p-value (Mild+Moderate vs. Controls). Color blue marks the genes selected for DUX4-M12. Columns avgTPM_M and avgTPM_H are the average TPM in the Mild+Moderate and IG-High+High groups in the longitudinal cohort; avgTPM_bilat is the average TPM in the bilate cohort. Columns DUX4-M, DUX4-M12, DUX4-M6, DUX4-H4 indicate (TRUE) the selected genes in the basket.") %>%
+  kableExtra::kable_styling(font_size = 12) %>%
+  kable_paper() %>%
+  column_spec(11:14, background = "yellow") %>%
+  column_spec(9, color = "white",
+              background = spec_color(DUX4_baskets$avgTPM_M, end = 0.7)) %>%
+  column_spec(10, color = "white",
+              background = spec_color(DUX4_baskets$avgTPM_H, end = 0.7)) %>%
+  scroll_box(width = "800px", height="100%")
+```
+
+
+```{r avg-TPM-baskets-over-moderate-samples, echo=FALSE}
+DUX4_baskets %>% 
+  dplyr::mutate(tpm_m6 = ifelse(as.numeric(`DUX4-M6`) == 1, avgTPM_M, NA),
+                tpm_m12 = ifelse(as.numeric(`DUX4-M12`) == 1, avgTPM_M, NA),
+                tpm_h4 = ifelse(as.numeric(`DUX4-H4`) == 1, avgTPM_M, NA),
+                tpm_m = ifelse(as.numeric(`DUX4-M`) == 1, avgTPM_M, NA)) %>%
+  summarise(M6 = mean(tpm_m6, na.rm=TRUE),
+            M12 = mean(tpm_m12, na.rm=TRUE),
+            M = mean(tpm_m, na.rm=TRUE),
+            H4 = mean(tpm_h4, na.rm=TRUE)) %>%
+  knitr::kable(caption="Average TPM of the baskets of the Mild+Moderate FSHD samples.")
+```
+
+### Visualize TPM of basket-M12 genes
+
+__Boxplot of DUX4-M12 aasket genes__
+```{r boxplot-basket-M12, fig.cap="Basket-M12: 12 top genes (out of the original 67) in discriminating between the mild+moderate and control groups.", fig.height=8, fig.width=8}
+basketM12 <- DUX4_baskets %>% dplyr::filter(`DUX4-M12`) 
+col_data <- as.data.frame(colData(longitudinal_dds))
+data <- as.data.frame(assays(longitudinal_dds)[["TPM"]][basketM12$ens88_id, ]) %>%
+  rownames_to_column(var="ens88_id") %>%
+  dplyr::left_join(anno_ens88, by="ens88_id") %>% # add gene_name
+  tidyr::gather(key=sample_name, value=TPM, -ens88_id, -gene_name) %>%
+  dplyr::left_join(col_data %>% dplyr::select(sample_name, cluster), 
+                   by="sample_name") %>%
+  dplyr::mutate(gene_name = factor(gene_name))
+
+data %>% dplyr::filter(cluster%in% c("Control", "Mild", "Moderate")) %>%
+  dplyr::mutate(`log10TPM` = log10(as.numeric(TPM)+1)) %>%
+  ggplot(aes(x=cluster, y=log10TPM)) +
+    geom_boxplot(width=0.7, outlier.shape=NA) +
+    geom_jitter(width = 0.3, size=0.5, color="steelblue", alpha=0.5) +
+    facet_wrap(~gene_name, scale="free_y") +
+    theme_bw() +
+    labs(y="log10(TPM+1)") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+
+__Distribution of per sample average TPM of basket genes__
+
+```{r density-persample-averageTPM-M12-per-sampe, fig.align="center", fig.cap="Per-sample average TPM of DUX4-M6, DUX4-M12, DUX4-M, and DUX4-H4 genes."}
+basket_names <- c("DUX4-M6", "DUX4-M12", "DUX4-M", "DUX4-H4")
+df <- map_df(basket_names, function(basket) {
+  # tmp: convert ensembl v88 to gencode v36
+  basket_genes <- DUX4_baskets %>% dplyr::filter(get(basket)) 
+  as.data.frame(assays(longitudinal_dds)[["TPM"]][basket_genes$ens88_id, ]) %>%
+      summarise(across(where(is.numeric), mean))
+}) %>% t(.) %>% as.data.frame() %>%
+  `colnames<-` (basket_names) %>% 
+  rownames_to_column(var="sample_name") %>%
+  dplyr::left_join(col_data %>% dplyr::select(sample_name, cluster), 
+                   by="sample_name") %>%
+  dplyr::filter(!cluster %in% c("Muscle-Low", "IG-High", "High")) %>%
+  tidyr::gather(key=basket, value=avg_TPM, -sample_name, -cluster) 
+
+
+ggplot(df, aes(y=avg_TPM, x=cluster, color=cluster)) +
+  geom_boxplot() + 
+  theme_minimal() +
+  facet_wrap( ~ basket, scales="free")
+```
+
+
+
+
+## Baskets performance - random forest and KNN
+In this section, we used supervised machine learning algorithms to evaluate the performance of each of the baskets in discriminating between the controls and FSHD samples. We used the `caret` package that provides the interface to most of the machine learning models that existed in the R repository. There are many good choices for fitting the models, and we chose random forest and KNN and used leave-one-out cross-validation to estimate the classification accuracy. 
+
+### Model characteristics
+
+- Models: random forest and KNN
+- Cross-validation: Leave-One-Out
+- Value: `log10(TPM+1)`
+- Reproducibility: `set.seed=123` - control randomness
+- Training samples: we built two models here - one with all samples (except Muscle-less) and one with samples labelled Control, Mild and Moderate classes. That is, the two discrimination models are Control vs. FSHD and Control vs. Mild+Moderate.
+- Participated baskets: DUX4-H4, DUX4-M6, DUX4-M12, and DUX4-M
+- Accuracy: Table \@ref(tab:kable-the-fit))
+
+
+Code below extracts predictors matrix:
+```{r extract-predictors-matrix, message=FALSE}
+suppressPackageStartupMessages(library(caret))
+set.seed(123)
+load(file.path(pkg_dir, "data", "DUX4_baskets.rda"))
+# set up the predictor's data matrix (log10(TPM+1))
+.predictor_df <- function(predictor, class) {
+  sub <- dds[predictor, dds$cluster %in% class]
+  data <- log10(assays(sub)[["TPM"]] +1) %>% t(.) %>%
+    as.data.frame() %>%
+    add_column(pheno_type = sub$pheno_type) %>%
+    rename_with(~ str_replace(.x, "\\..*", ""), starts_with("ENSG"))
+}
+
+# log10TPM predictor matrix: for moderate and all samples for testing
+
+# Model 1: control vs. Mild+Moderate
+class <- c("Control", "Mild", "Moderate")
+moderate_smp <- list(
+  M6 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M6`) %>% pull(ens88_id),
+                     class = class),
+  M12 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M12`) %>% pull(ens88_id),
+                      class = class),
+  M = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M`) %>% pull(ens88_id),
+                    class = class),
+  H4 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-H4`) %>% pull(ens88_id), 
+                     class = class))
+
+class <- c("Control", "Moderate", "IG-High", "High")
+MH_smp <- list(
+  M6 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M6`) %>% pull(ens88_id),
+                     class = class),
+  M12 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M12`) %>% pull(ens88_id),
+                      class = class),
+  M = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M`) %>% pull(ens88_id),
+                    class = class),
+  H4 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-H4`) %>% pull(ens88_id), 
+                     class = class))
+
+# Model 2: control vs. IG-High and High
+class <- c("Control", "IG-High", "High")
+high_smp <- list(
+  M6 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M6`) %>% pull(ens88_id),
+                     class = class),
+  M12 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M12`) %>% pull(ens88_id),
+                      class = class),
+  M = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M`) %>% pull(ens88_id),
+                    class = class),
+  H4 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-H4`) %>% pull(ens88_id), 
+                     class = class))
+
+# model 3: Control vs. all FSHDs
+class <- c("Control", "Mild", "Moderate", "IG-High", "High")
+all_smp <- list(
+  M6 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M6`) %>% pull(ens88_id),
+                     class = class),
+  M12 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M12`) %>% pull(ens88_id),
+                      class = class),
+  M = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-M`) %>% pull(ens88_id),
+                    class = class),
+  H4 = .predictor_df(DUX4_baskets %>% dplyr::filter(`DUX4-H4`) %>% pull(ens88_id), 
+                     class = class))
+```
+
+### Models and leave-one-out cross-validation
+```{r caret-rf-knn-partial, message=FALSE, warning=FALSE, results='hide'}
+.rf_knn_fit <- function(matrix_lists) {
+  # lapply H4, M6, M12, and M
+  fit <- lapply(matrix_lists, function(df) {
+    # parameter tunning
+    fit_ctrl <- trainControl(method = "LOOCV",
+                             number = 10,
+                             #repeats = 10,
+                             classProbs = TRUE)
+                             #summaryFunction = twoClassSummary)
+    # model - rf
+    rf_fit <- train(pheno_type ~ .,
+                    data = df,
+                    method = "rf",
+                    tuneLength = 35, 
+                    preProcess = "pca",
+                    trControl = fit_ctrl,
+                    metric = "Accuracy",
+                    na.action = "na.omit")
+    # knn
+    knn_fit <- train(pheno_type ~ .,
+                    data = df,
+                    method = "knn",
+                    trControl = fit_ctrl,
+                    metric = "Accuracy",
+                    na.action = "na.omit")
+
+    list(knn=knn_fit, rf=rf_fit) # return list
+  })
+  
+  names(fit) <- names(fit)
+  return(fit)
+}
+
+# model fitting
+moderate_fit<- .rf_knn_fit(moderate_smp)
+high_fit <- .rf_knn_fit(high_smp)
+all_fit <- .rf_knn_fit(all_smp)
+MH_fit <- .rf_knn_fit(MH_smp)
+save(all_fit, file=file.path(pkg_dir, "data", "all_fit.rda"))
+save(moderate_fit, file=file.path(pkg_dir, "data", "moderate_fit.rda"))
+save(MH_fit, file=file.path(pkg_dir, "data", "MH_fit.rda"))
+```
+
+### Accuracy
+```{r kable-the-fit, message=FALSE}
+.tidy_fit_accuracy <- function(fit_lists, model) {
+  tb <- map_df(fit_lists, function(fit) {
+    c(rf = max(fit$rf$results[, "Accuracy"]),
+      knn = max(fit$knn$results[, "Accuracy"]))
+    }) %>% 
+    add_column(basket=paste0("DUX4-", names(fit_lists)), .before="rf") %>%
+    add_column(model = model) 
+}
+
+moderate_fit_accuracy <- .tidy_fit_accuracy(moderate_fit, 
+                                            model="Control vs. Mild+Moderate")
+high_fit_accuracy <- .tidy_fit_accuracy(high_fit, 
+                                        model="Control vs. IG-High+High")
+all_fit_accuracy <- .tidy_fit_accuracy(all_fit, 
+                                        model="Control vs. Mild+Moderate+IG-High+High")
+MH_fit_accuracy <- .tidy_fit_accuracy(MH_fit, 
+                                        model="Control vs. Moderate+IG-High+High")
+# kable
+bind_rows(all_fit_accuracy, moderate_fit_accuracy, ) %>%
+  bind_rows(MH_fit_accuracy) %>%
+  bind_rows(high_fit_accuracy) %>%
+  knitr::kable(format="html", escape = F,
+               caption="Random Forest and KNN model Accuracy estimated by leave-one-out cross-validation.") %>%
+  kableExtra::kable_styling(font_size = 12) %>%
+  kable_paper() %>%
+  row_spec(1:4, bold = T, color = "white", background = "steelblue") %>%
+  row_spec(5:8, bold = T, color = "white", background = "chocolate") %>%
+  row_spec(9:12, bold = T, background = "gray75") 
+
+```
+
+### Conclusion
+In the comparison between` Control` and `Moderate+IG-High+High` groups, all baskets achieve similar levels of accuracy. However, when comparing `Control` with `Mild+Moderate` groups, the random forest model shows that basket `DUX4-M6` outperforms `DUX4-H4`. This indicates that the `DUX4-M6` basket is more effective at identifying DUX4-targeted muscles when there are moderate levels of RNA expression.

@@ -85,7 +85,9 @@
 <li><a class="" href="dna-methylation.html"><span class="header-section-number">11</span> DNA methylation of FSHD D4Z4 allele</a></li>
 <li><a class="" href="references.html">References</a></li>
 <li class="book-part">Appendix</li>
-<li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build TxDB package from GTF</a></li>
+<li><a class="" href="appendixA-buildTxDB.html"><span class="header-section-number">A</span> Build Ensembl-based annotation packages</a></li>
+<li><a class="" href="appendixB-DUX4-baskets-curation.html"><span class="header-section-number">B</span> DUX4 basket genes curation</a></li>
+<li><a class="" href="appendixC-other-baskets.html"><span class="header-section-number">C</span> Baskets of other FSHD signatures</a></li>
 </ul>
 
         <div class="book-extra">
@@ -103,7 +105,7 @@
 <li>Determine the differentially expressed genes (High vs. control) associated with the enriched GO terms (from step 1), and use heatmap visualization to observe the trend of an increase in gene expression across all longitudinal and bilateral samples, associated with the severity of FSHD (characterised by STIR status, fat fraction/infiltration percent) and/or complement scoring.</li>
 <li>Identify immune cell markers that are differentially expressed (High vs. control) using the IRIS database (Abbs 2009) as a source.</li>
 </ol>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mikelove/DESeq2">DESeq2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">pheatmap</span><span class="op">)</span></span>
@@ -150,7 +152,7 @@
 <span class="header-section-number">8.1</span> Enriched biological processes directly associated with T/B cells<a class="anchor" aria-label="anchor" href="#enriched-biological-processes-directly-associated-with-tb-cells"><i class="fas fa-link"></i></a>
 </h2>
 <p>The code chunk below (1) obtains the enriched GO terms in more affected muscles from the longitudinal study, supplementary table 5, and (2) retains the enriched GO terms containing the terms including <code>T cell</code>, <code>B cell</code>, <code>humoral</code>, <code>immunoglobulin</code>, and <code>complement</code>. Total 20 terms are extracted.</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">high_enriched</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
 <span>    <span class="st">"suppl_table_5_Candidate_Biomarkers_and_Enriched_Go.xlsx"</span><span class="op">)</span>,</span>
 <span>    sheet<span class="op">=</span><span class="fl">2</span>, skip<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
@@ -413,7 +415,7 @@ regulation of T cell migration
 </tbody>
 </table></div>
 <p>Display the p-values yielded by GSEA:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">infiltrates_go</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">category</span>, <span class="va">term</span>, <span class="va">over_represented_pvalue</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">term</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
@@ -445,7 +447,7 @@ regulation of T cell migration
 Figure 8.1: Enriched GO terms related to T and B cells and immunoglobulin domains. Red dots present the p-value of enriched GO terms in IG or High samples.
 </p>
 </div>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">fig_dir</span>, <span class="st">"longitudinal-enriched-immunity-GO.pdf"</span><span class="op">)</span>, </span>
 <span>       width<span class="op">=</span><span class="fl">3.8</span>, height<span class="op">=</span><span class="fl">4.2</span><span class="op">)</span>  </span></code></pre></div>
@@ -454,9 +456,9 @@ Figure 8.1: Enriched GO terms related to T and B cells and immunoglobulin domain
 <h2>
 <span class="header-section-number">8.2</span> Significant genes associated with the T/B-associated enriched GO terms<a class="anchor" aria-label="anchor" href="#significant-genes-associated-with-the-tb-associated-enriched-go-terms"><i class="fas fa-link"></i></a>
 </h2>
-<p>The code chunk below aim to identify significantly expressed genes in High or IG-High (vs. contls) that are involved in the enriched GO terms obtained previously.</p>
+<p>The code chunk below identifies significantly expressed genes in High or IG-High (compared to the controls) that are associated with the enriched GO terms obtained previously.</p>
 <p><strong>Results:</strong> Total 95 B/T cell immunity response significant markers are identified.</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">high_sig</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"extdata"</span>, </span>
 <span>    <span class="st">"suppl_table_5_Candidate_Biomarkers_and_Enriched_Go.xlsx"</span><span class="op">)</span>,</span>
 <span>    sheet<span class="op">=</span><span class="fl">1</span>, skip<span class="op">=</span><span class="fl">3</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -494,8 +496,8 @@ Figure 8.1: Enriched GO terms related to T and B cells and immunoglobulin domain
 <h3>
 <span class="header-section-number">8.2.1</span> Heatmap: Longitudinal study<a class="anchor" aria-label="anchor" href="#heatmap-longitudinal-study"><i class="fas fa-link"></i></a>
 </h3>
-<p>We have employed a heatmap to visualize the trend of increased expression levels for the 95 significant genes previously identified to be associated with enriched T/B and IG Gene Ontology (GO) terms. The order of the samples in the heatmap is arranged as Control, Mild, Moderate, IG-High, High, and Muscle-low.</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<p>We have employed a heatmap to visualize the trend of increased expression levels for the 95 immune signature genes previously identified to be associated with enriched T/B and IG Gene Ontology (GO) terms. The order of the samples in the heatmap is arranged as Control, Mild, Moderate, IG-High, High, and Muscle-low.</p>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Control<span class="op">=</span><span class="st">"#ff7f00"</span>, </span>
 <span>                    Mild<span class="op">=</span><span class="st">"#a65628"</span>, </span>
 <span>                    Moderate<span class="op">=</span><span class="st">"#f781bf"</span>, </span>
@@ -538,8 +540,8 @@ Figure 8.2: Heatmap demonstrating the increased expression trend for 95 previous
 <h3>
 <span class="header-section-number">8.2.2</span> Heatmap: bilateral study<a class="anchor" aria-label="anchor" href="#heatmap-bilateral-study"><i class="fas fa-link"></i></a>
 </h3>
-<p>The code chunk provided below generates a heatmap that visualizes the expression levels of the 95 genes from the bilateral samples. The samples are ordered based on their classification into Control-like and Moderate+, determined by ML-based classification, and Muscle-Low based on the low expression levels of muscle markers.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<p>The code chunk below generates a heatmap depicting the expression levels of the 95 immune signature genes from the bilateral samples. Noted that the samples are ordered based on their classification into Control-like and Moderate+, determined by ML-based classification, and Muscle-Low based on the low expression levels of muscle markers.</p>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">class</span>, <span class="va">Fat_Infilt_Percent</span>, <span class="va">STIR_status</span>,</span>
@@ -583,7 +585,7 @@ Figure 8.2: Heatmap demonstrating the increased expression trend for 95 previous
 </h2>
 <p>Using a generic cell-type marker dataset from the immune response in silico (IRIS) (Abbas 2009) and longitudinal cohort, we detected 63 immune cell markers whose expression levels are significantly elevated in more affected muscles. With additional significant immunity-related markers, including such as cytokine receptors in B cells (IL-4R, IL-21R), STAT6, Leukocyte immunoglobulin-like receptor B family (LILRB4, LILRB5), T cell surface antigens (CD2 and CD4), T and B cell interaction and migration (CCL19), and STAT6, we demonstrated a immune cell infiltrate signatures in both longitudinal and bilateral samples.</p>
 <p>Code chunk below identified 63 immune cell markers as a subset of the IRIS database (Abbas 2009).</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">PLIER</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">bloodCellMarkersIRISDMAP</span><span class="op">)</span></span>
 <span><span class="co"># about 860 markers</span></span>
@@ -629,7 +631,7 @@ Figure 8.2: Heatmap demonstrating the increased expression trend for 95 previous
 <span class="header-section-number">8.3.1</span> Heamap: the longitudinal study<a class="anchor" aria-label="anchor" href="#heamap-the-longitudinal-study"><i class="fas fa-link"></i></a>
 </h3>
 <p>The following heatmap illustrates that there is a tendency of higher expression levels in muscles that are more affected.</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Control<span class="op">=</span><span class="st">"#ff7f00"</span>, </span>
 <span>                    Mild<span class="op">=</span><span class="st">"#a65628"</span>, </span>
 <span>                    Moderate<span class="op">=</span><span class="st">"#f781bf"</span>, </span>
@@ -639,9 +641,9 @@ Figure 8.2: Heatmap demonstrating the increased expression trend for 95 previous
 <span></span>
 <span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">longitudinal_dds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">cluster</span>, <span class="va">fat_fraction</span>, <span class="va">STIR_status</span>, </span>
-<span>                <span class="co">#STIR_rating,</span></span>
 <span>                <span class="va">Pathology.Score</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>class<span class="op">=</span><span class="va">cluster</span>, `fat fraction`<span class="op">=</span><span class="va">fat_fraction</span>,</span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>class<span class="op">=</span><span class="va">cluster</span>, </span>
+<span>                `fat fraction`<span class="op">=</span><span class="va">fat_fraction</span>,</span>
 <span>                `STIR+/-` <span class="op">=</span> <span class="va">STIR_status</span>,</span>
 <span>                `histopathology` <span class="op">=</span> <span class="va">Pathology.Score</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>`STIR+/-` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`STIR+/-`</span><span class="op">)</span><span class="op">)</span></span>
@@ -649,9 +651,12 @@ Figure 8.2: Heatmap demonstrating the increased expression trend for 95 previous
 <span><span class="va">category_color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/wesanderson/man/wes_palette.html">wes_palette</a></span><span class="op">(</span><span class="st">"Darjeeling1"</span>, n<span class="op">=</span><span class="fl">8</span>, typ<span class="op">=</span><span class="st">"continuous"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">category_color</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Factor-class.html">levels</a></span><span class="op">(</span><span class="va">sig_blood_iris</span><span class="op">$</span><span class="va">category</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ann_cor</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>class <span class="op">=</span> <span class="va">cluster_color</span>, category <span class="op">=</span> <span class="va">category_color</span>,</span>
-<span>                 `fat fraction` <span class="op">=</span> <span class="va">col</span>, `STIR+/-` <span class="op">=</span> <span class="va">stir_pal</span>,</span>
+<span><span class="va">ann_cor</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>class <span class="op">=</span> <span class="va">cluster_color</span>, </span>
+<span>                 category <span class="op">=</span> <span class="va">category_color</span>,</span>
+<span>                 `fat fraction` <span class="op">=</span> <span class="va">col</span>, </span>
+<span>                 `STIR+/-` <span class="op">=</span> <span class="va">stir_pal</span>,</span>
 <span>                 `histopathology` <span class="op">=</span> <span class="va">col</span><span class="op">)</span></span>
+<span><span class="co"># heatmap</span></span>
 <span><span class="fu">markers_heatmp_group_by_types_class</span><span class="op">(</span>markers <span class="op">=</span> <span class="va">sig_blood_iris</span>, </span>
 <span>                                    dds <span class="op">=</span> <span class="va">longitudinal_dds</span>, </span>
 <span>                                    factor <span class="op">=</span> <span class="st">"cluster"</span>, </span>
@@ -670,7 +675,7 @@ Figure 8.3: Heapmap demonstrating the expression levels (by row-wise z-score of 
 <span class="header-section-number">8.3.2</span> Heatmap: Bilateral study<a class="anchor" aria-label="anchor" href="#heatmap-bilateral-study-1"><i class="fas fa-link"></i></a>
 </h3>
 <p>The heatmap for the bilateral study below incorporates the complement scoring.</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">class</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">class</span>, <span class="va">Fat_Infilt_Percent</span>, <span class="va">STIR_status</span>,</span>
@@ -709,41 +714,701 @@ Figure 8.3: Heapmap demonstrating the expression levels (by row-wise z-score of 
 <h3>
 <span class="header-section-number">8.3.3</span> DE immune marker in the Bilat corhort<a class="anchor" aria-label="anchor" href="#de-immune-marker-in-the-bilat-corhort"><i class="fas fa-link"></i></a>
 </h3>
-<p>We compared the Control-like and Moderate+ samples in the Bilat corhort to determine which the immune cell-type genes in the IRIS dataset are differentially expressed.</p>
+<p>We compared the Control-like and Moderate+ samples in the Bilat cohort to determine which the immune cell-type genes in the IRIS dataset are differentially expressed.</p>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sub_dds</span> <span class="op">&lt;-</span> <span class="va">bilat_dds</span><span class="op">[</span>, <span class="va">bilat_dds</span><span class="op">$</span><span class="va">class</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Control-like"</span>, <span class="st">"Moderate+"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">sub_dds</span><span class="op">$</span><span class="va">class</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">sub_dds</span><span class="op">$</span><span class="va">class</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html">design</a></span><span class="op">(</span><span class="va">sub_dds</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="op">~</span> <span class="va">class</span></span>
+<span><span class="va">sub_dds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/DESeq.html">DESeq</a></span><span class="op">(</span><span class="va">sub_dds</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">immune_signature_gene</span> <span class="op">&lt;-</span> <span class="va">sig_blood_iris</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">anno_gencode35</span>, <span class="va">ens_id</span>, <span class="va">gencode35_id</span><span class="op">)</span>, </span>
+<span>            by<span class="op">=</span><span class="st">"ens_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">gene_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>gene_id <span class="op">=</span> <span class="va">gencode35_id</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DESeq2/man/results.html">results</a></span><span class="op">(</span><span class="va">sub_dds</span>, lfcThreshold <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"gene_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">padj</span> <span class="op">&lt;</span> <span class="fl">0.05</span>, <span class="va">log2FoldChange</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">immune_signature_gene</span>, by<span class="op">=</span><span class="st">"gene_id"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">gene_id</span>, <span class="va">gene_name</span>, <span class="va">log2FoldChange</span>, <span class="va">category</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kbl.html">kbl</a></span><span class="op">(</span>caption<span class="op">=</span><span class="st">'44 IRIS immune markers that are significently expressed in Modereate+ samples relative to the control-like samples.'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-table"><table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:sig-blood-iris-in-bilat">Table 8.2: </span>44 IRIS immune markers that are significently expressed in Modereate+ samples relative to the control-like samples.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+gene_id
+</th>
+<th style="text-align:left;">
+gene_name
+</th>
+<th style="text-align:right;">
+log2FoldChange
+</th>
+<th style="text-align:left;">
+category
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ENSG00000002933.9
+</td>
+<td style="text-align:left;">
+TMEM176A
+</td>
+<td style="text-align:right;">
+1.545149
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000038427.16
+</td>
+<td style="text-align:left;">
+VCAN
+</td>
+<td style="text-align:right;">
+1.254348
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000038945.15
+</td>
+<td style="text-align:left;">
+MSR1
+</td>
+<td style="text-align:right;">
+1.631995
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000060558.4
+</td>
+<td style="text-align:left;">
+GNA15
+</td>
+<td style="text-align:right;">
+1.732585
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000078081.8
+</td>
+<td style="text-align:left;">
+LAMP3
+</td>
+<td style="text-align:right;">
+3.208762
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000090104.12
+</td>
+<td style="text-align:left;">
+RGS1
+</td>
+<td style="text-align:right;">
+3.254608
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000090659.18
+</td>
+<td style="text-align:left;">
+CD209
+</td>
+<td style="text-align:right;">
+1.687079
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000100979.15
+</td>
+<td style="text-align:left;">
+PLTP
+</td>
+<td style="text-align:right;">
+1.539781
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000100985.7
+</td>
+<td style="text-align:left;">
+MMP9
+</td>
+<td style="text-align:right;">
+2.886832
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000104951.16
+</td>
+<td style="text-align:left;">
+IL4I1
+</td>
+<td style="text-align:right;">
+3.070091
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000105967.16
+</td>
+<td style="text-align:left;">
+TFEC
+</td>
+<td style="text-align:right;">
+1.733737
+</td>
+<td style="text-align:left;">
+Bcell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000108846.16
+</td>
+<td style="text-align:left;">
+ABCC3
+</td>
+<td style="text-align:right;">
+2.173910
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000110077.14
+</td>
+<td style="text-align:left;">
+MS4A6A
+</td>
+<td style="text-align:right;">
+1.591415
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000110079.18
+</td>
+<td style="text-align:left;">
+MS4A4A
+</td>
+<td style="text-align:right;">
+1.647453
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000114013.16
+</td>
+<td style="text-align:left;">
+CD86
+</td>
+<td style="text-align:right;">
+1.609474
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000118785.14
+</td>
+<td style="text-align:left;">
+SPP1
+</td>
+<td style="text-align:right;">
+4.957166
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000124491.16
+</td>
+<td style="text-align:left;">
+F13A1
+</td>
+<td style="text-align:right;">
+1.777443
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000124772.12
+</td>
+<td style="text-align:left;">
+CPNE5
+</td>
+<td style="text-align:right;">
+2.192108
+</td>
+<td style="text-align:left;">
+Bcell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000125730.17
+</td>
+<td style="text-align:left;">
+C3
+</td>
+<td style="text-align:right;">
+1.689339
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000132205.11
+</td>
+<td style="text-align:left;">
+EMILIN2
+</td>
+<td style="text-align:right;">
+1.440005
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000132514.13
+</td>
+<td style="text-align:left;">
+CLEC10A
+</td>
+<td style="text-align:right;">
+1.486597
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000133048.13
+</td>
+<td style="text-align:left;">
+CHI3L1
+</td>
+<td style="text-align:right;">
+2.736904
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000137441.8
+</td>
+<td style="text-align:left;">
+FGFBP2
+</td>
+<td style="text-align:right;">
+2.177403
+</td>
+<td style="text-align:left;">
+NKcell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000137801.11
+</td>
+<td style="text-align:left;">
+THBS1
+</td>
+<td style="text-align:right;">
+1.995249
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000139572.4
+</td>
+<td style="text-align:left;">
+GPR84
+</td>
+<td style="text-align:right;">
+2.554428
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000143320.9
+</td>
+<td style="text-align:left;">
+CRABP2
+</td>
+<td style="text-align:right;">
+1.922802
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000143387.13
+</td>
+<td style="text-align:left;">
+CTSK
+</td>
+<td style="text-align:right;">
+1.456861
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000155659.15
+</td>
+<td style="text-align:left;">
+VSIG4
+</td>
+<td style="text-align:right;">
+1.435979
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000157227.13
+</td>
+<td style="text-align:left;">
+MMP14
+</td>
+<td style="text-align:right;">
+1.302515
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000161921.16
+</td>
+<td style="text-align:left;">
+CXCL16
+</td>
+<td style="text-align:right;">
+1.362402
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000163599.17
+</td>
+<td style="text-align:left;">
+CTLA4
+</td>
+<td style="text-align:right;">
+2.343052
+</td>
+<td style="text-align:left;">
+CD4Tcell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000166278.15
+</td>
+<td style="text-align:left;">
+C2
+</td>
+<td style="text-align:right;">
+2.486130
+</td>
+<td style="text-align:left;">
+PlasmaCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000166927.13
+</td>
+<td style="text-align:left;">
+MS4A7
+</td>
+<td style="text-align:right;">
+1.716174
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000169245.6
+</td>
+<td style="text-align:left;">
+CXCL10
+</td>
+<td style="text-align:right;">
+2.637787
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000170458.14
+</td>
+<td style="text-align:left;">
+CD14
+</td>
+<td style="text-align:right;">
+1.377451
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000171812.13
+</td>
+<td style="text-align:left;">
+COL8A2
+</td>
+<td style="text-align:right;">
+1.870228
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000171848.15
+</td>
+<td style="text-align:left;">
+RRM2
+</td>
+<td style="text-align:right;">
+2.263203
+</td>
+<td style="text-align:left;">
+CD4Tcell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000173369.17
+</td>
+<td style="text-align:left;">
+C1QB
+</td>
+<td style="text-align:right;">
+1.939756
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000173372.17
+</td>
+<td style="text-align:left;">
+C1QA
+</td>
+<td style="text-align:right;">
+1.684487
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000177575.12
+</td>
+<td style="text-align:left;">
+CD163
+</td>
+<td style="text-align:right;">
+1.736284
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000181458.10
+</td>
+<td style="text-align:left;">
+TMEM45A
+</td>
+<td style="text-align:right;">
+1.878089
+</td>
+<td style="text-align:left;">
+PlasmaCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000182578.14
+</td>
+<td style="text-align:left;">
+CSF1R
+</td>
+<td style="text-align:right;">
+1.345719
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000187474.5
+</td>
+<td style="text-align:left;">
+FPR3
+</td>
+<td style="text-align:right;">
+1.862982
+</td>
+<td style="text-align:left;">
+DendriticCell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ENSG00000198794.12
+</td>
+<td style="text-align:left;">
+SCAMP5
+</td>
+<td style="text-align:right;">
+1.762450
+</td>
+<td style="text-align:left;">
+PlasmaCell
+</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 </div>
 <div id="complement-scoring-vs.-immune-cell-infiltrates-signature" class="section level2" number="8.4">
 <h2>
 <span class="header-section-number">8.4</span> Complement scoring vs. immune cell infiltrates signature<a class="anchor" aria-label="anchor" href="#complement-scoring-vs.-immune-cell-infiltrates-signature"><i class="fas fa-link"></i></a>
 </h2>
-<p>The earlier mentioned 63 immune cell markers contribute to characterizing the signature of immune cell infiltration. The heatmap depicted in Figure <a href="#fig:bilat-63-sig-immune-cell-markers-heatmap"><strong>??</strong></a> reveals that the increased expression levels of these markers align with the complement scoring. The following code calculates the Spearman correlation coefficient, which yields a value of 0.456.</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">[</span><span class="va">tmp</span><span class="op">$</span><span class="va">gene_id</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span></span>
+<p>The earlier mentioned 63 immune cell markers contribute to characterizing the signature of immune cell infiltration. The following code calculates the Spearman correlation coefficient between complement scoring and immune cell signature (average <span class="math inline">\(\log_{10}\)</span>TPM of 63 immune cell markers), which yields a value of 0.456.</p>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assays</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">[</span><span class="va">immune_signature_gene</span><span class="op">$</span><span class="va">gene_id</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"TPM"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">signature</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/colSums.html">colMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">tpm</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">rownames_to_column</a></span><span class="op">(</span>var<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> </span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">signature</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"avg_z_score"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">signature</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"avg_tpm"</span></span>
 <span></span>
 <span><span class="va">tmp_df</span> <span class="op">&lt;-</span> <span class="va">comprehensive_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">`Complement Scoring`</span>, <span class="va">`STIR_status`</span>,</span>
 <span>                <span class="va">`STIR_RATING`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">signature</span>, by<span class="op">=</span><span class="st">"sample_id"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_tpm`</span><span class="op">)</span> </span>
 <span>  </span>
+<span><span class="co"># Spearman correlation between complement and immune infiltrate signatures</span></span>
 <span><span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_tpm`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_tpm`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">corrr</span><span class="fu">::</span><span class="fu"><a href="https://corrr.tidymodels.org/reference/correlate.html">correlate</a></span><span class="op">(</span><span class="va">.</span>, method<span class="op">=</span><span class="st">"spearman"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
-<span><span class="co">#&gt;   term               `Complement Scoring` avg_z_score</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                             &lt;dbl&gt;       &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Complement Scoring               NA           0.454</span></span>
-<span><span class="co">#&gt; 2 avg_z_score                       0.454      NA</span></span>
-<span>  </span>
-<span><span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="co">#&gt;   term               `Complement Scoring` avg_tpm</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                             &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 Complement Scoring               NA       0.454</span></span>
+<span><span class="co">#&gt; 2 avg_tpm                           0.454  NA</span></span></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span>, <span class="va">`avg_tpm`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>`Complement Scoring`<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">`Complement Scoring`</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">`Complement Scoring`</span>, y<span class="op">=</span><span class="va">avg_z_score</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">`Complement Scoring`</span>, y<span class="op">=</span><span class="va">avg_tpm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span>, outlier.shape <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_dotplot.html">geom_dotplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">`Complement Scoring`</span><span class="op">)</span>,</span>
 <span>                 binaxis<span class="op">=</span><span class="st">'y'</span>, stackdir<span class="op">=</span><span class="st">'center'</span>,</span>
@@ -752,8 +1417,8 @@ Figure 8.3: Heapmap demonstrating the expression levels (by row-wise z-score of 
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:63-blood-markers-correlated-with-complement-scoring"></span>
-<img src="08-immune-cell-infiltrates-signature_files/figure-html/63-blood-markers-correlated-with-complement-scoring-1.png" alt="Dotplot of immune cell infiltrates signature (presented by average z-score) groups by complement scoring 1, 2, and 3." width="672"><p class="caption">
-Figure 8.4: Dotplot of immune cell infiltrates signature (presented by average z-score) groups by complement scoring 1, 2, and 3.
+<img src="08-immune-cell-infiltrates-signature_files/figure-html/63-blood-markers-correlated-with-complement-scoring-1.png" alt="Dotplot of immune cell infiltrates signature (presented by average TPM) groups by complement scoring 1, 2, and 3." width="672"><p class="caption">
+Figure 8.4: Dotplot of immune cell infiltrates signature (presented by average TPM) groups by complement scoring 1, 2, and 3.
 </p>
 </div>
 </div>
@@ -761,11 +1426,11 @@ Figure 8.4: Dotplot of immune cell infiltrates signature (presented by average z
 <h2>
 <span class="header-section-number">8.5</span> STIR status vs. immune cell infiltrates signature<a class="anchor" aria-label="anchor" href="#stir-status-vs.-immune-cell-infiltrates-signature"><i class="fas fa-link"></i></a>
 </h2>
-<p>Previously, Fig <a href="#fig:bilat-63-sig-immune-cell-markers-heatmap"><strong>??</strong></a> also suggested that elevated immune cell signatures is associated with with STIR status: Wilcox test p-value = <span class="math inline">\(3e-6\)</span>.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<p>The elevated immune cell signatures is associated with with STIR status: Wilcox test p-value = <span class="math inline">\(2.9e-6\)</span>.</p>
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">`STIR_status`</span>, y<span class="op">=</span><span class="va">avg_z_score</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`STIR_status`</span>, <span class="va">`avg_tpm`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">`STIR_status`</span>, y<span class="op">=</span><span class="va">avg_tpm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span>, outlier.shape <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_dotplot.html">geom_dotplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">`STIR_status`</span><span class="op">)</span>,</span>
 <span>                 binaxis<span class="op">=</span><span class="st">'y'</span>, stackdir<span class="op">=</span><span class="st">'center'</span>,</span>
@@ -773,11 +1438,13 @@ Figure 8.4: Dotplot of immune cell infiltrates signature (presented by average z
 <span>                 stackratio<span class="op">=</span><span class="fl">1.5</span>, dotsize<span class="op">=</span><span class="fl">1.5</span>, alpha<span class="op">=</span><span class="fl">0.7</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="08-immune-cell-infiltrates-signature_files/figure-html/STIR-vs-immune-cell-infilrates-signatures-1.png" width="672" style="display: block; margin: auto;"></div>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">`STIR_status`</span>, <span class="va">`avg_z_score`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">STIR_status</span>, value<span class="op">=</span><span class="va">avg_z_score</span><span class="op">)</span> </span>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># wilcox.test</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">tmp_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="va">`STIR_status`</span>, <span class="va">`avg_tpm`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">sample_id</span>, <span class="va">`STIR_status`</span>, <span class="va">`avg_tpm`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/spread.html">spread</a></span><span class="op">(</span>key<span class="op">=</span><span class="va">STIR_status</span>, value<span class="op">=</span><span class="va">avg_tpm</span><span class="op">)</span> </span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/wilcox.test.html">wilcox.test</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">`STIR-`</span>, <span class="va">x</span><span class="op">$</span><span class="va">`STIR+`</span> <span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Wilcoxon rank sum exact test</span></span>
@@ -790,22 +1457,13 @@ Figure 8.4: Dotplot of immune cell infiltrates signature (presented by average z
 <h2>
 <span class="header-section-number">8.6</span> Bilateral comparison analysis for the immune cell infiltrate markers<a class="anchor" aria-label="anchor" href="#bilateral-comparison-analysis-for-the-immune-cell-infiltrate-markers"><i class="fas fa-link"></i></a>
 </h2>
-<ol style="list-style-type: decimal">
-<li>write a supplementary table listing <code>sig_blood_iris</code> and <code>infiltrates_act</code>
-</li>
-<li>bilateral comparison analysis for <code>sig_blood_iris</code> and <code>infiltrates_act</code>: check the gitbook chap 7: how did I do it?</li>
-</ol>
-<ul>
-<li>input: data frame with columns gene_id, gene_names, Left and right</li>
-<li>output: correlation coefficient table</li>
-</ul>
 <div id="significant-immune-cell-markers" class="section level3" number="8.6.1">
 <h3>
 <span class="header-section-number">8.6.1</span> 63 significant immune cell markers<a class="anchor" aria-label="anchor" href="#significant-immune-cell-markers"><i class="fas fa-link"></i></a>
 </h3>
-<p>In the previous section, we identified a signature of immune cell infiltrates characterized by 63 immune cell markers in the longitudinal study. Here we compute their expression correlation between left and right muscles in the bilateral study.</p>
-<p>The code below shows the tools to compute the correlation between L and R muscles on the immune cell infiltrate markers.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<p>In the preceding section, we uncovered a distinctive signature of immune cell infiltrates defined by 63 immune cell markers within the longitudinal study. Now, calculate the expression correlation of these markers between the left and right muscles in the bilateral study.</p>
+<p>The code below displays the tools to compute the correlation between L and R muscles on the immune cell infiltrate markers.</p>
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">col_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co"># convert gene_id to Gencode35</span></span>
 <span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="va">sig_blood_iris</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -846,7 +1504,7 @@ Figure 8.4: Dotplot of immune cell infiltrates signature (presented by average z
 <span>                        <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"..."</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Display the correlation and average TPM grouped by ML-based classes.</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gene_cor_63</span> <span class="op">&lt;-</span> <span class="fu">.markers_bilateral_correlation</span><span class="op">(</span>markers<span class="op">=</span><span class="va">markers</span>,</span>
 <span>                                           dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu">.avg_TPM_by_class</span><span class="op">(</span>markers <span class="op">=</span> <span class="va">markers</span>, dds<span class="op">=</span><span class="va">bilat_dds</span><span class="op">)</span>, </span>
@@ -859,7 +1517,7 @@ Figure 8.4: Dotplot of immune cell infiltrates signature (presented by average z
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-table"><table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:display-63-sig-immune-cell-tpm">Table 8.2: </span>Sixty-three significant immune cell markers correlation analysis between left and right biopsied muscles. The Peason correlation coefficients are compuated using the expression levels presented by Log10(TPM+1).
+<span id="tab:display-63-sig-immune-cell-tpm">Table 8.3: </span>Sixty-three significant immune cell markers correlation analysis between left and right biopsied muscles. The Peason correlation coefficients are compuated using the expression levels presented by Log10(TPM+1).
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -2529,7 +3187,7 @@ PlasmaCell
 </tbody>
 </table></div>
 <p><strong>Scatter plot</strong></p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">gene_cor_63</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">category</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Bcell"</span>, <span class="st">"PlasmaCell"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -2554,7 +3212,7 @@ PlasmaCell
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>hjust<span class="op">=</span><span class="fl">0.5</span>, size<span class="op">=</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x<span class="op">=</span><span class="st">"L (log10(TPM+1))"</span>, y<span class="op">=</span><span class="st">"R (log10(TPM+1))"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="08-immune-cell-infiltrates-signature_files/figure-html/bcell-plasma-markers-scatter-plot-TPM-1.png" width="672"></div>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"figures"</span>, <span class="st">"immune-infiltration"</span>,</span>
 <span>                 <span class="st">"bilat-sig-Bcell-Plasma-in-Longitudinal.pdf"</span><span class="op">)</span>,</span>
 <span>       width<span class="op">=</span><span class="fl">6</span>, height<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
@@ -2563,8 +3221,8 @@ PlasmaCell
 <h3>
 <span class="header-section-number">8.6.2</span> Top loading variables by the PLIER package<a class="anchor" aria-label="anchor" href="#top-loading-variables-by-the-plier-package"><i class="fas fa-link"></i></a>
 </h3>
-<p>Previously, we used The PLIER package to estimate the immune cell type contributions to FSHD transcriptome. The top Z, loading variables, are important in determining the relative proportion of the immune cell type contribution. Listed below are the top loading variables. Note that they are not necessary exhibiting strong expression levels.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<p>In the previou chapter, we employed The PLIER package to estimate the contributions of immune cell types to the FSHD transcriptome. The top Z-loading variables play a crucial role in determining the relative proportions of these immune cell type contributions. Below, we list these top loading variables and their bilateral correlation between L and R biopsies. Please note that they may not necessarily exhibit strong expression levels.</p>
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"data"</span>, <span class="st">"plier_topZ_markers.rda"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="va">plier_topZ_markers</span><span class="op">$</span><span class="va">bilat_markers</span></span>
 <span><span class="va">gene_cor_topZ</span> <span class="op">&lt;-</span> <span class="fu">.markers_bilateral_correlation</span><span class="op">(</span>markers<span class="op">=</span><span class="va">markers</span>,</span>
@@ -2578,7 +3236,7 @@ PlasmaCell
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-table"><table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
-<span id="tab:plier-topz-markers-bilateral">Table 8.3: </span>Identified by the PLIER package, listed below are the 18 top Z markers contributed to cell type proportions in bilateral study. The Peason correlation coefficients are compuated using the expression levels presented by Log10(TPM+1).
+<span id="tab:plier-topz-markers-bilateral">Table 8.4: </span>Identified by the PLIER package, listed below are the 18 top Z markers contributed to cell type proportions in bilateral study. The Peason correlation coefficients are compuated using the expression levels presented by Log10(TPM+1).
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -3279,7 +3937,7 @@ ENSG00000100721
 </tr>
 </tbody>
 </table></div>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://docs.ropensci.org/writexl/reference/write_xlsx.html">write_xlsx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>`63 immune-cell-markers`<span class="op">=</span> <span class="va">gene_cor_63</span>,</span>
 <span>                `23 top loading variables (PLIER)`<span class="op">=</span><span class="va">gene_cor_topZ</span><span class="op">)</span>,</span>
 <span>           path<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_dir</span>, <span class="st">"stats"</span>,</span>
@@ -3336,7 +3994,7 @@ ENSG00000100721
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2023-12-16.</p>
+    <p>"<strong>Wellstone bilateral tibialis anterior FSHD biopsied muscle study</strong>" was written by Chao-Jen Wong. It was last built on 2024-01-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

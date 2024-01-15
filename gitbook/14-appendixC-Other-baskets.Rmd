@@ -1,0 +1,143 @@
+# Baskets of other FSHD signatures {#appendixC-other-baskets}
+
+We use the RNA-seq expression data from the longitudinal cohort to identify representative markers of extra cellular matrix and inflammatory/immune response that are best in distinguishing mildly and moderately affected FSHD muscles relative to the controls. 
+
+
+```{r setup-appendixB, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE) 
+```
+
+```{r setup-appendixBB}
+# load libraries and data
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(DESeq2))
+suppressPackageStartupMessages(library(writexl))
+suppressPackageStartupMessages(library(kableExtra))
+suppressPackageStartupMessages(library(knitr))
+
+pkg_dir <- "/Users/cwon2/CompBio/Wellstone_BiLateral_Biopsy"
+ext_dir <- file.path(pkg_dir, "extdata")
+load(file.path(pkg_dir, "data", "longitudinal_dds.rda"))
+annotation <- as.data.frame(rowData(longitudinal_dds)) %>%
+  dplyr::select(gene_id, gene_name)
+```
+
+__Steps:__
+
+1. Load the list of differentially expressed genes (DEGs) in severely affected FSHD biopsies in the longitudinal cohort there were previously reported in @wong2020 (supplementary table 5) and that are associated with ECM, DUX4, stress, inflammatory biological precesses
+2. Identify differentially expressed genes in mildly to moderately affected FSHD using _DESeq2_ in the longitudinal cohort
+3. Retain ECM, stress and inflammatory associated DEGs that are in both step 1 and 2
+4. Save to `r file.path(pkg_dir, "stats", "FSHD_signatures_baskets.xlsx")`
+
+```{r FSHD-signatures}
+# previous report on FSHD: High FSHD vs. controls and enriched GO terms
+file_name <- 
+  file.path(ext_dir, 
+            "suppl_table_5_Candidate_Biomarkers_and_Enriched_Go.xlsx")
+#' High vs Control differential analysis sheet
+de <- readxl::read_xlsx(path=file_name, sheet=1, skip=3)
+
+# DEGs that are associated with ECM signatures
+ecm_de <- de %>% 
+  filter(ecm == TRUE) %>% 
+  pull(gencode_id) %>% as.character(.)
+# DEGs associated with DUX4 signatures
+dux4_de <- de %>% 
+  filter(DUX4_induced == TRUE) %>% 
+  pull(gencode_id) %>% as.character(.)
+inflamm_de <- de %>% 
+  filter(inflamm == TRUE | immune == TRUE) %>% 
+  pull(gencode_id) %>% 
+  as.character(.)
+stress_de <- de %>% 
+  filter(stress == TRUE) %>% 
+  pull(gencode_id) %>% as.character(.)
+ig_de <- de %>% 
+  filter(grepl("IGH", gene_name) | grepl("IGK", gene_name)) %>%
+  pull(gencode_id) %>% as.character(.)
+de_list <- list(Extracellur_Matrix=ecm_de, 
+                DUX4=dux4_de,
+                Inflammatory=inflamm_de,
+                Immunoglobulin=ig_de)
+```
+
+## Identify differentially expressed genes in Mild+Moderate FSHDs
+
+Method:
+
+-__Hypothesis testing approach:__ use _DESeq2_ to estimate fold changes and adjusted p-values for comparison between the Mild+Moderate FHSD biopsies and the control group
+-__Criteria for significance:__ adjusted p-value < 0.0.5 corresponding to $H_0:|logFC(\frac{FSHD}{control})| \leq 1$.
+
+```{r deseq-mild-moderate-vs-controls}
+sub_dds <- longitudinal_dds[, longitudinal_dds$cluster %in% 
+                              c("Control", "Mild", "Moderate")]
+DESeq2::design(sub_dds) <- formula(~ pheno_type)
+sub_dds <- DESeq(sub_dds)
+
+tpm <- assays(longitudinal_dds)[["TPM"]]
+avg_TPM <- 
+  data.frame(
+    avg_TPM_controls = rowMeans(tpm[,
+                                    longitudinal_dds$cluster == "Control"]),
+    avg_TPM_M = rowMeans(tpm[, longitudinal_dds$cluster %in% 
+                               c("Mild", "Moderate")]),
+    avg_TPM_H = rowMeans(tpm[, longitudinal_dds$cluster %in% 
+                               c("IG-High", "High")])) %>%
+  rownames_to_column(var="gene_id")
+
+res <- as.data.frame(results(sub_dds, alpha=0.05, lfcThreshold=1)) %>%
+  rownames_to_column(var="gene_id") %>%
+  dplyr::select(gene_id, log2FoldChange, padj) %>%
+  dplyr::mutate(up_sig = padj < 0.05 & log2FoldChange > 0) 
+```
+
+## Extracellular Matrix basket
+```{r ecm-basket}
+ecm <- res %>% dplyr::filter(up_sig, gene_id %in% ecm_de) %>%
+  dplyr::left_join(annotation, by="gene_id") %>% 
+  left_join(avg_TPM, by="gene_id") %>%
+  relocate(gene_name, .after=gene_id)
+knitr::kable(ecm, format="html", escape = F,
+             caption="Extracellular matrix basket canidiates. log2FoldChange and padj rendered by the comparison of Mild+Moderate vs. Controls. Columns `Avg_TPM_M` and `avg_TPM_H` are the average TPM of Mild+Moderate and High+IG-High, respectively.") %>%
+  kableExtra::kable_styling(font_size = 12) %>%
+  kableExtra::kable_paper() %>%
+  kableExtra::scroll_box(width = "800px", height="100%")
+```
+
+## Inflamm/immune response basket
+```{r inflamm-basket}
+inflamm <- res %>% dplyr::filter(up_sig, gene_id %in% inflamm_de) %>%
+  dplyr::left_join(annotation, by="gene_id") %>%
+  left_join(avg_TPM, by="gene_id") %>%
+  relocate(gene_name, .after=gene_id)
+knitr::kable(inflamm, format="html", escape = F,
+             caption="Inflamm/immunse response basket canidiates. log2FoldChange and padj rendered by the comparison Mild+Moderate vs. Controls. Avg_TPM_M and avg_TPM_H are the average TPM of Mild+Moderate and High+IG-High, respectively. ") %>%
+  kableExtra::kable_styling(font_size = 12) %>%
+  kableExtra::kable_paper() %>%
+  kableExtra::scroll_box(width = "800px", height="100%")
+```
+## Stress response basket
+Some stressed related differentially expressed genes are overlapping with inflamm/immune response and extracellular matrix basket genes.
+```{r stress}
+stress <- res %>% dplyr::filter(up_sig, gene_id %in% stress_de) %>%
+  dplyr::left_join(annotation, by="gene_id") %>%
+  left_join(avg_TPM, by="gene_id") %>%
+  relocate(gene_name, .after=gene_id)
+
+stress %>% 
+  dplyr::mutate(gene_name = kableExtra::cell_spec(gene_name, 
+    color = if_else(gene_name %in% c(inflamm$gene_name, ecm$gene_name), "blue", "green"))) %>%
+  knitr::kable(format="html", escape = F,
+             caption="Stree basket canidiates. log2FoldChange and padj rendered by the comparison Mild+Moderate vs. Controls. Blue reprepsents genes associated with ECM or inflamm/immune response and green are exclusively stress related. Avg_TPM_M and avg_TPM_H are the average TPM of Mild+Moderate and High+IG-High, respectively.") %>%
+  kableExtra::kable_styling(font_size = 12) %>%
+  kableExtra::kable_paper() %>%
+  kableExtra::scroll_box(width = "800px", height="100%")
+```
+
+```{r output-baskets}
+FSHD_signatures_baskets <- list(ecm=ecm, inflamm=inflamm, stress=stress)
+save(FSHD_signatures_baskets, 
+     file=file.path(pkg_dir, "data", "FSHD_signatures_baskets.rda"))
+write_xlsx(FSHD_signatures_baskets, 
+           path=file.path(pkg_dir, "stats", "FSHD_signatures_baskets.xlsx"))
+```
