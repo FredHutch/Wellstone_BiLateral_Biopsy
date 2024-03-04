@@ -1,6 +1,8 @@
 # Wellstone_BiLateral_Biopsy
 
-This repository is created to support the computational transparency and reproducibility of our published paper,_Validation study of the association of MRI and FSHD gene signature reveals markers of whole muscle and systemic disease progression_. It includes the preprocessed RNA-seq data, metadata, clinical scores, analysis results and a gitbook with details of our anlaysis and reproducible R code that generates figures and tables on the fly. 
+This repository is created to support the computational transparency and reproducibility of our published paper, [_Regional and bilateral MRI and gene signatures in facioscapulohumeral dystrophy: implications for clinical trial design and mechanisms of disease progression_](https://doi.org/10.1093/hmg/ddae007). It includes the preprocessed RNA-seq data, metadata, histology scores, MRI characteristics, scripts, and a [GitBook](https://fredhutch.github.io/Wellstone_BiLateral_Biopsy/index.html) that provides a narrative on our analytical processes. This [GitBook](https://fredhutch.github.io/Wellstone_BiLateral_Biopsy/index.html) includes reproducible R code, enabling the generation of figures and tables directly from the code. 
+
+__Note:__ For replicating the analysis results, the reader should substitute the `pkg_dir` parameter with the path to the location where the clone of this repository is saved.
 
 ## Structure
 ```
