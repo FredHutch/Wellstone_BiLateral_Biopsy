@@ -4,18 +4,31 @@ This repository is created to support the computational transparency and reprodu
 
 ## Structure
 ```
-\data: clinial data, preprocessed RNA-seq datasets from the longigutinal and bilateral 
-stuides and their metadata
+\data: 
+    |- longitudinal_dds.rda: a DESeqDataSet instance include the 
+       longitudinal RNA-seq gene counts, TPM, and published metadata 
+       including ML-based classification labels, MRI, histopathology 
+       scores, and clinical data
+    |- bilateral_dds.rda: a DESeqDataSet instance; bilateral RNA-seq gene
+       counts, TPM, and metadata including ML-based classification labels 
+       and published MRI and clinical data
+    |- comprehensive_df.rda: a data.frame instance obtaining the biletarl
+       cohort's clinical, MRI, pathology, FSHD molecular signature scores,
+       and DNA methylation data
+    |- all_baskets.rda: basekts of genes representing FSHD disease 
+       signatures (DUX4-M, DUX4-M6, DUX4-M12, ECM, Inflamm, Complement,
+       and IG baskets)
+    |- bilat_MLpredict.rda: categorization of the bilateral biopsy
+       samples by machine learning models (random forest and 
+       KNN) trained by the longitudinal cohort and the signature
+       genes in the baskets
+       cohort 
+       
 
-    |- sanitized.dds.rda
-    |- cluster_df.rda
-    |- dds.rda
-    |- comprehensive_df.rda
-
-\docs: folder hosts the gitbook (*.html); all figures were generated on the fly of 
-      the *.Rmd files
-\gitbook: orignal *.Rmd that makes the gitbook
-\scripts: un-orgnaized R code of our initial data exploration and analysis
-\extdata: supplemental tables 
-
+\docs: *.html, the pages rendered by *.Rmd files in the \gitbook
+       directory
+\gitbook: *.Rmd, source code of this book
+\scripts: *.R; un-orgnaized R code of our initial data 
+          exploration and bioinformatics analysis
+\extdata: *.xlsx; extra files and supplemental tables
 ```
