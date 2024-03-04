@@ -9,13 +9,13 @@ __Note:__ For replicating the analysis results, the reader should substitute the
 \data: 
     |- longitudinal_dds.rda: a DESeqDataSet instance include the 
        longitudinal RNA-seq gene counts, TPM, and published metadata 
-       including ML-based classification labels, MRI, histopathology 
-       scores, and clinical data
+       including ML-based classification labels, published MRI and histopathology 
+       scores 
     |- bilateral_dds.rda: a DESeqDataSet instance; bilateral RNA-seq gene
        counts, TPM, and metadata including ML-based classification labels 
-       and published MRI and clinical data
+       and published MRI and histopathology data
     |- comprehensive_df.rda: a data.frame instance obtaining the biletarl
-       cohort's clinical, MRI, pathology, FSHD molecular signature scores,
+       cohort's histopathology, MRI, FSHD molecular signature scores,
        and DNA methylation data
     |- all_baskets.rda: basekts of genes representing FSHD disease 
        signatures (DUX4-M, DUX4-M6, DUX4-M12, ECM, Inflamm, Complement,
